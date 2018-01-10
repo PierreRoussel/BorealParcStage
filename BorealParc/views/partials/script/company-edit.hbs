@@ -1,0 +1,15 @@
+<!--  Scripts -->
+<script src="/javascript/jquery-3.2.1.min.js"></script>
+<script src="/javascript/materialize.min.js"></script>
+<script src="/javascript/init.js"></script>
+<!--  Points of interest script -->
+<script type="text/javascript">
+    $('#leftIndicator').on('change', function () {
+        var newVal = $('#leftIndicator').val();
+        $('.cd-single-point').css('left', newVal+"%");
+    });
+    $('#rightIndicator').on('change', function () {
+        var newVal = $('#rightIndicator').val();
+        $('.cd-single-point').css('top', newVal+"%");
+    });
+</script>
