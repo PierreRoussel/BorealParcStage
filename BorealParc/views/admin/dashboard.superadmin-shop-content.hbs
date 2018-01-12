@@ -51,7 +51,11 @@
                 <input id="id" type="hidden" name="id" value="{{ item._id }}">
                 <div class="input-field col m12 l6">
                     <input id="login" type="text" name="login" class="validate" value="{{ item.user.login }}">
-                    <label for="login">login:</label>
+                    <label for="login">identifiant de connexion:</label>
+                </div>
+                <div class="input-field col m12 l6">
+                    <input id="companyName" type="text" name="companyName" class="validate" value="{{ item.companyName }}">
+                    <label for="companyName">nom de l'entreprise:</label>
                 </div>
                 <div class="input-field col m12 l6">
                     <input id="mail" type="text" name="mail" class="validate" value="{{ item.mail }}">

@@ -174,6 +174,7 @@ router.post('/dashboard/update', isSuperAdmin, function (req, res, next) {
     req.check('newPasswordVerification', 'La verification du mot de passe est vide').optional({
         checkFalsy: true
     }).notEmpty();
+    req.check('companyName', 'Le champ nom d\'entreprise est vide').notEmpty();
     var errors = req.validationErrors();
     if (errors) {
         req.session.errors = errors;
@@ -185,6 +186,8 @@ router.post('/dashboard/update', isSuperAdmin, function (req, res, next) {
             }
             doc.user.password = doc.generateHash(req.body.newPassword);
             doc.user.login = req.body.login;
+            doc.companyName = req.body.companyName;
+            doc.companyNameSlug = stringToSlug(req.body.companyName);
             doc.mail = req.body.mail;
             doc.page.presentation = req.body.presentation;
             doc.page.address = req.body.address;
