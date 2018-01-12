@@ -3,65 +3,38 @@ var bcrypt = require('bcrypt-nodejs');
 var Schema = mongoose.Schema;
 
 var UserSchema = new Schema({
-    user: {
-        login: {
-            type: String,
-            required: true,
-            unique: true
-        },
-        password: {
-            type: String,
-            required: true
-        }
+    user : {
+        login : { type: String, required: true, unique: true },
+        password : { type: String, required: true }
     },
-    mail: {
-        type: String,
-        required: true,
-        unique: true
-    },
-    companyName: {
-        type: String,
-        required: true,
-        unique: true
-    },
-    companyNameSlug: {
-        type: String,
-        required: true,
-        unique: true
-    },
-    logo: {
-        type: String
-    },
-    page: {
-        presentation: String,
-        contact: {
+    mail : { type: String, required: true, unique: true },
+    companyName : { type: String, required: true, unique: true },
+    companyNameSlug : { type: String, required: true, unique: true },
+    logo : { type: String },
+    page : {
+        presentation : String,
+        contact :{
             telephone: String,
-            website: String,
+            website : String,
             facebook: String,
             twitter: String,
             instagram: String
         },
-        address: {
-            type: String
-        },
-        schedule: {
-            type: String
-        }
+        address :{ type: String },
+        schedule :{ type: String }
     },
     leftIndicator: Number,
     rightIndicator: Number,
     resetPasswordToken: String,
     resetPasswordExpires: Date,
-    isSuperAdmin: Boolean
-}, {
-    collection: 'Entreprise'
-});
+    isSuperAdmin : Boolean
+}, {collection: 'entreprise'});
 
-UserSchema.methods.generateHash = function (password) {
+UserSchema.methods.generateHash = function(password){
     return bcrypt.hashSync(password, bcrypt.genSaltSync(9));
 }
 
-UserSchema.methods.validPassword = function (password) {
+UserSchema.methods.validPassword = function(password){
     return bcrypt.compareSync(password, this.user.password);
 }
 
