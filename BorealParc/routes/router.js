@@ -139,7 +139,6 @@ router.get('/dashboard/update/:id', isSuperAdmin, function (req, res, next) {
 //Modification de l'entreprise
 router.post('/dashboard/update', isSuperAdmin, function (req, res, next) {
     req.check('presentation', 'La présentation est vide').notEmpty();
-    req.check('mail', 'Le format de l\'email n\'est pas correct').notEmpty().isEmail();
     req.check('website', 'Le format du lien du site n\'est pas correct').optional({
         checkFalsy: true
     }).isURL();
@@ -164,17 +163,6 @@ router.post('/dashboard/update', isSuperAdmin, function (req, res, next) {
     req.check('rightIndicator', 'Le positionnement vertical doit être compris entre 0 et 100').optional({
         checkFalsy: true
     }).isIntRange(0, 100);
-    req.check('newPassword', 'Le champ nouveau mot de passe est vide').optional({
-        checkFalsy: true
-    }).notEmpty();
-    req.check('newPassword', 'Le mot de passe doit posséder au minimum 6 caractères').optional({
-        checkFalsy: true
-    }).len(6, 20);
-    req.check('newPassword', 'Les mots de passe ne sont pas identiques').isEqual(req.body.newPasswordVerification);
-    req.check('newPasswordVerification', 'La verification du mot de passe est vide').optional({
-        checkFalsy: true
-    }).notEmpty();
-    req.check('companyName', 'Le champ nom d\'entreprise est vide').notEmpty();
     var errors = req.validationErrors();
     if (errors) {
         req.session.errors = errors;
@@ -184,11 +172,6 @@ router.post('/dashboard/update', isSuperAdmin, function (req, res, next) {
             if (err) {
                 return done(err);
             }
-            doc.user.password = doc.generateHash(req.body.newPassword);
-            doc.user.login = req.body.login;
-            doc.companyName = req.body.companyName;
-            doc.companyNameSlug = stringToSlug(req.body.companyName);
-            doc.mail = req.body.mail;
             doc.page.presentation = req.body.presentation;
             doc.page.address = req.body.address;
             doc.page.contact.website = req.body.website;
@@ -204,7 +187,6 @@ router.post('/dashboard/update', isSuperAdmin, function (req, res, next) {
     }
     res.redirect("/dashboard/update/" + req.body.id);
 });
-
 
 router.post('/dashboard/modification-mot-de-passe-magasin', isLoggedIn, function (req, res) {
     req.check('oldPassword', 'L\' ancien mot de passe est invalide').isValidPassword(req.user.user.password);
@@ -230,13 +212,58 @@ router.post('/dashboard/modification-mot-de-passe-magasin', isLoggedIn, function
     }
 });
 
-
-
-
-
-
-
-
+//Modification des informations du compte entreprise
+router.get('/dashboard/shop-update/:id', isSuperAdmin, function (req, res, next) {
+    var mongoId = mongoose.Types.ObjectId(req.params.id);
+    User.findById(mongoId, function (err, doc) {
+        if (err) {
+            return done(err);
+        } else {
+            res.render('admin/dashboard.superadmin-shop-account-modification.hbs', {
+                title: 'Modification compte - Dashboard SuperAdmin',
+                isLog: req.user,
+                success: req.session.success,
+                errors: req.session.errors,
+                item: doc
+            });
+            req.session.success = false;
+            req.session.errors = null;
+        }
+    })
+});
+router.post('/dashboard/shop-update', isSuperAdmin, function (req, res, next) {
+    req.check('mail', 'Le format de l\'email n\'est pas correct').notEmpty().isEmail();
+    req.check('newPassword', 'Le champ nouveau mot de passe est vide').optional({
+        checkFalsy: true
+    }).notEmpty();
+    req.check('newPassword', 'Le mot de passe doit posséder au minimum 6 caractères').optional({
+        checkFalsy: true
+    }).len(6, 20);
+    req.check('newPassword', 'Les mots de passe ne sont pas identiques').isEqual(req.body.newPasswordVerification);
+    req.check('newPasswordVerification', 'La verification du mot de passe est vide').optional({
+        checkFalsy: true
+    }).notEmpty();
+    req.check('companyName', 'Le champ nom d\'entreprise est vide').notEmpty();
+    var errors = req.validationErrors();
+    if (errors) {
+        req.session.errors = errors;
+        req.session.success = false;
+    } else {
+        User.findById(req.body.id, function (err, doc) {
+            if (err) {
+                return done(err);
+            }
+            doc.mail = req.body.mail;
+            doc.user.password = doc.generateHash(req.body.newPassword);
+            doc.user.login = req.body.login;
+            doc.companyName = req.body.companyName;
+            doc.companyNameSlug = stringToSlug(req.body.companyName);
+            doc.save();
+        })
+        req.session.success = true;
+    }
+    res.redirect("/dashboard/shop-update/" + req.body.id);
+});
 
 router.post('/dashboard/update/logo', isSuperAdmin, function (req, res, next) {
     var storageLogo = multer.diskStorage({
