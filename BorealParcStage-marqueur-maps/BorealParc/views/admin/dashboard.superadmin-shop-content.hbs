@@ -1,0 +1,140 @@
+<div class="container">
+    <div class="row">
+        <div class="col s12">
+            <a href="/dashboard" class="grey lighten-1 waves-effect waves-light btn"><i class="material-icons left">arrow_back</i>Retour</a>
+        </div>
+        {{# if success }}
+        <div class="center admin-form-ok">
+            <h5><i class="material-icons">verified_user</i> La page magasin a bien été modifiée</h5>
+        </div>
+        {{ else }} {{# if errors }}
+        <div class="center admin-form-wrong">
+            <h5><i class="material-icons">close</i> Erreur: la page magasin n'a pas été modifiée</h5>
+            <ul>
+                {{# each errors }}
+                <li>{{ this.msg }}</li>
+                {{/each}}
+            </ul>
+        </div>
+        {{/if}} {{/if}}
+        <form action="/dashboard/update/logo" method="post" enctype="multipart/form-data" class="col s12">
+            {{# if item.logo }}
+            <div class="row center">
+                <div class="file-field input-field col s12">
+                    <img src="/images/logo/{{ item.logo }}">
+                </div>
+            </div>
+            {{/if}}
+            <div class="row">
+                <input id="id" type="hidden" name="id" value="{{ item._id }}">
+                <input id="id" type="hidden" name="companyNameSlug" value="{{ item.companyNameSlug }}">
+                <div class="file-field input-field col s6">
+
+                    <div class="orange lighten-1 btn">
+                        <span>Logo de l'entreprise</span>
+                        <input name="logo" type="file">
+                    </div>
+                    <div class="file-path-wrapper">
+                        <input class="file-path validate" type="text">
+                    </div>
+                </div>
+                <div class="input-field col s6">
+                    <button class="orange lighten-1 lighten btn waves-effect waves-light" type="submit" name="action">Enregistrer le logo
+                    <i class="material-icons right">send</i>
+                    </button>
+                </div>
+            </div>
+        </form>
+        <form action="/dashboard/update" method="post" class="col s12">
+            <div class="row">
+                <h5 class="titre-mod-magasin">Modifier les informations du compte:</h5>
+                <input id="id" type="hidden" name="id" value="{{ item._id }}">
+                <div class="input-field col m12 l6">
+                    <input id="login" type="text" name="login" class="validate" value="{{ item.user.login }}">
+                    <label for="login">identifiant de connexion:</label>
+                </div>
+                <div class="input-field col m12 l6">
+                    <input id="companyName" type="text" name="companyName" class="validate" value="{{ item.companyName }}">
+                    <label for="companyName">nom de l'entreprise:</label>
+                </div>
+                <div class="input-field col m12 l6">
+                    <input id="mail" type="text" name="mail" class="validate" value="{{ item.mail }}">
+                    <label for="mail">adresse mail:</label>
+                </div>
+                <div class="input-field col m12 l6">
+                    <input id="newPassword" type="password" name="newPassword" class="validate">
+                    <label for="newPassword">Nouveau mot de passe:</label>
+                </div>
+                <div class="input-field col m12 l6">
+                    <input id="newPasswordVerification" type="password" name="newPasswordVerification" class="validate">
+                    <label for="newPasswordVerification">Repetition nouveau mot de passe:</label>
+                </div>
+            </div>
+            <div class="row">
+                <h5 class="titre-mod-magasin">Modifier les informations générales:</h5>
+                <div class="input-field col s12 ">
+                    <textarea id="presentation" name="presentation" class="materialize-textarea">{{ item.page.presentation }}</textarea>
+                    <label for="presentation">Présentation</label>
+                </div>
+                <div class="input-field col m12 l6">
+                    <input id="address" type="text" name="address" class="validate" value="{{ item.page.address }}">
+                    <label for="address">Adresse:</label>
+                </div>
+                <div class="input-field col m12 l6">
+                    <input id="website" type="text" name="website" class="validate" value="{{ item.page.contact.website }}">
+                    <label for="website">Lien site internet:</label>
+                </div>
+                <div class="input-field col m12 l6">
+                    <input id="facebook" type="text" name="facebook" class="validate" value="{{ item.page.contact.facebook }}">
+                    <label for="facebook">Lien Facebook:</label>
+                </div>
+                <div class="input-field col m12 l6">
+                    <input id="twitter" type="text" name="twitter" class="validate" value="{{ item.page.contact.twitter }}">
+                    <label for="twitter">Lien Twitter:</label>
+                </div>
+                <div class="input-field col m12 l6">
+                    <input id="instagram" type="text" name="instagram" class="validate" value="{{ item.page.contact.instagram }}">
+                    <label for="instagram">Lien Instagram:</label>
+                </div>
+                <div class="input-field col s12">
+                    <textarea id="schedule" name="schedule" class="materialize-textarea">{{ item.page.schedule }}</textarea>
+                    <label for="schedule">Horaires:</label>
+                </div>
+                <div class="col s12 center">
+                    <p>Choisissez le positionnement de l'indicateur</p>
+                    <div class="cd-interest-wrapper">
+                        <img src="/images/map/borealmap.jpg" alt="Centre boréal parc">
+                        <ul>
+                            <li class="cd-single-point" style="top:{{ item.rightIndicator }}%; left:{{ item.leftIndicator }}%">
+                                <a href="#0"><i class="material-icons pointeur-carte" style="font-size:44px;">place</i></a>
+                                <div class="cd-more-info cd-top">
+                                    <h2>{{ item.companyName }}</h2>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="input-field col s12">
+                    <p>
+                        <input type="range" id="leftIndicator" name="leftIndicator" min="0" max="100" value="{{ item.leftIndicator }}" />
+                    </p>
+                    <label for="leftIndicator">Indiquez le positionnement horizontal de l'indicateur (entre 0 et 100):</label>
+                </div>
+                <div class="input-field col s12">
+                    <p>
+                        <input type="range" id="rightIndicator" name="rightIndicator" min="0" max="100" value="{{ item.rightIndicator }}" />
+                    </p>
+                    <label for="rightIndicator">Indiquez le positionnement vertical de l'indicateur (entre 0 et 100):</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field col s6">
+                    <button class="orange lighten-1 lighten btn waves-effect waves-light" type="submit" name="action">Enregistrer les modifications
+                    <i class="material-icons right">send</i>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{{> script/company-edit}}
