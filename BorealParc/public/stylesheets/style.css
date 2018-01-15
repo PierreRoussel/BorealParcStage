@@ -101,6 +101,20 @@ footer.page-footer {
     text-shadow: 1px 1px 1px #000
 }
 
+<<<<<<< HEAD
+=======
+.pointeur-carte {
+    color: #26a69a;
+    transition: 0.5s;
+}
+
+.pointeur-carte:hover {
+    font-size: 45px;
+    text-shadow: 0px -3px 1px black;
+    cursor: pointer;
+}
+
+>>>>>>> tache.1.v2
 @media only screen and (max-width: 600px) {
     .fix {
         width: 100%

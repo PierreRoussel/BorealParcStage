@@ -16,7 +16,11 @@
 }
 
 .cd-single-point.is-open > a {
+<<<<<<< HEAD
     background-color: #00423e
+=======
+    background-color: rgba(0, 0, 0, 0.0)
+>>>>>>> tache.1.v2
 }
 
 .cd-more-info {
