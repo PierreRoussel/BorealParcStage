@@ -38,6 +38,10 @@ p {
     }
 }
 
+#logo-entreprise-shop-content {
+    max-height: 240px;
+}
+
 .icon-block {
     padding: 0 15px
 }
