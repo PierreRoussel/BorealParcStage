@@ -84,6 +84,10 @@ footer.page-footer {
     height: 300px
 }
 
+.card:hover {
+    cursor: pointer;
+}
+
 .card-title {
     min-height: 70px
 }

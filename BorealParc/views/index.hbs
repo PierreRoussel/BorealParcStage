@@ -51,7 +51,7 @@
                 <div class="row">
                     {{#each entreprise}}
                     <div class="fix col">
-                        <div class="card hoverable">
+                        <div class="card hoverable" onclick="javascript:location.href='./entreprise/{{ this.companyNameSlug }}'">
                             <div class="card-image">
                                 <img src="/images/logo/{{ this.logo }}">
                             </div>
