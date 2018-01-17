@@ -34,7 +34,7 @@
                     
                     <div class="orange lighten-1 btn">
                         <span>Logo de l'entreprise</span>
-                        <input name="logo" type="file">
+                        <input name="logo" type="file"onclick="return confirm('La dimension minimale doit être de 250 x 250');">
                     </div>
                     <div class="file-path-wrapper">
                         <input class="file-path validate" type="text">
@@ -49,7 +49,11 @@
         </form>
         <form action="/dashboard/update" method="post" class="col s12">
             <div class="row">
+<<<<<<< HEAD
                 <input id="id" type="hidden" name="id" value="{{ item._id }}">
+=======
+                <h5 class="titre-mod-magasin">Modifier les informations générales:</h5>
+>>>>>>> tim
                 <div class="input-field col s12 ">
                     <textarea id="presentation" name="presentation" class="materialize-textarea">{{ item.page.presentation }}</textarea>
                     <label for="presentation">Présentation</label>

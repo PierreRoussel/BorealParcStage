@@ -15,6 +15,7 @@
                 <ul class="collection with-header">
                     <li class="collection-header"><h4>Liste des magasins</h4></li>
                     {{# each items }}
+<<<<<<< HEAD
                         <li class="collection-item">
                             <div>
                                 {{ this.companyName }} | géré par {{ this.mail }}
@@ -23,6 +24,19 @@
                                 <a href="/dashboard/update/{{ this._id  }}" class="orange lighten-1 secondary-content waves-effect waves-light btn"><i class="material-icons left">build</i>Modifier</a>
                             </div>
                         </li>
+=======
+                    <li class="collection-item">
+                        <div>
+                            {{ this.companyName }} | géré par {{ this.mail }}
+                            <a href="/dashboard/delete/{{ this._id }}" onclick="return confirm('Etes-vous certain de vouloir supprimer cet élément?');" class="orange lighten-1 secondary-content waves-effect waves-light btn"><i class="material-icons left">delete</i>Supprimer</a>
+                            <!-- Lien vers /dashboard/contenu-magasin -->
+                            <a href="/dashboard/update/{{ this._id  }}" class="orange lighten-1 secondary-content waves-effect waves-light btn"><i class="material-icons left">build</i>Information magasin</a>
+                            <!-- Lien vers /dashboard/modification-infos !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
+                            <a href="/dashboard/shop-update/{{ this._id  }}" class="orange lighten-1 secondary-content waves-effect waves-light btn"><i class="material-icons left">build</i>Information compte</a>
+                             <a href="/dashboard/hide/{{ this._id }}" onclick="return confirm('Cette entreprise sera en attente de confirmation');" class="orange lighten-1 secondary-content waves-effect waves-light btn"><i class="material-icons left">cached</i>En Attente</a>
+                        </div>
+                    </li>
+>>>>>>> tim
                     {{/each}}
                 </ul>
             </div>
