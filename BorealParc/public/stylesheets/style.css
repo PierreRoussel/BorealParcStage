@@ -36,13 +36,6 @@ p {
     #index-banner .section {
         top: 0
     }
-    #logo-container {
-        margin-left: 2rem;
-    }
-}
-
-#logo-entreprise-shop-content {
-    max-height: 240px;
 }
 
 .icon-block {
@@ -93,10 +86,6 @@ footer.page-footer {
 
 .logo-page-entreprise img {
     height: 300px
-}
-
-.card:hover {
-    cursor: pointer;
 }
 
 .card-title {
@@ -163,4 +152,3 @@ footer.page-footer {
         width: 16%
     }
 }
->>>>>>> tim
