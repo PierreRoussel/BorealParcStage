@@ -36,6 +36,9 @@ p {
     #index-banner .section {
         top: 0
     }
+    #logo-container {
+        margin-left: 2rem;
+    }
 }
 
 .icon-block {
