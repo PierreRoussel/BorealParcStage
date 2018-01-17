@@ -37,8 +37,9 @@ module.exports = function(passport){
                     newUser.companyName = req.body.companyName;
 
                     newUser.save(function(err){
-                        if(err)
+                        if(err){
                             return done(err);
+                        }
                         return done(null, newUser, req.flash('signupMessage','Utilisateur bien ajouté'));
                     })
                 }

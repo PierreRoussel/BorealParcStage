@@ -23,6 +23,12 @@ var UserSchema = new Schema({
         address :{ type: String },
         schedule :{ type: String }
     },
+    promotion : [{
+        title: String,
+        description: String,
+        startDate: Date,
+        endDate: Date
+    }],
     leftIndicator: Number,
     rightIndicator: Number,
     resetPasswordToken: String,

@@ -74,7 +74,16 @@ app.use(expressValidator({
     },
     isValidPassword: (value, passwd) => {
       return bcrypt.compareSync(value, passwd);
+    },
+    
+    isNumero: (value) => {
+      if ((/^((\+|00)33\s?|0)[679](\s?\d{2}){4}$/.test(value)) || (/^((\+|00)33\s?|0)[1-5](\s?\d{2}){4}$/.test(value))){
+        return true;
+      }else{
+        return false;
+      }
     }
+
   }
 }));
 app.use(cookieParser());
