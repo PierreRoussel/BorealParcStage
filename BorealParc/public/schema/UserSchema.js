@@ -24,10 +24,10 @@ var UserSchema = new Schema({
         schedule :{ type: String }
     },
     promotion : [{
-        title: String,
-        description: String,
-        startDate: Date,
-        endDate: Date
+        title: { type : String },
+        description: { type : String },
+        startDate: { type : Date },
+        endDate: { type : Date }
     }],
     leftIndicator: Number,
     rightIndicator: Number,

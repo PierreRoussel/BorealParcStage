@@ -429,33 +429,6 @@ router.post('/dashboard/modification-mot-de-passe-superadmin', isSuperAdmin, fun
     }
 });
 
-
-//Création de promotion Superadmin
-/* router.get('/dashboard/creation-promotion-supreadmin', isSuperAdmin, function(req, res){
-  res.render('admin/dashboard.superadmin-promotion.hbs', 
-  {
-    title: 'Création promotion - Dashboard SuperAdmin',
-    isLog: req.user,
-    success: req.session.success,
-    errors: req.session.errors,
-  });
-  req.session.success = false;
-  req.session.errors = null;
-});
-router.post('/dashboard/creation-promotion-superadmin', isSuperAdmin, function(req, res){
-  req.check('promotion.title', 'Le titre de la promotion est vide').notEmpty();
-  req.check('promotion.description', 'La description est vide').notEmpty();
-  req.check('promotion.startDate','La date de début est vide').notEmpty();
-  req.check('promotion.endDate', 'La date de fin est vide').notEmpty();
-  var errors = req.validationErrors();
-  if (errors) {
-      req.session.errors = errors;
-      req.session.success = false;
-  } else {
-    var newPromotion = new User.()
-  }
-}); */
-
 /////////////////////////////////
 /// Section Dashboard MAGASIN ///
 /////////////////////////////////
@@ -514,44 +487,39 @@ router.get('/dashboard/contenu-magasin', isLoggedIn, function (req, res) {
 });
 
 //Création promotion Magasin
-router.get('/dashboard/creation-promotion', isLoggedIn, function (req, res) {
-    res.render('admin/dashboard.creation-promotion.hbs', {
-        title: 'Création promotion',
-        isLog: req.user,
-        success: req.session.success,
-        errors: req.session.errors,
+router.get('/dashboard/creation-promotion', isLoggedIn, function(req, res){
+    res.render('admin/dashboard.creation-promotion.hbs',
+    {
+      title: 'Création promotion', 
+      isLog: req.user, 
+      success: req.session.success,
+      errors: req.session.errors,
     });
     req.session.success = false;
     req.session.errors = null;
-});
-router.post('/dashboard/creation-promotion', isLoggedIn, function (req, res) {
-    req.check('companyName', 'Le nom de l\'entreprise est vide').notEmpty();
-    req.check('mail', 'L\'email de l\'entreprise est vide').notEmpty();
-    req.check('mail', 'Le format de l\'email n\'est pas correct').isEmail();
-    req.check('promotion.title', 'Le titre est vide').notEmpty();
-    req.check('promotion.description', 'La description est vide').notEmpty();
-    req.check('promotion.startDate', 'La date de debut est vide').notEmpty();
-    req.check('promotion.endDate', 'La date de fin est vide').notEmpty();
+  });
+  router.post('/dashboard/creation-promotion', isLoggedIn, function (req, res) {
+    var mongoId = mongoose.Types.ObjectId(req.user._id);
+    req.check('title', 'Le titre est vide').notEmpty();
+    req.check('description', 'La description est vide').notEmpty();
+    req.check('startDate', 'La date de debut est vide').notEmpty();
+    req.check('endDate', 'La date de fin est vide').notEmpty();
     var errors = req.validationErrors();
-    if (errors) {
-        req.session.errors = errors;
-        req.session.success = false;
-    } else {
-        User.findById(req.body.id, function (err, doc) {
-            if (err) {
-                return done(err);
-            }
-            doc.promotion[title] = req.body.promotion.title;
-            doc.promotion[description] = req.body.promotion.description;
-            doc.promotion[startDate] = req.body.promotion.startDate;
-            doc.promotion[endDate] = req.body.promotion.endDate;
-
-            doc.save();
-        })
-        req.session.success = true;
+    if (errors){
+      req.session.errors = errors;
+      req.session.success = false;
+    } else{
+      User.findOneAndUpdate(
+        {_id: mongoId},
+        {$push: {promotion: {title:req.body.title,description:req.body.description,startDate:req.body.startDate,endDate:req.body.endDate}}},
+        function(err, model){
+          console.log(err);
+        }
+      )
+      req.session.success = true;
     }
-    res.redirect("/dashboard/create/promotion" + req.body.id);
-});
+    res.redirect("/dashboard/creation-promotion");
+  }); 
 
 
 
