@@ -23,6 +23,7 @@
                             <a href="/dashboard/update/{{ this._id  }}" class="orange lighten-1 secondary-content waves-effect waves-light btn"><i class="material-icons left">build</i>Information magasin</a>
                             <!-- Lien vers /dashboard/modification-infos !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
                             <a href="/dashboard/shop-update/{{ this._id  }}" class="orange lighten-1 secondary-content waves-effect waves-light btn"><i class="material-icons left">build</i>Information compte</a>
+                             <a href="/dashboard/hide/{{ this._id }}" onclick="return confirm('Cette entreprise sera en attente de confirmation');" class="orange lighten-1 secondary-content waves-effect waves-light btn"><i class="material-icons left">cached</i>En Attente</a>
                         </div>
                     </li>
                     {{/each}}

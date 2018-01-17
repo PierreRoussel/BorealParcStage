@@ -29,10 +29,10 @@
                 <input id="id" type="hidden" name="id" value="{{ item._id }}">
                 <input id="id" type="hidden" name="companyNameSlug" value="{{ item.companyNameSlug }}">
                 <div class="file-field input-field col s6">
-
+                    
                     <div class="orange lighten-1 btn">
                         <span>Logo de l'entreprise</span>
-                        <input name="logo" type="file">
+                        <input name="logo" type="file"onclick="return confirm('La dimension minimale doit être de 250 x 250');">
                     </div>
                     <div class="file-path-wrapper">
                         <input class="file-path validate" type="text">
