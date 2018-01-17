@@ -91,7 +91,7 @@ footer.page-footer {
     height: 300px
 }
 
-.card-acc{
+.card-acc {
     cursor: pointer;
 }
 
@@ -158,4 +158,13 @@ footer.page-footer {
     .col {
         width: 16%
     }
+}
+
+.orange.lighten-1.waves-effect.waves-light.btn {
+    margin: 1px;
+}
+
+.collection-item.dashboard-admin {
+    padding-bottom: 25px;
+    padding-right: 0px;
 }
