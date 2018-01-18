@@ -4,26 +4,24 @@
             <a href="/dashboard" class="grey lighten-1 waves-effect waves-light btn"><i class="material-icons left">arrow_back</i>Retour</a>
         </div>
         {{# if success }}
-            <div class="center admin-form-ok">
-                <h5><i class="material-icons">verified_user</i> La page magasin a bien été modifiée</h5>
-            </div>
-        {{ else }}
-            {{# if errors }}
-            <div class="center admin-form-wrong">
-                <h5><i class="material-icons">close</i> Erreur: la page magasin n'a pas été modifiée</h5>
-                <ul>
-                    {{# each errors }}
-                        <li>{{ this.msg }}</li>
-                    {{/each}}
-                </ul>
-            </div>
-            {{/if}}
-        {{/if}}
+        <div class="center admin-form-ok">
+            <h5><i class="material-icons">verified_user</i> La page magasin a bien été modifiée</h5>
+        </div>
+        {{ else }} {{# if errors }}
+        <div class="center admin-form-wrong">
+            <h5><i class="material-icons">close</i> Erreur: la page magasin n'a pas été modifiée</h5>
+            <ul>
+                {{# each errors }}
+                <li>{{ this.msg }}</li>
+                {{/each}}
+            </ul>
+        </div>
+        {{/if}} {{/if}}
         <form action="/dashboard/contenu-magasin/logo" method="post" enctype="multipart/form-data" class="col s12">
             {{# if item.logo }}
             <div class="row center">
                 <div class="file-field input-field col s12">
-                    <img src="/images/logo/{{ item.logo }}">
+                    <img src="/images/logo/{{ item.logo }}" style="max-height:250px">
                 </div>
             </div>
             {{/if}}
@@ -31,10 +29,10 @@
                 <input id="id" type="hidden" name="id" value="{{ item._id }}">
                 <input id="id" type="hidden" name="companyNameSlug" value="{{ item.companyNameSlug }}">
                 <div class="file-field input-field col s6">
-                    
+
                     <div class="indigo lighten btn">
                         <span>Logo de l'entreprise</span>
-                        <input name="logo" type="file">
+                        <input name="logo" type="file" onclick="return confirm('La dimension minimale doit être de 250 x 250');">
                     </div>
                     <div class="file-path-wrapper">
                         <input class="file-path validate" type="text">
@@ -79,28 +77,28 @@
                     <label for="telephone">Téléphone:</label>
                 </div>
                 <div class="input-field col s12">
-                    <textarea id="schedule" name="schedule" class="materialize-textarea" >{{ item.page.schedule }}</textarea>
+                    <textarea id="schedule" name="schedule" class="materialize-textarea">{{ item.page.schedule }}</textarea>
                     <label for="schedule">Horaires:</label>
                 </div>
                 <div class="col s12 center">
                     <p>Choisissez le positionnement de l'indicateur</p>
                     <div class="cd-interest-wrapper">
-                    <img src="/images/map/borealmap.jpg" alt="Centre boréal parc">
-                    <ul>
-                        <li class="cd-single-point" style="top:{{ item.rightIndicator }}%; left:{{ item.leftIndicator }}%">
-                            <a class="btn btn-floating pulse" href="#0"><i class="material-icons">info</i></a>
-                            <div class="cd-more-info cd-top">
-                            <h2>{{ item.companyName }}</h2>
-                            </div>
-                        </li>
-                    </ul>
+                        <img src="/images/map/borealmap.jpg" alt="Centre boréal parc">
+                        <ul>
+                            <li class="cd-single-point" style="top:{{ item.rightIndicator }}%; left:{{ item.leftIndicator }}%">
+                                <a href="#" style='color:#26a69a'><i class="material-icons pointeur-carte" style="font-size:44px;">place</i></a>
+                                <div class="cd-more-info cd-top">
+                                    <h2>{{ item.companyName }}</h2>
+                                </div>
+                            </li>
+                        </ul>
                     </div>
                 </div>
                 <div class="input-field col s12">
                     <p>
                         <input type="range" id="leftIndicator" name="leftIndicator" min="0" max="100" value="{{ item.leftIndicator }}" />
                     </p>
-                    <label for="leftIndicator">Indiquez le positionnement horizontal de l'indicateur (entre 0 et 100):</label>  
+                    <label for="leftIndicator">Indiquez le positionnement horizontal de l'indicateur (entre 0 et 100):</label>
                 </div>
                 <div class="input-field col s12">
                     <p>

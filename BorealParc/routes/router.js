@@ -249,7 +249,6 @@ router.post('/dashboard/shop-update', isSuperAdmin, function (req, res, next) {
     res.redirect("/dashboard/shop-update/" + req.body.id);
 });
 
-
 router.post('/dashboard/update/logo', isSuperAdmin, function (req, res, next) {
     var storageLogo = multer.diskStorage({
         destination: function (req, file, cb) {
@@ -459,41 +458,6 @@ router.post('/dashboard/creation-promotion-superadmin', isSuperAdmin, function(r
 /////////////////////////////////
 /// Section Dashboard MAGASIN ///
 /////////////////////////////////
-
-router.get('/dashboard/modification-mot-de-passe-magasin', isLoggedIn, function (req, res) {
-    res.render('admin/dashboard.shopadmin-password.hbs', {
-        title: 'Modification mot de passe - Dashboard Magasin',
-        isLog: req.user,
-        success: req.session.success,
-        errors: req.session.errors
-    });
-    req.session.success = false;
-    req.session.errors = null;
-});
-router.post('/dashboard/modification-mot-de-passe-magasin', isLoggedIn, function (req, res) {
-    req.check('oldPassword', 'L\' ancien mot de passe est invalide').isValidPassword(req.user.user.password);
-    req.check('newPassword', 'Le champ nouveau mot de passe est vide').notEmpty();
-    req.check('newPassword', 'Le mot de passe doit posséder au minimum 6 caractères').len(6, 20);
-    req.check('newPassword', 'Les mots de passe de sont pas identiques').isEqual(req.body.newPasswordVerification);
-    req.check('newPasswordVerification', 'La verification du mot de passe est vide').notEmpty();
-    var errors = req.validationErrors();
-    if (errors) {
-        req.session.errors = errors;
-        req.session.success = false;
-        res.redirect('/dashboard/modification-mot-de-passe-magasin');
-    } else {
-        User.findById(req.session.passport.user, function (err, user) {
-            if (err) return done(err);
-            user.user.password = user.generateHash(req.body.newPassword);
-            user.save(function (err, updatedTank) {
-                if (err) return done(err);
-                req.session.success = true;
-                res.redirect('/dashboard/modification-mot-de-passe-magasin');
-            });
-        });
-    }
-});
-
 router.get('/dashboard/contenu-magasin', isLoggedIn, function (req, res) {
     var mongoId = mongoose.Types.ObjectId(req.user._id);
     User.findById(mongoId, function (err, doc) {
@@ -511,6 +475,60 @@ router.get('/dashboard/contenu-magasin', isLoggedIn, function (req, res) {
             req.session.errors = null;
         }
     })
+});
+
+//EN TANT QUE SIMPLE ADMIN : MODIFICATION DES INFOS COMPTES
+router.get('/dashboard/admin-shop-update', isLoggedIn, function (req, res) {
+    var mongoId = mongoose.Types.ObjectId(req.user._id);
+    User.findById(mongoId, function (err, doc) {
+        if (err) {
+            return done(err);
+        } else {
+            res.render('admin/dashboard.shopadmin-account-modification.hbs', {
+                title: 'Modification compte - Dashboard Admin',
+                isLog: req.user,
+                success: req.session.success,
+                errors: req.session.errors,
+                item: doc
+            });
+            req.session.success = false;
+            req.session.errors = null;
+        }
+    })
+});
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+router.post('/dashboard/admin-shop-update', isLoggedIn, function (req, res) {
+    req.check('mail', 'Le format de l\'email n\'est pas correct').notEmpty().isEmail();
+    req.check('newPassword', 'Le champ nouveau mot de passe est vide').optional({
+        checkFalsy: true
+    }).notEmpty();
+    req.check('newPassword', 'Le mot de passe doit posséder au minimum 6 caractères').optional({
+        checkFalsy: true
+    }).len(6, 20);
+    req.check('newPassword', 'Les mots de passe ne sont pas identiques').isEqual(req.body.newPasswordVerification);
+    req.check('newPasswordVerification', 'La verification du mot de passe est vide').optional({
+        checkFalsy: true
+    }).notEmpty();
+    req.check('companyName', 'Le champ nom d\'entreprise est vide').notEmpty();
+    var errors = req.validationErrors();
+    if (errors) {
+        req.session.errors = errors;
+        req.session.success = false;
+    } else {
+        User.findById(req.body.id, function (err, doc) {
+            if (err) {
+                return done(err);
+            }
+            doc.mail = req.body.mail;
+            doc.user.password = doc.generateHash(req.body.newPassword);
+            doc.user.login = req.body.login;
+            doc.companyName = req.body.companyName;
+            doc.companyNameSlug = stringToSlug(req.body.companyName);
+            doc.save();
+        })
+        req.session.success = true;
+    }
+    res.redirect("/dashboard/admin-shop-update");
 });
 
 //Création promotion Magasin
@@ -545,7 +563,6 @@ router.post('/dashboard/creation-promotion', isLoggedIn, function (req, res) {
             doc.promotion[description] = req.body.promotion.description;
             doc.promotion[startDate] = req.body.promotion.startDate;
             doc.promotion[endDate] = req.body.promotion.endDate;
-
             doc.save();
         })
         req.session.success = true;
