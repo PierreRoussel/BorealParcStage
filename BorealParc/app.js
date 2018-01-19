@@ -10,6 +10,7 @@ var session = require('express-session');
 var MongoStore = require('connect-mongo')(session);
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var fileUpload = require('express-fileupload');
 
 var mongoose = require('mongoose');
 var configUrl = require('./config.js');
@@ -25,7 +26,9 @@ var routes = require('./routes/router');
 var User = require('./public/schema/UserSchema');
 
 require('./public/passport')(passport);
-mongoose.connect(configUrl.url);
+mongoose.connect(configUrl.url,{
+  useMongoClient: true
+});
 
 var hbs = exphbs.create({
     helpers: {
@@ -59,6 +62,7 @@ app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(fileUpload());
 app.use(expressValidator({
   customValidators: {
     isEqual: (value1, value2) => {

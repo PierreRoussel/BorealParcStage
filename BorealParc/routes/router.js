@@ -3,34 +3,9 @@ var router = express.Router();
 var passport = require('passport');
 var flash = require('connect-flash');
 require('../public/passport')(passport);
-var multer = require('multer');
+
 var path = require('path');
 var fs = require('fs');
-
-var storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, path.join(__dirname, '../public/images/map/'))
-    },
-    filename: function (req, file, cb) {
-        cb(null, file.fieldname + '.jpg')
-    }
-});
-
-var upload = multer({
-    storage: storage,
-    fileFilter: function (req, file, callback) {
-        var ext = path.extname(file.originalname);
-        if (ext !== '.jpg') {
-            return callback(new Error('Only jpg images are allowed'))
-        }
-        callback(null, true)
-    },
-    limits: {
-        fileSize: 10000000,
-        files: 1
-    }
-}).single('borealmap');
-
 var mongoose = require('mongoose');
 
 var User = require('../public/schema/UserSchema');
@@ -250,44 +225,17 @@ router.post('/dashboard/shop-update', isSuperAdmin, function (req, res, next) {
 });
 
 router.post('/dashboard/update/logo', isSuperAdmin, function (req, res, next) {
-    var storageLogo = multer.diskStorage({
-        destination: function (req, file, cb) {
-            cb(null, path.join(__dirname, '../public/images/logo/'))
-        },
-        filename: function (req, file, cb) {
-            var logoName = req.body.companyNameSlug + '.' + file.originalname.split('.')[file.originalname.split('.').length - 1];
-            cb(null, logoName)
-        }
-    });
-    var uploadLogo = multer({
-        storage: storageLogo,
-        fileFilter: function (req, file, callback) {
-            if (file == null) {
-                return callback(new Error('No picture selected'))
-            }
-            var ext = path.extname(file.originalname);
-            if (ext !== '.png' && ext !== '.jpg' && ext !== '.jpeg') {
-                return callback(new Error('Only images are allowed'))
-            }
-            callback(null, true)
-        },
-        limits: {
-            fileSize: 10000000,
-            files: 1
-        }
-    }).single('logo');
     mongoId = mongoose.Types.ObjectId(req.body.id);
-    uploadLogo(req, res, function (err) {
-        mongoId = mongoose.Types.ObjectId(req.body.id);
-        User.findById(mongoId, function (err, doc) {
-            if (err) {
-                return done(err);
-            }
-            doc.logo = req.file.filename;
-            doc.save();
-            res.redirect("/dashboard/update/" + mongoId);
-        });
-    });
+    //upload.single('logo');
+    if (!req.files.logo)  {
+
+        req.session.errors = [{msg:"Vous n'avez pas mis d'image"}];
+        req.session.success = false;
+    
+      } else {
+        upload('logo', req.files, req.body.companyNameSlug, req.session)
+    }
+    res.redirect("/dashboard/update/" + mongoId);   
 });
 
 //Suppression entreprises
@@ -414,7 +362,6 @@ router.post('/dashboard/modification-mot-de-passe-superadmin', isSuperAdmin, fun
     if (errors) {
         req.session.errors = errors;
         req.session.success = false;
-        res.redirect('/dashboard/modification-mot-de-passe-superadmin');
     } else {
         User.findById(req.session.passport.user, function (err, user) {
             if (err) return done(err);
@@ -422,10 +369,10 @@ router.post('/dashboard/modification-mot-de-passe-superadmin', isSuperAdmin, fun
             user.save(function (err, updatedTank) {
                 if (err) return done(err);
                 req.session.success = true;
-                res.redirect('/dashboard/modification-mot-de-passe-superadmin');
             });
         });
     }
+    res.redirect('/dashboard/modification-mot-de-passe-superadmin');
 });
 
 /////////////////////////////////
@@ -546,32 +493,7 @@ router.post('/dashboard/creation-promotion', isLoggedIn, function (req, res) {
 
 
 router.post('/dashboard/contenu-magasin/logo', isLoggedIn, function (req, res) {
-    var storageLogo = multer.diskStorage({
-        destination: function (req, file, cb) {
-            cb(null, path.join(__dirname, '../public/images/logo/'))
-        },
-        filename: function (req, file, cb) {
-            var logoName = req.body.companyNameSlug + '.' + file.originalname.split('.')[file.originalname.split('.').length - 1];
-            cb(null, logoName)
-        }
-    });
-    var uploadLogo = multer({
-        storage: storageLogo,
-        fileFilter: function (req, file, callback) {
-            if (file == null) {
-                return callback(new Error('No picture selected'))
-            }
-            var ext = path.extname(file.originalname);
-            if (ext !== '.png' && ext !== '.jpg' && ext !== '.jpeg') {
-                return callback(new Error('Only images are allowed'))
-            }
-            callback(null, true)
-        },
-        limits: {
-            fileSize: 10000000,
-            files: 1
-        }
-    }).single('logo');
+    
     mongoId = mongoose.Types.ObjectId(req.body.id);
     uploadLogo(req, res, function (err) {
         mongoId = mongoose.Types.ObjectId(req.body.id);
@@ -668,11 +590,6 @@ router.get('/*', function (req, res, next) {
 
 
 
-
-
-
-
-
 /// Custom functions ///
 function isLoggedIn(req, res, next) {
     if (req.isAuthenticated()) {
@@ -708,9 +625,6 @@ function stringToSlug(str) {
         .replace(/-+/g, '-'); // collapse dashes
     return str;
 }
-module.exports = router;
-
-
 
 function shuffle(array) {
     var currentIndex = array.length,
@@ -731,3 +645,20 @@ function shuffle(array) {
 
     return array;
 }
+
+function upload(localisation, file, company, session){
+    let sampleFile = file.logo;
+    var logoExt = sampleFile.name.split('.')[sampleFile.name.split('.').length - 1];
+    var logoName = company + '.' + logoExt;
+    console.log(logoExt)
+    if (logoExt != 'png' && logoExt != 'jpeg' && logoExt != 'jpg'){
+        session.errors = [{msg:"L'image doit être au format png ou jpg"}];
+        session.success = false;
+    }
+    else{
+        sampleFile.mv(path.join(__dirname, '../public/images/'+localisation+'/'+logoName));
+        session.success = true;
+    }
+}
+
+module.exports = router;
