@@ -116,7 +116,7 @@ footer.page-footer {
     text-shadow: 1px 1px 1px #000
 }
 
-<<<<<<< HEAD=======.pointeur-carte {
+.pointeur-carte {
     color: #26a69a;
     transition: 0.5s;
 }
@@ -135,12 +135,12 @@ footer.page-footer {
     .collection-item.dashboard-admin > div > a > i {
         display: none;
     }
-    .collection-item.dashboard-admin > div {
-        padding-bottom: 6rem;
-    }
     .bouton-dash {
         padding: 0 0.2rem;
         font-size: 0.6rem;
+    }
+    .collection-item.dashboard-admin > div {
+        padding-bottom: 3rem;
     }
     #titre-layout-boreal {
         display: none;
@@ -157,8 +157,12 @@ footer.page-footer {
     .bouton-dash {
         padding: 0 0.2rem;
         font-size: 0.7rem;
-        width: 10rem;
+        width: 9rem;
     }
+    .collection-item.dashboard-admin > div {
+        padding-bottom: 3rem;
+    }
+
     .collection-item.dashboard-admin > div > span,
     .collection-item.dashboard-admin > div > a > i {
         display: none;
@@ -182,7 +186,9 @@ footer.page-footer {
     .collection-item.dashboard-admin > div > a > i {
         display: block;
     }
-
+    .collection-item.dashboard-admin > div {
+        padding-bottom: 1rem;
+    }
 }
 
 @media only screen and (min-width: 1650px) {

@@ -17,7 +17,7 @@
                     {{# each items }}
                     <li class="collection-item dashboard-admin">
                         <div>
-                            {{ this.companyName }} <span>| géré par {{ this.mail }}</span>
+                            {{ this.companyName }}<span>| géré par {{ this.mail }}</span>
                             <a href="/dashboard/delete/{{ this._id }}" onclick="return confirm('Etes-vous certain de vouloir supprimer cet élément?');" class="orange lighten-1 secondary-content waves-effect waves-light btn bouton-dash"><i class="material-icons left">delete</i>Supprimer</a>
                             <!-- Lien vers /dashboard/contenu-magasin -->
                             <a href="/dashboard/update/{{ this._id  }}" class="orange lighten-1 secondary-content waves-effect waves-light btn bouton-dash"><i class="material-icons left">build</i>Information magasin</a>
