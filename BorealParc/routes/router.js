@@ -428,33 +428,6 @@ router.post('/dashboard/modification-mot-de-passe-superadmin', isSuperAdmin, fun
     }
 });
 
-
-//Création de promotion Superadmin
-/* router.get('/dashboard/creation-promotion-supreadmin', isSuperAdmin, function(req, res){
-  res.render('admin/dashboard.superadmin-promotion.hbs', 
-  {
-    title: 'Création promotion - Dashboard SuperAdmin',
-    isLog: req.user,
-    success: req.session.success,
-    errors: req.session.errors,
-  });
-  req.session.success = false;
-  req.session.errors = null;
-});
-router.post('/dashboard/creation-promotion-superadmin', isSuperAdmin, function(req, res){
-  req.check('promotion.title', 'Le titre de la promotion est vide').notEmpty();
-  req.check('promotion.description', 'La description est vide').notEmpty();
-  req.check('promotion.startDate','La date de début est vide').notEmpty();
-  req.check('promotion.endDate', 'La date de fin est vide').notEmpty();
-  var errors = req.validationErrors();
-  if (errors) {
-      req.session.errors = errors;
-      req.session.success = false;
-  } else {
-    var newPromotion = new User.()
-  }
-}); */
-
 /////////////////////////////////
 /// Section Dashboard MAGASIN ///
 /////////////////////////////////

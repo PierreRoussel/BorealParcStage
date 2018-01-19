@@ -1,33 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>{{ title }}</title>
-  <!-- CSS  -->
-  <link href="favicon.ico" rel="icon" />
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-  <link href="/stylesheets/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
-  <!-- Point of interest CSS -->
-  <link href="/stylesheets/interest.css" rel="stylesheet"> 
-  <link href="/stylesheets/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{{ title }}</title>
+    <!-- CSS  -->
+    <link href="favicon.ico" rel="icon" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="/stylesheets/materialize.css" type="text/css" rel="stylesheet" media="screen,projection" />
+    <!-- Point of interest CSS -->
+    <link href="/stylesheets/interest.css" rel="stylesheet">
+    <link href="/stylesheets/style.css" type="text/css" rel="stylesheet" media="screen,projection" />
 </head>
+
 <body>
     <nav class="white" role="navigation">
         <div class="nav-wrapper container">
-        <a id="logo-container" href="/" class="brand-logo"><img src="/images/boreal_hibou_logo.png" alt="Boréal logo hibou" class="minimized-boreal-logo"></img>Boréal Parc</a>
-        <ul class="right hide-on-med-and-down">
-            {{#if isLog}}
+            <a id="logo-container" href="/" class="brand-logo"><img src="/images/boreal_hibou_logo.png" alt="Boréal logo hibou" class="minimized-boreal-logo"></img><span id="titre-layout-boreal">Boréal Parc</span></a>
+            <ul class="right hide-on-med-and-down">
+                {{#if isLog}}
                 <li><a href="/dashboard" id='dashboard'>Dashboard</a>
-                <li><a href="/logout" id='logout'>Se déconnecter</a>
-            {{/if}}
-        </ul>
-        <ul id="nav-mobile" class="side-nav">
-            <li><a href="#brands">Les différentes enseignes</a></li>
-        </ul>
-        <a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
+                    <li><a href="/logout" id='logout'>Se déconnecter</a> {{/if}}
+            </ul>
+            <ul id="nav-mobile" class="side-nav">
+                <li><a href="#brands">Les différentes enseignes</a></li>
+            </ul>
+            <a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
         </div>
     </nav>
-  {{{ body }}}
-  </body>
+    {{{ body }}}
+</body>
+
 </html>

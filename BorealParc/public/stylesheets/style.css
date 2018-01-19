@@ -127,9 +127,23 @@ footer.page-footer {
     cursor: pointer;
 }
 
-> > > > > > > tache.1.v2 @media only screen and (max-width: 600px) {
+@media only screen and (max-width: 600px) {
     .fix {
         width: 50%
+    }
+    .collection-item.dashboard-admin > div > span,
+    .collection-item.dashboard-admin > div > a > i {
+        display: none;
+    }
+    .collection-item.dashboard-admin > div {
+        padding-bottom: 6rem;
+    }
+    .bouton-dash {
+        padding: 0 0.2rem;
+        font-size: 0.6rem;
+    }
+    #titre-layout-boreal {
+        display: none;
     }
 }
 
@@ -140,6 +154,15 @@ footer.page-footer {
     .col {
         width: 33%
     }
+    .bouton-dash {
+        padding: 0 0.2rem;
+        font-size: 0.7rem;
+        width: 10rem;
+    }
+    .collection-item.dashboard-admin > div > span,
+    .collection-item.dashboard-admin > div > a > i {
+        display: none;
+    }
 }
 
 @media only screen and (min-width: 900px) {
@@ -149,6 +172,17 @@ footer.page-footer {
     .col {
         width: 25%
     }
+
+    .bouton-dash {
+        font-size: 0.9rem;
+        float: none;
+        width: auto;
+    }
+    .collection-item.dashboard-admin > div > span,
+    .collection-item.dashboard-admin > div > a > i {
+        display: block;
+    }
+
 }
 
 @media only screen and (min-width: 1650px) {
@@ -157,6 +191,17 @@ footer.page-footer {
     }
     .col {
         width: 16%
+    }
+    .bouton-dash {
+        padding: 0 2rem;
+        font-size: 1rem;
+        float: none;
+        width: auto;
+    }
+    .collection-item.dashboard-admin > div > span,
+    .collection-item.dashboard-admin > div > a > i {
+        display: block;
+        float: none;
     }
 }
 
@@ -167,4 +212,8 @@ footer.page-footer {
 .collection-item.dashboard-admin {
     padding-bottom: 25px;
     padding-right: 0px;
+}
+
+.section-haute-dash {
+    text-align: center;
 }
