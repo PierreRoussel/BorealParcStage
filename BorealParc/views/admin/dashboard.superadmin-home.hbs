@@ -1,11 +1,11 @@
 <div class="container">
     <div class="section">
         <div class="row">
-            <div class="col s12">{{ message }}
-
-                <a href="/dashboard/creation-compte-magasin" class="orange lighten-1 waves-effect waves-light btn-large"><i class="material-icons left">brush</i>Créer nouveau compte magasin</a>
-                <a href="/dashboard/modification-elements-site" class="orange lighten-1 waves-effect waves-light btn-large"><i class="material-icons left">colorize</i>Modifier des éléments du site</a>
-                <a href="/dashboard/modification-mot-de-passe-superadmin" class="orange lighten-1 waves-effect waves-light btn-large"><i class="material-icons left">build</i>Changer mot de passe compte super-administrateur</a>
+            <div class="col s12 section-haute-dash">{{ message }}
+                <a href="/dashboard/creation-compte-magasin" class="orange lighten-1 waves-effect waves-light btn bouton-dash"><i class="material-icons left">brush</i>Créer nouveau compte magasin</a>
+                <a href="/dashboard/modification-elements-site" class="orange lighten-1 waves-effect waves-light btn bouton-dash"><i class="material-icons left">colorize</i>Modifier des éléments du site</a>
+                <a href="/dashboard/modification-mot-de-passe-superadmin" class="orange lighten-1 waves-effect waves-light btn bouton-dash"><i class="material-icons left">build</i>Changer mot de passe compte super-administrateur</a>
+                <a href="/dashboard/creation-promotion-superadmin" class="orange lighten-1 waves-effect waves-light btn bouton-dash"><i class="material-icons left">build</i>Créer nouvelle promotion super-administrateur</a>
             </div>
         </div>
         <div class="row">
@@ -15,14 +15,15 @@
                         <h4>Liste des magasins</h4>
                     </li>
                     {{# each items }}
-                    <li class="collection-item">
+                    <li class="collection-item dashboard-admin">
                         <div>
-                            {{ this.companyName }} | géré par {{ this.mail }}
-                            <a href="/dashboard/delete/{{ this._id }}" onclick="return confirm('Etes-vous certain de vouloir supprimer cet élément?');" class="orange lighten-1 secondary-content waves-effect waves-light btn"><i class="material-icons left">delete</i>Supprimer</a>
+                            {{ this.companyName }}<span>| géré par {{ this.mail }}</span>
+                            <a href="/dashboard/delete/{{ this._id }}" onclick="return confirm('Etes-vous certain de vouloir supprimer cet élément?');" class="orange lighten-1 secondary-content waves-effect waves-light btn bouton-dash"><i class="material-icons left">delete</i>Supprimer</a>
                             <!-- Lien vers /dashboard/contenu-magasin -->
-                            <a href="/dashboard/update/{{ this._id  }}" class="orange lighten-1 secondary-content waves-effect waves-light btn"><i class="material-icons left">build</i>Information magasin</a>
-                            <!-- Lien vers /dashboard/modification-infos !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
-                            <a href="/dashboard/shop-update/{{ this._id  }}" class="orange lighten-1 secondary-content waves-effect waves-light btn"><i class="material-icons left">build</i>Information compte</a>
+                            <a href="/dashboard/update/{{ this._id  }}" class="orange lighten-1 secondary-content waves-effect waves-light btn bouton-dash"><i class="material-icons left">build</i>Information magasin</a>
+                            <!-- Lien vers /dashboard/modification-infos -->
+                            <a href="/dashboard/shop-update/{{ this._id  }}" class="orange lighten-1 secondary-content waves-effect waves-light btn bouton-dash"><i class="material-icons left">build</i>Information compte</a>
+                            <a href="/dashboard/hide/{{ this._id }}" onclick="return confirm('Cette entreprise sera en attente de confirmation');" class="orange lighten-1 secondary-content waves-effect waves-light btn bouton-dash"><i class="material-icons left">cached</i>En Attente</a>
                         </div>
                     </li>
                     {{/each}}

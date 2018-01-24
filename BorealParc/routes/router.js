@@ -3,37 +3,12 @@ var router = express.Router();
 var passport = require('passport');
 var flash = require('connect-flash');
 require('../public/passport')(passport);
-var multer = require('multer');
 var path = require('path');
 var fs = require('fs');
-
-var storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, path.join(__dirname, '../public/images/map/'))
-    },
-    filename: function (req, file, cb) {
-        cb(null, file.fieldname + '.jpg')
-    }
-});
-
-var upload = multer({
-    storage: storage,
-    fileFilter: function (req, file, callback) {
-        var ext = path.extname(file.originalname);
-        if (ext !== '.jpg') {
-            return callback(new Error('Only jpg images are allowed'))
-        }
-        callback(null, true)
-    },
-    limits: {
-        fileSize: 10000000,
-        files: 1
-    }
-}).single('borealmap');
-
 var mongoose = require('mongoose');
-
 var User = require('../public/schema/UserSchema');
+var Customer = require('../public/schema/CustomerSchema');
+
 //////////////////////////
 /// Section principale ///
 //////////////////////////
@@ -47,20 +22,35 @@ router.get('/', function (req, res, next) {
             res.render('index', {
                 title: 'Accueil - Boréal Parc'
             });
-        else
+        else {
+            shuffle(user);
             res.render('index', {
                 title: 'Accueil - Boréal Parc',
                 entreprise: user,
                 isLog: req.user
             });
-    }).sort({
-        companyName: 1
+        }
     })
 });
+//Subscription to the newsletter
+router.post('/footer/newsletter', function (req, res) {
+    var newCustomer = new Customer({
+        mail: req.body.mailCustomer
+    });
+    newCustomer.mail = req.body.mailCustomer;
+    newCustomer.save(function (err) {
+        if (err) {
+            return done(err);
+            console.log('error');
+        }
+    });
+    res.redirect('/');
+    req.session.success = true;
+})
 //////////////////////////
 /// Section entreprise ///
 //////////////////////////
-//administation shoudn't be displayed
+//administration shoudn't be displayed
 router.get('/entreprise/administration', function (req, res, next) {
     res.redirect('/');
 })
@@ -163,6 +153,11 @@ router.post('/dashboard/update', isSuperAdmin, function (req, res, next) {
     req.check('rightIndicator', 'Le positionnement vertical doit être compris entre 0 et 100').optional({
         checkFalsy: true
     }).isIntRange(0, 100);
+
+    req.check('telephone', 'Le format du telephone n\'est pas correct').optional({
+        checkFalsy: true
+    }).isNumero();
+
     var errors = req.validationErrors();
     if (errors) {
         req.session.errors = errors;
@@ -181,6 +176,8 @@ router.post('/dashboard/update', isSuperAdmin, function (req, res, next) {
             doc.page.schedule = req.body.schedule;
             doc.leftIndicator = req.body.leftIndicator;
             doc.rightIndicator = req.body.rightIndicator;
+            doc.page.contact.telephone = req.body.telephone;
+
             doc.save();
         })
         req.session.success = true;
@@ -188,30 +185,7 @@ router.post('/dashboard/update', isSuperAdmin, function (req, res, next) {
     res.redirect("/dashboard/update/" + req.body.id);
 });
 
-router.post('/dashboard/modification-mot-de-passe-magasin', isLoggedIn, function (req, res) {
-    req.check('oldPassword', 'L\' ancien mot de passe est invalide').isValidPassword(req.user.user.password);
-    req.check('newPassword', 'Le champ nouveau mot de passe est vide').notEmpty();
-    req.check('newPassword', 'Le mot de passe doit posséder au minimum 6 caractères').len(6, 20);
-    req.check('newPassword', 'Les mots de passe ne sont pas identiques').isEqual(req.body.newPasswordVerification);
-    req.check('newPasswordVerification', 'La verification du mot de passe est vide').notEmpty();
-    var errors = req.validationErrors();
-    if (errors) {
-        req.session.errors = errors;
-        req.session.success = false;
-        res.redirect('/dashboard/modification-mot-de-passe-magasin');
-    } else {
-        User.findById(req.session.passport.user, function (err, user) {
-            if (err) return done(err);
-            user.user.password = user.generateHash(req.body.newPassword);
-            user.save(function (err, updatedTank) {
-                if (err) return done(err);
-                req.session.success = true;
-                res.redirect('/dashboard/modification-mot-de-passe-magasin');
-            });
-        });
-    }
-});
-
+//modification du compte entreprise
 //Modification des informations du compte entreprise
 router.get('/dashboard/shop-update/:id', isSuperAdmin, function (req, res, next) {
     var mongoId = mongoose.Types.ObjectId(req.params.id);
@@ -266,41 +240,19 @@ router.post('/dashboard/shop-update', isSuperAdmin, function (req, res, next) {
 });
 
 router.post('/dashboard/update/logo', isSuperAdmin, function (req, res, next) {
-    var storageLogo = multer.diskStorage({
-        destination: function (req, file, cb) {
-            cb(null, path.join(__dirname, '../public/images/logo/'))
-        },
-        filename: function (req, file, cb) {
-            var logoName = req.body.companyNameSlug + '.' + file.originalname.split('.')[file.originalname.split('.').length - 1];
-            cb(null, logoName)
-        }
-    });
-    var uploadLogo = multer({
-        storage: storageLogo,
-        fileFilter: function (req, file, callback) {
-            var ext = path.extname(file.originalname);
-            if (ext !== '.png' && ext !== '.jpg' && ext !== '.jpeg') {
-                return callback(new Error('Only images are allowed'))
-            }
-            callback(null, true)
-        },
-        limits: {
-            fileSize: 10000000,
-            files: 1
-        }
-    }).single('logo');
     mongoId = mongoose.Types.ObjectId(req.body.id);
-    uploadLogo(req, res, function (err) {
-        mongoId = mongoose.Types.ObjectId(req.body.id);
-        User.findById(mongoId, function (err, doc) {
-            if (err) {
-                return done(err);
-            }
-            doc.logo = req.file.filename;
-            doc.save();
-            res.redirect("/dashboard/update/" + mongoId);
-        });
-    });
+    //upload.single('logo');
+    if (!req.files.logo) {
+
+        req.session.errors = [{
+            msg: "Vous n'avez pas mis d'image"
+        }];
+        req.session.success = false;
+
+    } else {
+        upload('logo', req.files, req.body.companyNameSlug, req.session)
+    }
+    res.redirect("/dashboard/update/" + mongoId);
 });
 
 //Suppression entreprises
@@ -334,8 +286,8 @@ router.get('/dashboard/delete/:id', function (req, res, next) {
         }
     });
 });
-//La création d'un compte magasin doit nécessairement passer par ici, la magasin recevra ses identifiants depuis le super-administrateur et pourra 
-//modifier son mot de passe par la suite
+/*La création d'un compte magasin doit nécessairement passer par ici, la magasin recevra ses identifiants depuis le super-administrateur et pourra 
+modifier son mot de passe par la suite */
 router.get('/dashboard/creation-compte-magasin', isSuperAdmin, function (req, res) {
     res.render('admin/dashboard.superadmin-shop-account-creation.hbs', {
         title: 'Création compte magasin - Dashboard SuperAdmin',
@@ -348,6 +300,7 @@ router.get('/dashboard/creation-compte-magasin', isSuperAdmin, function (req, re
     req.session.errors = null;
     req.session.lastPostItem = null;
 });
+
 router.post('/dashboard/creation-compte-magasin', isSuperAdmin, function (req, res) {
     req.check('companyName', 'Le nom de l\'entreprise est vide').notEmpty();
     req.check('login', 'Le login est vide').notEmpty();
@@ -421,13 +374,12 @@ router.post('/dashboard/modification-mot-de-passe-superadmin', isSuperAdmin, fun
     req.check('oldPassword', 'L\' ancien mot de passe est invalide').isValidPassword(req.user.user.password);
     req.check('newPassword', 'Le champ nouveau mot de passe est vide').notEmpty();
     req.check('newPassword', 'Le mot de passe doit posséder au minimum 6 caractères').len(6, 20);
-    req.check('newPassword', 'Les mots de passe ne sont pas identiques').isEqual(req.body.newPasswordVerification);
+    req.check('newPassword', 'Les mots de passe de sont pas identiques').isEqual(req.body.newPasswordVerification);
     req.check('newPasswordVerification', 'La verification du mot de passe est vide').notEmpty();
     var errors = req.validationErrors();
     if (errors) {
         req.session.errors = errors;
         req.session.success = false;
-        res.redirect('/dashboard/modification-mot-de-passe-superadmin');
     } else {
         User.findById(req.session.passport.user, function (err, user) {
             if (err) return done(err);
@@ -435,49 +387,15 @@ router.post('/dashboard/modification-mot-de-passe-superadmin', isSuperAdmin, fun
             user.save(function (err, updatedTank) {
                 if (err) return done(err);
                 req.session.success = true;
-                res.redirect('/dashboard/modification-mot-de-passe-superadmin');
             });
         });
     }
+    res.redirect('/dashboard/modification-mot-de-passe-superadmin');
 });
 
 /////////////////////////////////
 /// Section Dashboard MAGASIN ///
 /////////////////////////////////
-router.get('/dashboard/modification-mot-de-passe-magasin', isLoggedIn, function (req, res) {
-    res.render('admin/dashboard.shopadmin-password.hbs', {
-        title: 'Modification mot de passe - Dashboard Magasin',
-        isLog: req.user,
-        success: req.session.success,
-        errors: req.session.errors
-    });
-    req.session.success = false;
-    req.session.errors = null;
-});
-router.post('/dashboard/modification-mot-de-passe-magasin', isLoggedIn, function (req, res) {
-    req.check('oldPassword', 'L\' ancien mot de passe est invalide').isValidPassword(req.user.user.password);
-    req.check('newPassword', 'Le champ nouveau mot de passe est vide').notEmpty();
-    req.check('newPassword', 'Le mot de passe doit posséder au minimum 6 caractères').len(6, 20);
-    req.check('newPassword', 'Les mots de passe ne sont pas identiques').isEqual(req.body.newPasswordVerification);
-    req.check('newPasswordVerification', 'La verification du mot de passe est vide').notEmpty();
-    var errors = req.validationErrors();
-    if (errors) {
-        req.session.errors = errors;
-        req.session.success = false;
-        res.redirect('/dashboard/modification-mot-de-passe-magasin');
-    } else {
-        User.findById(req.session.passport.user, function (err, user) {
-            if (err) return done(err);
-            user.user.password = user.generateHash(req.body.newPassword);
-            user.save(function (err, updatedTank) {
-                if (err) return done(err);
-                req.session.success = true;
-                res.redirect('/dashboard/modification-mot-de-passe-magasin');
-            });
-        });
-    }
-});
-
 router.get('/dashboard/contenu-magasin', isLoggedIn, function (req, res) {
     var mongoId = mongoose.Types.ObjectId(req.user._id);
     User.findById(mongoId, function (err, doc) {
@@ -497,30 +415,104 @@ router.get('/dashboard/contenu-magasin', isLoggedIn, function (req, res) {
     })
 });
 
-router.post('/dashboard/contenu-magasin/logo', isLoggedIn, function (req, res) {
-    var storageLogo = multer.diskStorage({
-        destination: function (req, file, cb) {
-            cb(null, path.join(__dirname, '../public/images/logo/'))
-        },
-        filename: function (req, file, cb) {
-            var logoName = req.body.companyNameSlug + '.' + file.originalname.split('.')[file.originalname.split('.').length - 1];
-            cb(null, logoName)
+//EN TANT QUE SIMPLE ADMIN : MODIFICATION DES INFOS COMPTES
+router.get('/dashboard/admin-shop-update', isLoggedIn, function (req, res) {
+    var mongoId = mongoose.Types.ObjectId(req.user._id);
+    User.findById(mongoId, function (err, doc) {
+        if (err) {
+            return done(err);
+        } else {
+            res.render('admin/dashboard.shopadmin-account-modification.hbs', {
+                title: 'Modification compte - Dashboard Admin',
+                isLog: req.user,
+                success: req.session.success,
+                errors: req.session.errors,
+                item: doc
+            });
+            req.session.success = false;
+            req.session.errors = null;
         }
-    });
-    var uploadLogo = multer({
-        storage: storageLogo,
-        fileFilter: function (req, file, callback) {
-            var ext = path.extname(file.originalname);
-            if (ext !== '.png' && ext !== '.jpg' && ext !== '.jpeg') {
-                return callback(new Error('Only images are allowed'))
+    })
+});
+
+//Le magasin peut ici modifier les informations de son compte
+router.post('/dashboard/admin-shop-update', isLoggedIn, function (req, res) {
+    req.check('mail', 'Le format de l\'email n\'est pas correct').notEmpty().isEmail();
+    req.check('newPassword', 'Le champ nouveau mot de passe est vide').optional({
+        checkFalsy: true
+    }).notEmpty();
+    req.check('newPassword', 'Le mot de passe doit posséder au minimum 6 caractères').optional({
+        checkFalsy: true
+    }).len(6, 20);
+    req.check('newPassword', 'Les mots de passe ne sont pas identiques').isEqual(req.body.newPasswordVerification);
+    req.check('newPasswordVerification', 'La verification du mot de passe est vide').optional({
+        checkFalsy: true
+    }).notEmpty();
+    req.check('companyName', 'Le champ nom d\'entreprise est vide').notEmpty();
+    var errors = req.validationErrors();
+    if (errors) {
+        req.session.errors = errors;
+        req.session.success = false;
+    } else {
+        User.findById(req.body.id, function (err, doc) {
+            if (err) {
+                return done(err);
             }
-            callback(null, true)
-        },
-        limits: {
-            fileSize: 10000000,
-            files: 1
-        }
-    }).single('logo');
+            doc.mail = req.body.mail;
+            doc.user.password = doc.generateHash(req.body.newPassword);
+            doc.user.login = req.body.login;
+            doc.companyName = req.body.companyName;
+            doc.companyNameSlug = stringToSlug(req.body.companyName);
+            doc.save();
+        })
+        req.session.success = true;
+    }
+    res.redirect("/dashboard/admin-shop-update");
+});
+
+//Création promotion Magasin
+router.get('/dashboard/creation-promotion', isLoggedIn, function (req, res) {
+    res.render('admin/dashboard.creation-promotion.hbs', {
+        title: 'Création promotion',
+        isLog: req.user,
+        success: req.session.success,
+        errors: req.session.errors,
+    });
+    req.session.success = false;
+    req.session.errors = null;
+});
+router.post('/dashboard/creation-promotion', isLoggedIn, function (req, res) {
+    req.check('companyName', 'Le nom de l\'entreprise est vide').notEmpty();
+    req.check('mail', 'L\'email de l\'entreprise est vide').notEmpty();
+    req.check('mail', 'Le format de l\'email n\'est pas correct').isEmail();
+    req.check('promotion.title', 'Le titre est vide').notEmpty();
+    req.check('promotion.description', 'La description est vide').notEmpty();
+    req.check('promotion.startDate', 'La date de debut est vide').notEmpty();
+    req.check('promotion.endDate', 'La date de fin est vide').notEmpty();
+    var errors = req.validationErrors();
+    if (errors) {
+        req.session.errors = errors;
+        req.session.success = false;
+    } else {
+        User.findById(req.body.id, function (err, doc) {
+            if (err) {
+                return done(err);
+            }
+            doc.promotion[title] = req.body.promotion.title;
+            doc.promotion[description] = req.body.promotion.description;
+            doc.promotion[startDate] = req.body.promotion.startDate;
+            doc.promotion[endDate] = req.body.promotion.endDate;
+            doc.save();
+        })
+        req.session.success = true;
+    }
+    res.redirect("/dashboard/create/promotion" + req.body.id);
+});
+
+
+
+router.post('/dashboard/contenu-magasin/logo', isLoggedIn, function (req, res) {
+
     mongoId = mongoose.Types.ObjectId(req.body.id);
     uploadLogo(req, res, function (err) {
         mongoId = mongoose.Types.ObjectId(req.body.id);
@@ -560,6 +552,10 @@ router.post('/dashboard/contenu-magasin', isLoggedIn, function (req, res) {
     req.check('rightIndicator', 'Le positionnement vertical doit être compris entre 0 et 100').optional({
         checkFalsy: true
     }).isIntRange(0, 100);
+    req.check('telephone', 'Le format du telephone n\'est pas correct').optional({
+        checkFalsy: true
+    }).isNumero();
+
     var errors = req.validationErrors();
     if (errors) {
         req.session.errors = errors;
@@ -578,19 +574,14 @@ router.post('/dashboard/contenu-magasin', isLoggedIn, function (req, res) {
             doc.page.schedule = req.body.schedule;
             doc.leftIndicator = req.body.leftIndicator;
             doc.rightIndicator = req.body.rightIndicator;
+            doc.page.contact.telephone = req.body.telephone;
+
             doc.save();
         })
         req.session.success = true;
     }
     res.redirect("/dashboard/contenu-magasin");
 });
-
-router.post('/dashboard/creation-compte-magasin', isSuperAdmin, passport.authenticate('local-signup', {
-    successRedirect: '/dashboard',
-    successFlash: true,
-    failureRedirect: '/dashboard',
-    failureFlash: true
-}));
 
 router.get('/*', function (req, res, next) {
     User.find({
@@ -614,6 +605,9 @@ router.get('/*', function (req, res, next) {
         companyName: 1
     })
 });
+
+
+
 
 /// Custom functions ///
 function isLoggedIn(req, res, next) {
@@ -650,4 +644,41 @@ function stringToSlug(str) {
         .replace(/-+/g, '-'); // collapse dashes
     return str;
 }
+
+function shuffle(array) {
+    var currentIndex = array.length,
+        temporaryValue, randomIndex;
+
+    // While there remain elements to shuffle
+    while (0 !== currentIndex) {
+
+        // Pick a remaining element
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex -= 1;
+
+        // And swap it with the current element
+        temporaryValue = array[currentIndex];
+        array[currentIndex] = array[randomIndex];
+        array[randomIndex] = temporaryValue;
+    }
+
+    return array;
+}
+
+function upload(localisation, file, company, session) {
+    let sampleFile = file.logo;
+    var logoExt = sampleFile.name.split('.')[sampleFile.name.split('.').length - 1];
+    var logoName = company + '.' + logoExt;
+    console.log(logoExt)
+    if (logoExt != 'png' && logoExt != 'jpeg' && logoExt != 'jpg') {
+        session.errors = [{
+            msg: "L'image doit être au format png ou jpg"
+        }];
+        session.success = false;
+    } else {
+        sampleFile.mv(path.join(__dirname, '../public/images/' + localisation + '/' + logoName));
+        session.success = true;
+    }
+}
+
 module.exports = router;

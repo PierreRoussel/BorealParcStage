@@ -1,15 +1,31 @@
 <footer class="page-footer teal">
     <div class="container">
         <div class="row">
-            <div class="col l6 s12">
+            <div class="col l4 s12">
                 <h5 class="white-text">Boréal Parc</h5>
                 <p class="grey-text text-lighten-4">« Arras Sud » Boréal Parc – rue jean Jaures- 62217 Beaurains</p>
+                <h5 class="white-text">La page Facebook de l'association :</h5>
+                <div class="row"><a href="https://www.facebook.com/acbpbeaurains/" class="center-align"><img class="responsive-img center-align" src="../images/FB_Logo__blue.png" alt="logo facebook" style="height:50px"></a></div>
             </div>
-            <div class="col l6 s12 support">
+            <div class="col l4 s12">
+                <h5 class="white-text">Inscrivez-vous à la Newsletter:</h5>
+                <form action="/footer/newsletter" method="post">
+                    <div class="row">
+                        <div class="input-field col m12 l9">
+                            <input id="mailCustomer" type="email" name="mailCustomer" class="validate">
+                            <label class="white-text" for="email">Adresse e-mail</label>
+                        </div>
+                        <div class="btn-field col m12 l3">
+                            <button class="orange text-lighten-1 btn btn-large waves-effect waves-light" type="submit" name="action"><i class="material-icons">send</i></button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="col l4 s12 support">
                 <h5 class="white-text">Supporté par</h5>
                 <div class="row">
                     <div class="carousel carousel-slider">
-                        <a class="carousel-item" href="http://www.commercants-hautsdefrance.fr/"><img src="/images/cci_artois_logo.png" alt="Commerçant Nord de France"></a>
+                        <a class="carousel-item"><img src="/images/cci_artois_logo.png" alt="Commerçant Nord de France"></a>
                         <a class="carousel-item" href="http://www.epsi.fr/campus/campus-darras/"><img src="/images/epsi-logo.jpg" alt="Logo Epsi"></a>
                         <a class="carousel-item" href="http://www.mairie-beaurains.fr/"><img src="/images/beaurains.png" alt="Ville de Beaurains"></a>
                     </div>

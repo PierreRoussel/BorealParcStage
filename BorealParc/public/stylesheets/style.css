@@ -36,10 +36,9 @@ p {
     #index-banner .section {
         top: 0
     }
-}
-
-#logo-entreprise-shop-content {
-    max-height: 240px;
+    #logo-container {
+        margin-left: 2rem;
+    }
 }
 
 .icon-block {
@@ -80,11 +79,19 @@ footer.page-footer {
     color: #b71c1c
 }
 
+#brands {
+    width: 85%;
+}
+
+#brands-btn {
+    padding: 0 1rem;
+}
+
 .logo-page-entreprise img {
     height: 300px
 }
 
-.card:hover {
+.card-acc {
     cursor: pointer;
 }
 
@@ -93,9 +100,9 @@ footer.page-footer {
 }
 
 .card-image {
-    width: 150px!important;
+    width: 100px!important;
     margin: auto!important;
-    height: 150px!important
+    height: 100px!important
 }
 
 .card-image img {
@@ -109,7 +116,7 @@ footer.page-footer {
     text-shadow: 1px 1px 1px #000
 }
 
-<<<<<<< HEAD=======.pointeur-carte {
+.pointeur-carte {
     color: #26a69a;
     transition: 0.5s;
 }
@@ -120,9 +127,23 @@ footer.page-footer {
     cursor: pointer;
 }
 
-> > > > > > > tache.1.v2 @media only screen and (max-width: 600px) {
+@media only screen and (max-width: 600px) {
     .fix {
-        width: 100%
+        width: 50%
+    }
+    .collection-item.dashboard-admin > div > span,
+    .collection-item.dashboard-admin > div > a > i {
+        display: none;
+    }
+    .bouton-dash {
+        padding: 0 0.2rem;
+        font-size: 0.6rem;
+    }
+    .collection-item.dashboard-admin > div {
+        padding-bottom: 3rem;
+    }
+    #titre-layout-boreal {
+        display: none;
     }
 }
 
@@ -131,7 +152,20 @@ footer.page-footer {
         height: 475px
     }
     .col {
-        width: 50%
+        width: 33%
+    }
+    .bouton-dash {
+        padding: 0 0.2rem;
+        font-size: 0.7rem;
+        width: 9rem;
+    }
+    .collection-item.dashboard-admin > div {
+        padding-bottom: 3rem;
+    }
+
+    .collection-item.dashboard-admin > div > span,
+    .collection-item.dashboard-admin > div > a > i {
+        display: none;
     }
 }
 
@@ -140,15 +174,52 @@ footer.page-footer {
         height: 425px
     }
     .col {
-        width: 33%
+        width: 25%
+    }
+
+    .bouton-dash {
+        font-size: 0.9rem;
+        float: none;
+        width: auto;
+    }
+    .collection-item.dashboard-admin > div > span,
+    .collection-item.dashboard-admin > div > a > i {
+        display: block;
+    }
+    .collection-item.dashboard-admin > div {
+        padding-bottom: 1rem;
     }
 }
 
 @media only screen and (min-width: 1650px) {
     .fix {
-        height: 400px
+        height: 350px
     }
     .col {
-        width: 25%
+        width: 16%
     }
+    .bouton-dash {
+        padding: 0 2rem;
+        font-size: 1rem;
+        float: none;
+        width: auto;
+    }
+    .collection-item.dashboard-admin > div > span,
+    .collection-item.dashboard-admin > div > a > i {
+        display: block;
+        float: none;
+    }
+}
+
+.orange.lighten-1.waves-effect.waves-light.btn {
+    margin: 1px;
+}
+
+.collection-item.dashboard-admin {
+    padding-bottom: 25px;
+    padding-right: 0px;
+}
+
+.section-haute-dash {
+    text-align: center;
 }

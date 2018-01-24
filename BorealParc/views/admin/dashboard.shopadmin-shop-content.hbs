@@ -21,7 +21,7 @@
             {{# if item.logo }}
             <div class="row center">
                 <div class="file-field input-field col s12">
-                    <img src="/images/logo/{{ item.logo }}">
+                    <img src="/images/logo/{{ item.logo }}" style="max-height:250px">
                 </div>
             </div>
             {{/if}}
@@ -32,7 +32,7 @@
 
                     <div class="indigo lighten btn">
                         <span>Logo de l'entreprise</span>
-                        <input name="logo" type="file">
+                        <input name="logo" type="file" onclick="return confirm('La dimension minimale doit être de 250 x 250');">
                     </div>
                     <div class="file-path-wrapper">
                         <input class="file-path validate" type="text">
@@ -72,6 +72,10 @@
                     <input id="instagram" type="text" name="instagram" class="validate" value="{{ item.page.contact.instagram }}">
                     <label for="instagram">Lien Instagram:</label>
                 </div>
+                <div class="input-field col m12 l6">
+                    <input id="telephone" type="text" name="telephone" class="validate" value="{{ item.page.contact.telephone }}">
+                    <label for="telephone">Téléphone:</label>
+                </div>
                 <div class="input-field col s12">
                     <textarea id="schedule" name="schedule" class="materialize-textarea">{{ item.page.schedule }}</textarea>
                     <label for="schedule">Horaires:</label>
@@ -82,8 +86,9 @@
                         <img src="/images/map/borealmap.jpg" alt="Centre boréal parc">
                         <ul>
                             <li class="cd-single-point" style="top:{{ item.rightIndicator }}%; left:{{ item.leftIndicator }}%">
-                                <a href="#0" style="color:#26a69a"><i class="material-icons pointeur-carte" style="font-size:44px;">place</i></a>
+                                <a href="#" style='color:#26a69a'><i class="material-icons pointeur-carte" style="font-size:44px;">place</i></a>
                                 <div class="cd-more-info cd-top">
+                                    <img src="/images/logo/{{ item.logo }}" style="max-height:80px;width:auto;padding:8px">
                                     <h2>{{ item.companyName }}</h2>
                                 </div>
                             </li>
