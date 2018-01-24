@@ -3,12 +3,12 @@ var router = express.Router();
 var passport = require('passport');
 var flash = require('connect-flash');
 require('../public/passport')(passport);
-
 var path = require('path');
 var fs = require('fs');
 var mongoose = require('mongoose');
-
 var User = require('../public/schema/UserSchema');
+var Customer = require('../public/schema/CustomerSchema');
+
 //////////////////////////
 /// Section principale ///
 //////////////////////////
@@ -32,6 +32,21 @@ router.get('/', function (req, res, next) {
         }
     })
 });
+//Subscription to the newsletter
+router.post('/footer/newsletter', function (req, res) {
+    var newCustomer = new Customer({
+        mail: req.body.mailCustomer
+    });
+    newCustomer.mail = req.body.mailCustomer;
+    newCustomer.save(function (err) {
+        if (err) {
+            return done(err);
+            console.log('error');
+        }
+    });
+    res.redirect('/');
+    req.session.success = true;
+})
 //////////////////////////
 /// Section entreprise ///
 //////////////////////////
@@ -227,15 +242,17 @@ router.post('/dashboard/shop-update', isSuperAdmin, function (req, res, next) {
 router.post('/dashboard/update/logo', isSuperAdmin, function (req, res, next) {
     mongoId = mongoose.Types.ObjectId(req.body.id);
     //upload.single('logo');
-    if (!req.files.logo)  {
+    if (!req.files.logo) {
 
-        req.session.errors = [{msg:"Vous n'avez pas mis d'image"}];
+        req.session.errors = [{
+            msg: "Vous n'avez pas mis d'image"
+        }];
         req.session.success = false;
-    
-      } else {
+
+    } else {
         upload('logo', req.files, req.body.companyNameSlug, req.session)
     }
-    res.redirect("/dashboard/update/" + mongoId);   
+    res.redirect("/dashboard/update/" + mongoId);
 });
 
 //Suppression entreprises
@@ -269,8 +286,8 @@ router.get('/dashboard/delete/:id', function (req, res, next) {
         }
     });
 });
-//La création d'un compte magasin doit nécessairement passer par ici, la magasin recevra ses identifiants depuis le super-administrateur et pourra 
-//modifier son mot de passe par la suite
+/*La création d'un compte magasin doit nécessairement passer par ici, la magasin recevra ses identifiants depuis le super-administrateur et pourra 
+modifier son mot de passe par la suite */
 router.get('/dashboard/creation-compte-magasin', isSuperAdmin, function (req, res) {
     res.render('admin/dashboard.superadmin-shop-account-creation.hbs', {
         title: 'Création compte magasin - Dashboard SuperAdmin',
@@ -283,6 +300,7 @@ router.get('/dashboard/creation-compte-magasin', isSuperAdmin, function (req, re
     req.session.errors = null;
     req.session.lastPostItem = null;
 });
+
 router.post('/dashboard/creation-compte-magasin', isSuperAdmin, function (req, res) {
     req.check('companyName', 'Le nom de l\'entreprise est vide').notEmpty();
     req.check('login', 'Le login est vide').notEmpty();
@@ -416,7 +434,8 @@ router.get('/dashboard/admin-shop-update', isLoggedIn, function (req, res) {
         }
     })
 });
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//Le magasin peut ici modifier les informations de son compte
 router.post('/dashboard/admin-shop-update', isLoggedIn, function (req, res) {
     req.check('mail', 'Le format de l\'email n\'est pas correct').notEmpty().isEmail();
     req.check('newPassword', 'Le champ nouveau mot de passe est vide').optional({
@@ -493,7 +512,7 @@ router.post('/dashboard/creation-promotion', isLoggedIn, function (req, res) {
 
 
 router.post('/dashboard/contenu-magasin/logo', isLoggedIn, function (req, res) {
-    
+
     mongoId = mongoose.Types.ObjectId(req.body.id);
     uploadLogo(req, res, function (err) {
         mongoId = mongoose.Types.ObjectId(req.body.id);
@@ -646,17 +665,18 @@ function shuffle(array) {
     return array;
 }
 
-function upload(localisation, file, company, session){
+function upload(localisation, file, company, session) {
     let sampleFile = file.logo;
     var logoExt = sampleFile.name.split('.')[sampleFile.name.split('.').length - 1];
     var logoName = company + '.' + logoExt;
     console.log(logoExt)
-    if (logoExt != 'png' && logoExt != 'jpeg' && logoExt != 'jpg'){
-        session.errors = [{msg:"L'image doit être au format png ou jpg"}];
+    if (logoExt != 'png' && logoExt != 'jpeg' && logoExt != 'jpg') {
+        session.errors = [{
+            msg: "L'image doit être au format png ou jpg"
+        }];
         session.success = false;
-    }
-    else{
-        sampleFile.mv(path.join(__dirname, '../public/images/'+localisation+'/'+logoName));
+    } else {
+        sampleFile.mv(path.join(__dirname, '../public/images/' + localisation + '/' + logoName));
         session.success = true;
     }
 }
