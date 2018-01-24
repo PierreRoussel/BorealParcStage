@@ -32,7 +32,8 @@ var hbs = exphbs.create({
         dateFormat: function(date, format) {
           moment.locale('fr'); 
           var mmnt = moment(date);
-          return 'Le '+mmnt.format('dddd')+' '+mmnt.format('LL')+' à '+mmnt.format('LT');
+          //return 'Le '+mmnt.format('dddd')+' '+mmnt.format('LL')+' à '+mmnt.format('LT');
+          return mmnt;
         },
         getStringifiedJson: function (value) {
             return JSON.stringify(value);

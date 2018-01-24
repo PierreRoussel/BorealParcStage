@@ -292,36 +292,37 @@ router.post('/dashboard/update/logo', isSuperAdmin, function (req, res, next) {
 });
 
 //Suppression entreprises
-router.get('/dashboard/delete/:id', function (req, res, next) {
-    User.findById(req.params.id, function (err, doc) {
-        if (err) {
-            return done(err);
-        }
-        if (doc.logo != "") {
-            //On teste si l'image n'existe pas dans d'autres formats et on les supprimes
-            var logoPathJpg = path.join(__dirname, '../public/images/logo/') + doc.logo.split('.')[doc.logo.split('.').length - 2] + '.jpg';
-            var logoPathPng = path.join(__dirname, '../public/images/logo/') + doc.logo.split('.')[doc.logo.split('.').length - 2] + '.png';
-            var logoPathJpeg = path.join(__dirname, '../public/images/logo/') + doc.logo.split('.')[doc.logo.split('.').length - 2] + '.jpeg';
-            var ext = [logoPathJpg, logoPathPng, logoPathJpeg];
-            var deletion = function (extension, userId, next) {
-                ext.forEach(function (element) {
-                    if (fs.existsSync(element)) {
-                        fs.unlinkSync(element);
-                    }
-                });
-                next(userId);
-            };
-            //next() doit être exécuté après sinon node cherche à supprimer une référence d'image qui n'existe déjà plus
-            deletion(ext, req.params.id, function (mongoId) {
-                User.findByIdAndRemove(mongoId).exec();
-                res.redirect('/dashboard');
-            });
-        } else {
-            User.findByIdAndRemove(req.params.id).exec();
-            res.redirect('/dashboard');
-        }
+router.get('/dashboard/delete/:id', function(req, res, next) {
+    User.findById(req.params.id, function(err, doc) {
+      if (err) {
+        return done(err);
+      }
+      if(doc.logo != ""){
+        //On teste si l'image n'existe pas dans d'autres formats et on les supprimes
+        var logoPathJpg = path.join(__dirname, '../public/images/logo/')+doc.logo.split('.')[doc.logo.split('.').length -2]+'.jpg';
+        var logoPathPng = path.join(__dirname, '../public/images/logo/')+doc.logo.split('.')[doc.logo.split('.').length -2]+'.png';
+        var logoPathJpeg = path.join(__dirname, '../public/images/logo/')+doc.logo.split('.')[doc.logo.split('.').length -2]+'.jpeg';
+        var ext = [logoPathJpg, logoPathPng, logoPathJpeg];
+        var deletion = function(extension, userId, next){
+          ext.forEach(function(element) {
+            if (fs.existsSync(element)) {
+              fs.unlinkSync(element);
+            }
+          });
+          next(userId);
+        };
+        //next() doit être exécuté après sinon node cherche à supprimer une référence d'image qui n'existe déjà plus
+        deletion(ext, req.params.id, function(mongoId){
+          User.findByIdAndRemove(mongoId).exec();
+          res.redirect('/dashboard');
+        });
+      }
+      else{
+        User.findByIdAndRemove(req.params.id).exec();
+        res.redirect('/dashboard');
+      }
     });
-});
+  });
 //La création d'un compte magasin doit nécessairement passer par ici, la magasin recevra ses identifiants depuis le super-administrateur et pourra 
 //modifier son mot de passe par la suite
 router.get('/dashboard/creation-compte-magasin', isSuperAdmin, function (req, res) {
@@ -521,6 +522,102 @@ router.get('/dashboard/creation-promotion', isLoggedIn, function(req, res){
     res.redirect("/dashboard/creation-promotion");
   }); 
 
+
+  //Affichages des promotions des entreprises
+  router.get('/dashboard/liste-promotion', isLoggedIn, function (req, res) {
+    var mongoId = mongoose.Types.ObjectId(req.user._id);
+    User.findOne({
+        _id: mongoId,
+        })
+        .then(function (doc) {
+            res.render('admin/dashboard.liste-promotion.hbs', {
+                title: 'Liste Promotions',
+                message: req.flash('signupMessage'),
+                isLog: req.user,
+                items: doc.promotion
+            });
+        });
+        
+});
+
+//Affichage infos dans modif promotion
+router.get('/dashboard/modification-promotion/:id', isLoggedIn, function(req, res){
+    var mongoId = mongoose.Types.ObjectId(req.user._id);
+    var promoId = mongoose.Types.ObjectId(req.params.id);
+    console.log('ID    ',req.params.id);
+    User.findOne({'promotion._id': promoId}, function(err, model){
+        function BonnePromo(Promo){
+            return Promo.id == promoId;
+        }
+        var promo = model.promotion.find(BonnePromo);
+        console.log(promo.endDate);
+        res.render('admin/dashboard.modification-promotion.hbs', {
+            title: 'Modification Promotion',
+            message: req.flash('signupMessage'),
+            isLog: req.user,
+            item: promo,
+        })
+    })          
+});
+/*
+router.get('/dashboard/modification-promotion/:id', isLoggedIn, function(req, res){
+    var mongoId = mongoose.Types.ObjectId(req.user._id);
+    var promoId = mongoose.Types.ObjectId(req.params.id);
+    req.check('title', 'Le titre est vide').notEmpty();
+    req.check('description', 'La description est vide').notEmpty();
+    req.check('startDate', 'La date de debut est vide').notEmpty();
+    req.check('endDate', 'La date de fin est vide').notEmpty(); 
+    console.log("ICI AAAAAAAAAAAAAAAH modif");
+    var errors = req.validationErrors();
+    if (errors){
+      req.session.errors = errors;
+      req.session.success = false;
+    }else{ 
+        User.findOneAndUpdate(
+            console.log("ICI AAAAAAAAAAAAAAAH"),
+            {_id: promoId},
+            {$pull: {promotion: {_id: req.params.id}}},
+            function(err, model){
+                console.log('Error: ' + model);
+
+            },
+            {$push: {promotion: {title:req.body.title,description:req.body.description,startDate:req.body.startDate,endDate:req.body.endDate}}},
+            function(err, model){
+                console.log(err);
+                res.redirect('/dashboard/liste-promotion/');
+
+              }
+        )
+            
+    }
+
+
+/*
+        User.findByIdAndUpdate(
+            {_id : promoId},
+            {promotion: {title:req.body.title,description:req.body.description,startDate:req.body.startDate,endDate:req.body.endDate}},
+            function(err, model){
+                console.log(err);
+              }
+        ) 
+    req.session.success = true;
+    res.redirect('/dashboard/liste-promotion/'); 
+}); 
+*/
+
+//Suppression de promotion
+router.get('/dashboard/supprimer/promotion/:id', function (req, res, next) {
+    var mongoId = mongoose.Types.ObjectId(req.user._id);
+    var promoId = mongoose.Types.ObjectId(req.params.id);
+    User.findOneAndUpdate(
+        {_id: mongoId},
+        {$pull: {promotion: {_id: req.params.id}}},
+        function(err, model){
+            console.log('Error: ' + model);
+        }
+    )
+    res.redirect('/dashboard/liste-promotion/');
+});
 
 
 router.post('/dashboard/contenu-magasin/logo', isLoggedIn, function (req, res) {
