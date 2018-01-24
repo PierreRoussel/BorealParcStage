@@ -125,10 +125,5 @@ app.use(function (err, req, res, next) {
     res.status(err.status || 500);
     res.render('error');
 });
-<<<<<<< HEAD
-//nbv
-module.exports = app;
-=======
 
 module.exports = app;
->>>>>>> a9b1d9cd53b5bda5e3c6ae723c9cca5d209fad00
