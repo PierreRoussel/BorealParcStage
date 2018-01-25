@@ -2,6 +2,13 @@ var mongoose = require('mongoose');
 var bcrypt = require('bcrypt-nodejs');
 var Schema = mongoose.Schema;
 
+var promotion = new Schema({
+    title: { type : String },
+    description: { type : String },
+    startDate: { type : Date },
+    endDate: { type : Date }
+})
+
 var UserSchema = new Schema({
     user: {
         login: {
@@ -49,17 +56,14 @@ var UserSchema = new Schema({
             type: String
         }
     },
-    promotion: [{
-        title: String,
-        description: String,
-        startDate: Date,
-        endDate: Date
-    }],
+    promotion : [promotion],
+    
     leftIndicator: Number,
     rightIndicator: Number,
     resetPasswordToken: String,
     resetPasswordExpires: Date,
-    isSuperAdmin: Boolean
+    isSuperAdmin: Boolean,
+    isSleepy: Boolean
 }, {
     collection: 'entreprise'
 });

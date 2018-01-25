@@ -1,0 +1,31 @@
+<div class="container">
+    <div class="section">
+        <div class="row">
+            <div class="col s12">
+            <a href="/dashboard" class="grey lighten-1 waves-effect waves-light btn"><i class="material-icons left">arrow_back</i>Retour</a>
+            </div>
+            <div class="col s12">
+                <ul class="collection with-header">
+                    <li class="collection-header">
+                        <h4>Liste des promotions</h4>
+                    </li>
+                    {{# each items }}
+                    <li class="collection-item dashboard-admin">
+                        <div>
+                            {{ this.title }}
+                           <a href="/dashboard/supprimer/promotion/{{ this._id }}" onclick="return confirm('Etes-vous certain de vouloir supprimer cet élément?');" class="orange lighten-1 secondary-content waves-effect waves-light btn"><i class="material-icons left">delete</i>Supprimer la promotion</a>
+                            <!-- Lien vers /dashboard/contenu-magasin -->
+                            <a href="/dashboard/modification-promotion/{{ this._id }}" class="orange lighten-1 secondary-content waves-effect waves-light btn"><i class="material-icons left">build</i>Modifier la promotion</a>
+                            <!-- Lien vers /dashboard/modification-infos -->
+                    <!--        <a href="/dashboard/shop-update/{{ this._id  }}" class="orange lighten-1 secondary-content waves-effect waves-light btn"><i class="material-icons left">build</i>Information compte</a>
+                            <a href="/dashboard/hide/{{ this._id }}" onclick="return confirm('Cette entreprise sera en attente de confirmation');" class="orange lighten-1 secondary-content waves-effect waves-light btn"><i class="material-icons left">cached</i>En Attente</a>
+                    -->
+                        </div>
+                    </li>
+                    {{/each}}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{{> script/basic}}
