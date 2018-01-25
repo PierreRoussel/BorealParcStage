@@ -11,40 +11,6 @@ var User = require('../public/schema/UserSchema');
 var Customer = require('../public/schema/CustomerSchema');
 
 //////////////////////////
-/// Section newsletter ///
-//////////////////////////
-/*function handleSayHello(req, res) {
-    // Not the movie transporter!
-    var transporter = nodemailer.createTransport({
-        service: 'Gmail',
-        auth: {
-            user: 'borealparc.newsletter@gmail.com', // Your email id
-            pass: 'borealAdmin' // Your password
-        }
-    });
-    var mailOptions = {
-        from: 'borealparc.newsletter@gmail.com>', // sender address
-        to: 'drakeyras62@gmail.com', // list of receivers
-        subject: 'Email Example', // Subject line
-        text: text //, // plaintext body
-        // html: '<b>Hello world ✔</b>' // You can choose to send an HTML body instead
-    };
-    transporter.sendMail(mailOptions, function (error, info) {
-        if (error) {
-            console.log(error);
-            res.json({
-                yo: 'error'
-            });
-        } else {
-            console.log('Message sent: ' + info.response);
-            res.json({
-                yo: info.response
-            });
-        };
-    });
-}
-*/
-//////////////////////////
 /// Section principale ///
 //////////////////////////
 router.get('/', function (req, res, next) {
@@ -68,7 +34,8 @@ router.get('/', function (req, res, next) {
         }
     })
 });
-//Subscription to the newsletter
+
+/*//Subscription to the newsletter
 router.post('/footer/newsletter', function (req, res, next) {
     function handleSayHello(req, res) {
         // Not the movie transporter!
@@ -109,7 +76,8 @@ router.post('/footer/newsletter', function (req, res, next) {
     newCustomer.save();
     req.session.success = true;
     res.redirect('/');
-});
+});*/
+
 //////////////////////////
 /// Section entreprise ///
 //////////////////////////
@@ -171,13 +139,13 @@ router.get('/dashboard', isSuperAdmin, function (req, res) {
         });
 });
 //En attente 
-router.get('/dashboard/hide/:id', isSuperAdmin, function (req, res){
+router.get('/dashboard/hide/:id', isSuperAdmin, function (req, res) {
     var mongoId = mongoose.Types.ObjectId(req.params.id);
 
-    User.findById(mongoId, function(err, doc){
-        if(err){
+    User.findById(mongoId, function (err, doc) {
+        if (err) {
             return done(err);
-        }else{
+        } else {
             doc.isSleepy = true;
 
             doc.save();
@@ -186,13 +154,13 @@ router.get('/dashboard/hide/:id', isSuperAdmin, function (req, res){
     res.redirect('/dashboard/');
 })
 //En service
-router.get('/dashboard/reveal/:id', isSuperAdmin, function (req, res){
+router.get('/dashboard/reveal/:id', isSuperAdmin, function (req, res) {
     var mongoId = mongoose.Types.ObjectId(req.params.id);
 
-    User.findById(mongoId, function(err, doc){
-        if(err){
+    User.findById(mongoId, function (err, doc) {
+        if (err) {
             return done(err);
-        }else{
+        } else {
             doc.isSleepy = false;
 
             doc.save();
@@ -578,33 +546,141 @@ router.get('/dashboard/creation-promotion', isLoggedIn, function (req, res) {
     req.session.errors = null;
 });
 router.post('/dashboard/creation-promotion', isLoggedIn, function (req, res) {
-    req.check('companyName', 'Le nom de l\'entreprise est vide').notEmpty();
-    req.check('mail', 'L\'email de l\'entreprise est vide').notEmpty();
-    req.check('mail', 'Le format de l\'email n\'est pas correct').isEmail();
-    req.check('promotion.title', 'Le titre est vide').notEmpty();
-    req.check('promotion.description', 'La description est vide').notEmpty();
-    req.check('promotion.startDate', 'La date de debut est vide').notEmpty();
-    req.check('promotion.endDate', 'La date de fin est vide').notEmpty();
+    var mongoId = mongoose.Types.ObjectId(req.user._id);
+    req.check('title', 'Le titre est vide').notEmpty();
+    req.check('description', 'La description est vide').notEmpty();
+    req.check('startDate', 'La date de debut est vide').notEmpty();
+    req.check('endDate', 'La date de fin est vide').notEmpty();
     var errors = req.validationErrors();
     if (errors) {
         req.session.errors = errors;
         req.session.success = false;
     } else {
-        User.findById(req.body.id, function (err, doc) {
-            if (err) {
-                return done(err);
+        User.findOneAndUpdate({
+                _id: mongoId
+            }, {
+                $push: {
+                    promotion: {
+                        title: req.body.title,
+                        description: req.body.description,
+                        startDate: req.body.startDate,
+                        endDate: req.body.endDate
+                    }
+                }
+            },
+            function (err, model) {
+                console.log(err);
             }
-            doc.promotion[title] = req.body.promotion.title;
-            doc.promotion[description] = req.body.promotion.description;
-            doc.promotion[startDate] = req.body.promotion.startDate;
-            doc.promotion[endDate] = req.body.promotion.endDate;
-            doc.save();
-        })
+        )
         req.session.success = true;
     }
-    res.redirect("/dashboard/create/promotion" + req.body.id);
+    res.redirect("/dashboard/creation-promotion");
 });
 
+
+//Affichages des promotions des entreprises
+router.get('/dashboard/liste-promotion', isLoggedIn, function (req, res) {
+    var mongoId = mongoose.Types.ObjectId(req.user._id);
+    User.findOne({
+            _id: mongoId,
+        })
+        .then(function (doc) {
+            res.render('admin/dashboard.liste-promotion.hbs', {
+                title: 'Liste Promotions',
+                message: req.flash('signupMessage'),
+                isLog: req.user,
+                items: doc.promotion
+            });
+        });
+
+});
+
+//Affichage infos dans modif promotion
+router.get('/dashboard/modification-promotion/:id', isLoggedIn, function (req, res) {
+    var mongoId = mongoose.Types.ObjectId(req.user._id);
+    var promoId = mongoose.Types.ObjectId(req.params.id);
+    console.log('ID    ', req.params.id);
+    User.findOne({
+        'promotion._id': promoId
+    }, function (err, model) {
+        function BonnePromo(Promo) {
+            return Promo.id == promoId;
+        }
+        var promo = model.promotion.find(BonnePromo);
+        console.log(promo.endDate);
+        res.render('admin/dashboard.modification-promotion.hbs', {
+            title: 'Modification Promotion',
+            message: req.flash('signupMessage'),
+            isLog: req.user,
+            item: promo,
+        })
+    })
+});
+router.post('/dashboard/modification-promotion/:id', isLoggedIn, function (req, res) {
+    console.log("TESTESTESTESTESTESTESTESTESTESTESTESTESTESTESTESTEST");
+    var mongoId = mongoose.Types.ObjectId(req.user._id);
+    var promoId = mongoose.Types.ObjectId(req.params.id);
+    req.check('title', 'Le titre est vide').notEmpty();
+    req.check('description', 'La description est vide').notEmpty();
+    req.check('startDate', 'La date de debut est vide').notEmpty();
+    req.check('endDate', 'La date de fin est vide').notEmpty();
+    console.log('CHECK FINI');
+
+    User.findOneAndUpdate({
+            _id: mongoId
+        }, {
+            $pull: {
+                promotion: {
+                    _id: req.params.id
+                }
+            }
+        },
+        function (err, model) {
+            console.log('ID ANCIENNE PROMO ' + model._id);
+        },
+    )
+    console.log('APRES SUPPRESSION PROMO');
+    User.findOneAndUpdate({
+            _id: mongoId
+        }, {
+            $push: {
+                promotion: {
+                    _id: req.params.id,
+                    title: req.body.title,
+                    description: req.body.description,
+                    startDate: req.body.startDate,
+                    endDate: req.body.endDate
+                }
+            }
+        },
+        function (err, model) {
+            console.log('ID NOUVELLE PROMO ' + model._id);
+        }
+    )
+    console.log('APRES REINSERTION PROMO');
+
+    res.redirect("/dashboard/liste-promotion/");
+});
+
+//Suppression de promotion
+router.get('/dashboard/supprimer/promotion/:id', function (req, res, next) {
+    var mongoId = mongoose.Types.ObjectId(req.user._id);
+    var promoId = mongoose.Types.ObjectId(req.params.id);
+    User.findOneAndUpdate({
+            _id: mongoId
+        }, {
+            $pull: {
+                promotion: {
+                    _id: req.params.id
+                }
+            }
+        },
+        function (err, model) {
+            console.log('Error: ' + model);
+        }
+    )
+    res.redirect('/dashboard/liste-promotion/');
+});
 
 
 router.post('/dashboard/contenu-magasin/logo', isLoggedIn, function (req, res) {
