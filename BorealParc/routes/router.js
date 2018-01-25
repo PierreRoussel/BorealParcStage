@@ -567,7 +567,7 @@ router.post('/dashboard/modification-promotion/:id', isLoggedIn, function (req, 
     req.check('description', 'La description est vide').notEmpty();
     req.check('startDate', 'La date de debut est vide').notEmpty();
     req.check('endDate', 'La date de fin est vide').notEmpty();
-    console.log('OUIOUIOUIOUI');
+    console.log('CHECK FINI');
     
     User.findOneAndUpdate(
         {_id: mongoId},
@@ -581,7 +581,7 @@ router.post('/dashboard/modification-promotion/:id', isLoggedIn, function (req, 
         {_id: mongoId},
         {$push: {promotion: {_id:req.params.id,title:req.body.title,description:req.body.description,startDate:req.body.startDate,endDate:req.body.endDate}}},
         function(err, model){
-          console.log('ID NOUVELLE PROMO ' + model);
+          console.log('ID NOUVELLE PROMO ' + model._id);
         }
       )
       console.log('APRES REINSERTION PROMO');
