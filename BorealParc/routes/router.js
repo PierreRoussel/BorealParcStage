@@ -7,7 +7,6 @@ var path = require('path');
 var fs = require('fs');
 var mongoose = require('mongoose');
 var User = require('../public/schema/UserSchema');
-var Customer = require('../public/schema/CustomerSchema');
 
 //////////////////////////
 /// Section principale ///
@@ -32,21 +31,7 @@ router.get('/', function (req, res, next) {
         }
     })
 });
-//Subscription to the newsletter
-router.post('/footer/newsletter', function (req, res) {
-    var newCustomer = new Customer({
-        mail: req.body.mailCustomer
-    });
-    newCustomer.mail = req.body.mailCustomer;
-    newCustomer.save(function (err) {
-        if (err) {
-            return done(err);
-            console.log('error');
-        }
-    });
-    res.redirect('/');
-    req.session.success = true;
-})
+
 //////////////////////////
 /// Section entreprise ///
 //////////////////////////
@@ -470,47 +455,6 @@ router.post('/dashboard/admin-shop-update', isLoggedIn, function (req, res) {
     res.redirect("/dashboard/admin-shop-update");
 });
 
-//Création promotion Magasin
-router.get('/dashboard/creation-promotion', isLoggedIn, function (req, res) {
-    res.render('admin/dashboard.creation-promotion.hbs', {
-        title: 'Création promotion',
-        isLog: req.user,
-        success: req.session.success,
-        errors: req.session.errors,
-    });
-    req.session.success = false;
-    req.session.errors = null;
-});
-router.post('/dashboard/creation-promotion', isLoggedIn, function (req, res) {
-    req.check('companyName', 'Le nom de l\'entreprise est vide').notEmpty();
-    req.check('mail', 'L\'email de l\'entreprise est vide').notEmpty();
-    req.check('mail', 'Le format de l\'email n\'est pas correct').isEmail();
-    req.check('promotion.title', 'Le titre est vide').notEmpty();
-    req.check('promotion.description', 'La description est vide').notEmpty();
-    req.check('promotion.startDate', 'La date de debut est vide').notEmpty();
-    req.check('promotion.endDate', 'La date de fin est vide').notEmpty();
-    var errors = req.validationErrors();
-    if (errors) {
-        req.session.errors = errors;
-        req.session.success = false;
-    } else {
-        User.findById(req.body.id, function (err, doc) {
-            if (err) {
-                return done(err);
-            }
-            doc.promotion[title] = req.body.promotion.title;
-            doc.promotion[description] = req.body.promotion.description;
-            doc.promotion[startDate] = req.body.promotion.startDate;
-            doc.promotion[endDate] = req.body.promotion.endDate;
-            doc.save();
-        })
-        req.session.success = true;
-    }
-    res.redirect("/dashboard/create/promotion" + req.body.id);
-});
-
-
-
 router.post('/dashboard/contenu-magasin/logo', isLoggedIn, function (req, res) {
 
     mongoId = mongoose.Types.ObjectId(req.body.id);
@@ -605,8 +549,6 @@ router.get('/*', function (req, res, next) {
         companyName: 1
     })
 });
-
-
 
 
 /// Custom functions ///

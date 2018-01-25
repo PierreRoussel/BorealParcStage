@@ -24,7 +24,6 @@ var crypto = require('crypto');
 
 var routes = require('./routes/router');
 var User = require('./public/schema/UserSchema');
-var Customer = require('./public/schema/CustomerSchema');
 
 require('./public/passport')(passport);
 mongoose.connect(configUrl.url, {
