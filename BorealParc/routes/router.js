@@ -596,6 +596,9 @@ router.post('/dashboard/contenu-magasin', isLoggedIn, function (req, res) {
     req.check('website', 'Le format du lien du site n\'est pas correct').optional({
         checkFalsy: true
     }).isURL();
+    req.check('catalogue', 'Le format du lien du catalogue n\'est pas correct').optional({
+        checkFalsy: true
+    }).isURL();
     req.check('facebook', 'Le format du lien facebook n\'est pas correct').optional({
         checkFalsy: true
     }).isURL();
@@ -633,6 +636,7 @@ router.post('/dashboard/contenu-magasin', isLoggedIn, function (req, res) {
             doc.page.presentation = req.body.presentation;
             doc.page.address = req.body.address;
             doc.page.contact.website = req.body.website;
+            doc.page.contact.catalogue = req.body.catalogue;
             doc.page.contact.facebook = req.body.facebook;
             doc.page.contact.twitter = req.body.twitter;
             doc.page.contact.instagram = req.body.instagram;

@@ -5016,6 +5016,7 @@ small {
     border-radius: 2px;
     display: inline-block;
     height: 36px;
+    margin: 0.8px;
     line-height: 36px;
     padding: 0 2rem;
     text-transform: uppercase;
