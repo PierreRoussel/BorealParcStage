@@ -750,12 +750,7 @@ router.post('/dashboard/contenu-magasin', isLoggedIn, function (req, res) {
             doc.page.schedule = req.body.schedule;
             doc.leftIndicator = req.body.leftIndicator;
             doc.rightIndicator = req.body.rightIndicator;
-<<<<<<< HEAD
-            doc.page.contact.telephone = req.body.telephone;
-=======
             doc.page.contact.telephone = telephoneShape(req.body.telephone);
-
->>>>>>> master
             doc.save();
         })
         req.session.success = true;
@@ -807,8 +802,6 @@ function isSuperAdmin(req, res, next) {
     })
 }
 
-<<<<<<< HEAD
-=======
 function telephoneShape(str) {
     var i = 0;
     var j = 0;
@@ -826,8 +819,6 @@ function telephoneShape(str) {
     return formate;
 }
 
-
->>>>>>> master
 function stringToSlug(str) {
     str = str.replace(/^\s+|\s+$/g, '');
     str = str.toLowerCase();
