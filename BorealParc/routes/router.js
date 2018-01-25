@@ -305,18 +305,12 @@ router.post('/dashboard/shop-update', isSuperAdmin, function (req, res, next) {
 
 router.post('/dashboard/update/logo', isSuperAdmin, function (req, res, next) {
     mongoId = mongoose.Types.ObjectId(req.body.id);
-<<<<<<< HEAD
     if (!req.files.logo)  {
-=======
-    //upload.single('logo');
-    if (!req.files.logo) {
->>>>>>> a1a68c899e46a364f24c379b310de355a6e345bc
 
         req.session.errors = [{
             msg: "Vous n'avez pas mis d'image"
         }];
         req.session.success = false;
-<<<<<<< HEAD
     
       } else {
         var sampleFile = req.files.logo ;
@@ -330,11 +324,6 @@ router.post('/dashboard/update/logo', isSuperAdmin, function (req, res, next) {
             doc.logo = fileName;
             doc.save();
         });
-=======
-
-    } else {
-        upload('logo', req.files, req.body.companyNameSlug, req.session)
->>>>>>> a1a68c899e46a364f24c379b310de355a6e345bc
     }
     res.redirect("/dashboard/update/" + mongoId);
 });
@@ -703,13 +692,7 @@ router.get('/dashboard/supprimer/promotion/:id', function (req, res, next) {
 });
 
 
-<<<<<<< HEAD
 router.post('/dashboard/contenu-magasin/logo', isLoggedIn, function (req, res) { 
-    mongoId = mongoose.Types.ObjectId(req.body.id);
-=======
-router.post('/dashboard/contenu-magasin/logo', isLoggedIn, function (req, res) {
->>>>>>> a1a68c899e46a364f24c379b310de355a6e345bc
-
     mongoId = mongoose.Types.ObjectId(req.body.id);
     if (!req.files.logo)  {
 
@@ -887,7 +870,6 @@ function shuffle(array) {
     return array;
 }
 
-<<<<<<< HEAD
 function upload(localisation, file, session, mongoId){
     let sampleFile = file;
     var imageName = sampleFile.name;
@@ -900,20 +882,6 @@ function upload(localisation, file, session, mongoId){
     }
     else{
         sampleFile.mv(path.join(__dirname, '../public/images/'+localisation+'/'+imageName));
-=======
-function upload(localisation, file, company, session) {
-    let sampleFile = file.logo;
-    var logoExt = sampleFile.name.split('.')[sampleFile.name.split('.').length - 1];
-    var logoName = company + '.' + logoExt;
-    console.log(logoExt)
-    if (logoExt != 'png' && logoExt != 'jpeg' && logoExt != 'jpg') {
-        session.errors = [{
-            msg: "L'image doit être au format png ou jpg"
-        }];
-        session.success = false;
-    } else {
-        sampleFile.mv(path.join(__dirname, '../public/images/' + localisation + '/' + logoName));
->>>>>>> a1a68c899e46a364f24c379b310de355a6e345bc
         session.success = true;
     }
 }
