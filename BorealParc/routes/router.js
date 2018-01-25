@@ -644,7 +644,6 @@ router.post('/dashboard/contenu-magasin', isLoggedIn, function (req, res) {
             doc.leftIndicator = req.body.leftIndicator;
             doc.rightIndicator = req.body.rightIndicator;
             doc.page.contact.telephone = req.body.telephone;
-
             doc.save();
         })
         req.session.success = true;
@@ -675,9 +674,6 @@ router.get('/*', function (req, res, next) {
     })
 });
 
-
-
-
 /// Custom functions ///
 function isLoggedIn(req, res, next) {
     if (req.isAuthenticated()) {
@@ -698,7 +694,6 @@ function isSuperAdmin(req, res, next) {
         }
     })
 }
-
 
 function stringToSlug(str) {
     str = str.replace(/^\s+|\s+$/g, '');
