@@ -37,6 +37,7 @@ var UserSchema = new Schema({
         contact: {
             telephone: String,
             website: String,
+            catalogue: String,
             facebook: String,
             twitter: String,
             instagram: String
