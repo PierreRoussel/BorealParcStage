@@ -241,7 +241,7 @@ router.post('/dashboard/update', isSuperAdmin, function (req, res, next) {
             doc.page.schedule = req.body.schedule;
             doc.leftIndicator = req.body.leftIndicator;
             doc.rightIndicator = req.body.rightIndicator;
-            doc.page.contact.telephone = req.body.telephone;
+            doc.page.contact.telephone = telephoneShape(req.body.telephone);
 
             doc.save();
         })
@@ -639,7 +639,7 @@ router.post('/dashboard/contenu-magasin', isLoggedIn, function (req, res) {
             doc.page.schedule = req.body.schedule;
             doc.leftIndicator = req.body.leftIndicator;
             doc.rightIndicator = req.body.rightIndicator;
-            doc.page.contact.telephone = req.body.telephone;
+            doc.page.contact.telephone = telephoneShape(req.body.telephone);
 
             doc.save();
         })
@@ -693,6 +693,23 @@ function isSuperAdmin(req, res, next) {
             });
         }
     })
+}
+
+function telephoneShape(str) {
+    var i = 0;
+    var j = 0;
+    var formate = "";
+    while (i < str.length) { //tant qu il y a des caracteres
+        if (j < 2) {
+            formate += str[i];
+            j++;
+            i++;
+        } else { //si on a mis 2 chiffres a la suite on met un espace
+            formate += " ";
+            j = 0;
+        }
+    }
+    return formate;
 }
 
 
