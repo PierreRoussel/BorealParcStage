@@ -19,7 +19,7 @@
             </div>
             {{/if}}
         {{/if}}
-        <form action="/dashboard/modification-promotion" method="post" class="col s12">
+        <form action="/dashboard/modification-promotion/{{this.item.id}}" method="post" class="col s12">
             <div class="row">
                 <div class="input-field col m12 l6">
                     <input id="title" type="text" name="title" class="validate" value="{{this.item.title}}">

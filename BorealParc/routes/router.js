@@ -559,51 +559,35 @@ router.get('/dashboard/modification-promotion/:id', isLoggedIn, function(req, re
         })
     })          
 });
-/*
-router.get('/dashboard/modification-promotion/:id', isLoggedIn, function(req, res){
+router.post('/dashboard/modification-promotion/:id', isLoggedIn, function (req, res) {
+    console.log("TESTESTESTESTESTESTESTESTESTESTESTESTESTESTESTESTEST");
     var mongoId = mongoose.Types.ObjectId(req.user._id);
     var promoId = mongoose.Types.ObjectId(req.params.id);
     req.check('title', 'Le titre est vide').notEmpty();
     req.check('description', 'La description est vide').notEmpty();
     req.check('startDate', 'La date de debut est vide').notEmpty();
-    req.check('endDate', 'La date de fin est vide').notEmpty(); 
-    console.log("ICI AAAAAAAAAAAAAAAH modif");
-    var errors = req.validationErrors();
-    if (errors){
-      req.session.errors = errors;
-      req.session.success = false;
-    }else{ 
-        User.findOneAndUpdate(
-            console.log("ICI AAAAAAAAAAAAAAAH"),
-            {_id: promoId},
-            {$pull: {promotion: {_id: req.params.id}}},
-            function(err, model){
-                console.log('Error: ' + model);
+    req.check('endDate', 'La date de fin est vide').notEmpty();
+    console.log('OUIOUIOUIOUI');
+    
+    User.findOneAndUpdate(
+        {_id: mongoId},
+        {$pull: {promotion: {_id: req.params.id}}},
+        function(err, model){
+            console.log('ID ANCIENNE PROMO ' + model._id);
+        },
+    )
+    console.log('APRES SUPPRESSION PROMO');
+       User.findOneAndUpdate(
+        {_id: mongoId},
+        {$push: {promotion: {_id:req.params.id,title:req.body.title,description:req.body.description,startDate:req.body.startDate,endDate:req.body.endDate}}},
+        function(err, model){
+          console.log('ID NOUVELLE PROMO ' + model);
+        }
+      )
+      console.log('APRES REINSERTION PROMO');
 
-            },
-            {$push: {promotion: {title:req.body.title,description:req.body.description,startDate:req.body.startDate,endDate:req.body.endDate}}},
-            function(err, model){
-                console.log(err);
-                res.redirect('/dashboard/liste-promotion/');
-
-              }
-        )
-            
-    }
-
-
-/*
-        User.findByIdAndUpdate(
-            {_id : promoId},
-            {promotion: {title:req.body.title,description:req.body.description,startDate:req.body.startDate,endDate:req.body.endDate}},
-            function(err, model){
-                console.log(err);
-              }
-        ) 
-    req.session.success = true;
-    res.redirect('/dashboard/liste-promotion/'); 
-}); 
-*/
+    res.redirect("/dashboard/liste-promotion/");
+});
 
 //Suppression de promotion
 router.get('/dashboard/supprimer/promotion/:id', function (req, res, next) {
