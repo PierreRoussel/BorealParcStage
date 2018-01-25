@@ -24,31 +24,32 @@ var crypto = require('crypto');
 
 var routes = require('./routes/router');
 var User = require('./public/schema/UserSchema');
+var Customer = require('./public/schema/CustomerSchema');
 
 require('./public/passport')(passport);
-mongoose.connect(configUrl.url,{
-  useMongoClient: true
+mongoose.connect(configUrl.url, {
+    useMongoClient: true
 });
 
 var hbs = exphbs.create({
     helpers: {
-        dateFormat: function(date, format) {
-          moment.locale('fr'); 
-          var mmnt = moment(date);
-          return 'Le '+mmnt.format('dddd')+' '+mmnt.format('LL')+' à '+mmnt.format('LT');
+        dateFormat: function (date, format) {
+            moment.locale('fr');
+            var mmnt = moment(date);
+            return 'Le ' + mmnt.format('dddd') + ' ' + mmnt.format('LL') + ' à ' + mmnt.format('LT');
         },
         getStringifiedJson: function (value) {
             return JSON.stringify(value);
         },
-        breaklines: function(text) {
-          text = text.replace(/(\r\n|\n|\r)/gm, '<br />');
-          return text;
+        breaklines: function (text) {
+            text = text.replace(/(\r\n|\n|\r)/gm, '<br />');
+            return text;
         }
     },
     extname: 'hbs',
     defaultLayout: 'layout',
     layoutsDir: __dirname + '/views/layouts/',
-    partialsDir:  __dirname + '/views/partials/'
+    partialsDir: __dirname + '/views/partials/'
 });
 
 var app = express();
@@ -61,63 +62,68 @@ app.set('view engine', 'hbs');
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({
+    extended: false
+}));
 app.use(fileUpload());
 app.use(expressValidator({
-  customValidators: {
-    isEqual: (value1, value2) => {
-      return value1 === value2
-    },
-    isIntRange: (value, min, max) => {
-      if(parseInt(value) >= min && parseInt(value) <= max){
-        return true
-      }
-      else{
-        return false;
-      }
-    },
-    isValidPassword: (value, passwd) => {
-      return bcrypt.compareSync(value, passwd);
-    },
-    
-    isNumero: (value) => {
-      if ((/^((\+|00)33\s?|0)[679](\s?\d{2}){4}$/.test(value)) || (/^((\+|00)33\s?|0)[1-5](\s?\d{2}){4}$/.test(value))){
-        return true;
-      }else{
-        return false;
-      }
-    }
+    customValidators: {
+        isEqual: (value1, value2) => {
+            return value1 === value2
+        },
+        isIntRange: (value, min, max) => {
+            if (parseInt(value) >= min && parseInt(value) <= max) {
+                return true
+            } else {
+                return false;
+            }
+        },
+        isValidPassword: (value, passwd) => {
+            return bcrypt.compareSync(value, passwd);
+        },
 
-  }
+        isNumero: (value) => {
+            if ((/^((\+|00)33\s?|0)[679](\s?\d{2}){4}$/.test(value)) || (/^((\+|00)33\s?|0)[1-5](\s?\d{2}){4}$/.test(value))) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+    }
 }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(session({secret: "4dsqf4fgh654fdgs",
-                  saveUninitialized: true,
-                  resave: true,
-                  store: new MongoStore({ mongooseConnection: mongoose.connection, ttl: 2 * 24 * 60 * 60})
-                }));
+app.use(session({
+    secret: "4dsqf4fgh654fdgs",
+    saveUninitialized: true,
+    resave: true,
+    store: new MongoStore({
+        mongooseConnection: mongoose.connection,
+        ttl: 2 * 24 * 60 * 60
+    })
+}));
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
 app.use('/', routes);
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  var err = new Error('Not Found');
-  err.status = 404;
-  res.redirect('/')
+app.use(function (req, res, next) {
+    var err = new Error('Not Found');
+    err.status = 404;
+    res.redirect('/')
 });
 
 // error handler
-app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
+app.use(function (err, req, res, next) {
+    // set locals, only providing error in development
+    res.locals.message = err.message;
+    res.locals.error = req.app.get('env') === 'development' ? err : {};
 
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
+    // render the error page
+    res.status(err.status || 500);
+    res.render('error');
 });
 
 module.exports = app;

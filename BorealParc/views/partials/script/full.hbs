@@ -3,9 +3,23 @@
 <script src="/javascript/materialize.min.js"></script>
 <script src="/javascript/init.js"></script>
 <!--  Points of interest script -->
-<script> 
-    $('.carousel.carousel-slider').carousel({fullWidth: true});
-  setInterval(function() {
-    $('.carousel.carousel-slider').carousel('next');
-  }, 4000);
+<script>
+    $('.carousel.carousel-slider').carousel({
+        fullWidth: true
+    });
+    setInterval(function() {
+        $('.carousel.carousel-slider').carousel('next');
+    }, 4000);
+
+    /* FONCTION DU CHAMP INPUT POUR LA NEWSLETTER -> BTN DISABLED OU NON */
+    var inputNews = document.querySelector('#mailCustomer');
+    var btnNews = document.querySelector('#btn-newsletter');
+    inputNews.addEventListener('keyup', (event) => {
+        if (inputNews.value != '') {
+            btnNews.classList.remove('disabled');
+        } else {
+            btnNews.classList.add('disabled');
+        }
+    });
+
 </script>

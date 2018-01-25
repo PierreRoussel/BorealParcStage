@@ -1,20 +1,22 @@
 var express = require('express');
 var router = express.Router();
+var nodemailer = require('nodemailer');
 var passport = require('passport');
 var flash = require('connect-flash');
 require('../public/passport')(passport);
-
 var path = require('path');
 var fs = require('fs');
 var mongoose = require('mongoose');
-
 var User = require('../public/schema/UserSchema');
+var Customer = require('../public/schema/CustomerSchema');
+
 //////////////////////////
 /// Section principale ///
 //////////////////////////
 router.get('/', function (req, res, next) {
     User.find({
-        isSuperAdmin: false
+        isSuperAdmin: false,
+        isSleepy: false
     }, function (err, user) {
         if (err)
             return done(err);
@@ -32,6 +34,50 @@ router.get('/', function (req, res, next) {
         }
     })
 });
+
+/*//Subscription to the newsletter
+router.post('/footer/newsletter', function (req, res, next) {
+    function handleSayHello(req, res) {
+        // Not the movie transporter!
+        var transporter = nodemailer.createTransport({
+            service: 'Gmail',
+            auth: {
+                user: 'borealparc.newsletter@gmail.com', // Your email id
+                pass: 'borealAdmin' // Your password
+            }
+        });
+        var mailOptions = {
+            from: 'borealparc.newsletter@gmail.com>', // sender address
+            to: 'drakeyras62@gmail.com', // list of receivers
+            subject: 'Email Example', // Subject line
+            text: 'Hello World', // plaintext body
+            // html: '<b>Hello world ✔</b>' // You can choose to send an HTML body instead
+        };
+        transporter.sendMail(mailOptions, function (error, info) {
+            if (error) {
+                console.log(error);
+                res.json({
+                    yo: 'error'
+                });
+            } else {
+                console.log('Message sent: ' + info.response);
+                res.json({
+                    yo: info.response
+                });
+            };
+        });
+    }
+
+    var newCustomer = new Customer({
+        mail: req.body.mailCustomer
+    });
+
+    newCustomer.mail = req.body.mailCustomer;
+    newCustomer.save();
+    req.session.success = true;
+    res.redirect('/');
+});*/
+
 //////////////////////////
 /// Section entreprise ///
 //////////////////////////
@@ -92,6 +138,36 @@ router.get('/dashboard', isSuperAdmin, function (req, res) {
             });
         });
 });
+//En attente 
+router.get('/dashboard/hide/:id', isSuperAdmin, function (req, res) {
+    var mongoId = mongoose.Types.ObjectId(req.params.id);
+
+    User.findById(mongoId, function (err, doc) {
+        if (err) {
+            return done(err);
+        } else {
+            doc.isSleepy = true;
+
+            doc.save();
+        }
+    })
+    res.redirect('/dashboard/');
+})
+//En service
+router.get('/dashboard/reveal/:id', isSuperAdmin, function (req, res) {
+    var mongoId = mongoose.Types.ObjectId(req.params.id);
+
+    User.findById(mongoId, function (err, doc) {
+        if (err) {
+            return done(err);
+        } else {
+            doc.isSleepy = false;
+
+            doc.save();
+        }
+    })
+    res.redirect('/dashboard/');
+})
 //Affichage de l'entreprise à modifier
 router.get('/dashboard/update/:id', isSuperAdmin, function (req, res, next) {
     var mongoId = mongoose.Types.ObjectId(req.params.id);
@@ -117,6 +193,9 @@ router.post('/dashboard/update', isSuperAdmin, function (req, res, next) {
     req.check('website', 'Le format du lien du site n\'est pas correct').optional({
         checkFalsy: true
     }).isURL();
+    req.check('catalogue', 'Le format du lien du catalogue n\'est pas correct').optional({
+        checkFalsy: true
+    }).isURL();
     req.check('facebook', 'Le format du lien facebook n\'est pas correct').optional({
         checkFalsy: true
     }).isURL();
@@ -138,7 +217,6 @@ router.post('/dashboard/update', isSuperAdmin, function (req, res, next) {
     req.check('rightIndicator', 'Le positionnement vertical doit être compris entre 0 et 100').optional({
         checkFalsy: true
     }).isIntRange(0, 100);
-
     req.check('telephone', 'Le format du telephone n\'est pas correct').optional({
         checkFalsy: true
     }).isNumero();
@@ -155,13 +233,14 @@ router.post('/dashboard/update', isSuperAdmin, function (req, res, next) {
             doc.page.presentation = req.body.presentation;
             doc.page.address = req.body.address;
             doc.page.contact.website = req.body.website;
+            doc.page.contact.catalogue = req.body.catalogue;
             doc.page.contact.facebook = req.body.facebook;
             doc.page.contact.twitter = req.body.twitter;
             doc.page.contact.instagram = req.body.instagram;
             doc.page.schedule = req.body.schedule;
             doc.leftIndicator = req.body.leftIndicator;
             doc.rightIndicator = req.body.rightIndicator;
-            doc.page.contact.telephone = req.body.telephone;
+            doc.page.contact.telephone = telephoneShape(req.body.telephone);
 
             doc.save();
         })
@@ -226,10 +305,18 @@ router.post('/dashboard/shop-update', isSuperAdmin, function (req, res, next) {
 
 router.post('/dashboard/update/logo', isSuperAdmin, function (req, res, next) {
     mongoId = mongoose.Types.ObjectId(req.body.id);
+<<<<<<< HEAD
     if (!req.files.logo)  {
+=======
+    //upload.single('logo');
+    if (!req.files.logo) {
+>>>>>>> a1a68c899e46a364f24c379b310de355a6e345bc
 
-        req.session.errors = [{msg:"Vous n'avez pas mis d'image"}];
+        req.session.errors = [{
+            msg: "Vous n'avez pas mis d'image"
+        }];
         req.session.success = false;
+<<<<<<< HEAD
     
       } else {
         var sampleFile = req.files.logo ;
@@ -243,8 +330,13 @@ router.post('/dashboard/update/logo', isSuperAdmin, function (req, res, next) {
             doc.logo = fileName;
             doc.save();
         });
+=======
+
+    } else {
+        upload('logo', req.files, req.body.companyNameSlug, req.session)
+>>>>>>> a1a68c899e46a364f24c379b310de355a6e345bc
     }
-    res.redirect("/dashboard/update/" + mongoId);   
+    res.redirect("/dashboard/update/" + mongoId);
 });
 
 //Suppression entreprises
@@ -278,8 +370,8 @@ router.get('/dashboard/delete/:id', function (req, res, next) {
         }
     });
 });
-//La création d'un compte magasin doit nécessairement passer par ici, la magasin recevra ses identifiants depuis le super-administrateur et pourra 
-//modifier son mot de passe par la suite
+/*La création d'un compte magasin doit nécessairement passer par ici, la magasin recevra ses identifiants depuis le super-administrateur et pourra 
+modifier son mot de passe par la suite */
 router.get('/dashboard/creation-compte-magasin', isSuperAdmin, function (req, res) {
     res.render('admin/dashboard.superadmin-shop-account-creation.hbs', {
         title: 'Création compte magasin - Dashboard SuperAdmin',
@@ -292,6 +384,7 @@ router.get('/dashboard/creation-compte-magasin', isSuperAdmin, function (req, re
     req.session.errors = null;
     req.session.lastPostItem = null;
 });
+
 router.post('/dashboard/creation-compte-magasin', isSuperAdmin, function (req, res) {
     req.check('companyName', 'Le nom de l\'entreprise est vide').notEmpty();
     req.check('login', 'Le login est vide').notEmpty();
@@ -425,7 +518,8 @@ router.get('/dashboard/admin-shop-update', isLoggedIn, function (req, res) {
         }
     })
 });
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//Le magasin peut ici modifier les informations de son compte
 router.post('/dashboard/admin-shop-update', isLoggedIn, function (req, res) {
     req.check('mail', 'Le format de l\'email n\'est pas correct').notEmpty().isEmail();
     req.check('newPassword', 'Le champ nouveau mot de passe est vide').optional({
@@ -472,37 +566,149 @@ router.get('/dashboard/creation-promotion', isLoggedIn, function (req, res) {
     req.session.errors = null;
 });
 router.post('/dashboard/creation-promotion', isLoggedIn, function (req, res) {
-    req.check('companyName', 'Le nom de l\'entreprise est vide').notEmpty();
-    req.check('mail', 'L\'email de l\'entreprise est vide').notEmpty();
-    req.check('mail', 'Le format de l\'email n\'est pas correct').isEmail();
-    req.check('promotion.title', 'Le titre est vide').notEmpty();
-    req.check('promotion.description', 'La description est vide').notEmpty();
-    req.check('promotion.startDate', 'La date de debut est vide').notEmpty();
-    req.check('promotion.endDate', 'La date de fin est vide').notEmpty();
+    var mongoId = mongoose.Types.ObjectId(req.user._id);
+    req.check('title', 'Le titre est vide').notEmpty();
+    req.check('description', 'La description est vide').notEmpty();
+    req.check('startDate', 'La date de debut est vide').notEmpty();
+    req.check('endDate', 'La date de fin est vide').notEmpty();
     var errors = req.validationErrors();
     if (errors) {
         req.session.errors = errors;
         req.session.success = false;
     } else {
-        User.findById(req.body.id, function (err, doc) {
-            if (err) {
-                return done(err);
+        User.findOneAndUpdate({
+                _id: mongoId
+            }, {
+                $push: {
+                    promotion: {
+                        title: req.body.title,
+                        description: req.body.description,
+                        startDate: req.body.startDate,
+                        endDate: req.body.endDate
+                    }
+                }
+            },
+            function (err, model) {
+                console.log(err);
             }
-            doc.promotion[title] = req.body.promotion.title;
-            doc.promotion[description] = req.body.promotion.description;
-            doc.promotion[startDate] = req.body.promotion.startDate;
-            doc.promotion[endDate] = req.body.promotion.endDate;
-            doc.save();
-        })
+        )
         req.session.success = true;
     }
-    res.redirect("/dashboard/create/promotion" + req.body.id);
+    res.redirect("/dashboard/creation-promotion");
 });
 
 
+//Affichages des promotions des entreprises
+router.get('/dashboard/liste-promotion', isLoggedIn, function (req, res) {
+    var mongoId = mongoose.Types.ObjectId(req.user._id);
+    User.findOne({
+            _id: mongoId,
+        })
+        .then(function (doc) {
+            res.render('admin/dashboard.liste-promotion.hbs', {
+                title: 'Liste Promotions',
+                message: req.flash('signupMessage'),
+                isLog: req.user,
+                items: doc.promotion
+            });
+        });
 
+});
+
+//Affichage infos dans modif promotion
+router.get('/dashboard/modification-promotion/:id', isLoggedIn, function (req, res) {
+    var mongoId = mongoose.Types.ObjectId(req.user._id);
+    var promoId = mongoose.Types.ObjectId(req.params.id);
+    console.log('ID    ', req.params.id);
+    User.findOne({
+        'promotion._id': promoId
+    }, function (err, model) {
+        function BonnePromo(Promo) {
+            return Promo.id == promoId;
+        }
+        var promo = model.promotion.find(BonnePromo);
+        console.log(promo.endDate);
+        res.render('admin/dashboard.modification-promotion.hbs', {
+            title: 'Modification Promotion',
+            message: req.flash('signupMessage'),
+            isLog: req.user,
+            item: promo,
+        })
+    })
+});
+router.post('/dashboard/modification-promotion/:id', isLoggedIn, function (req, res) {
+    console.log("TESTESTESTESTESTESTESTESTESTESTESTESTESTESTESTESTEST");
+    var mongoId = mongoose.Types.ObjectId(req.user._id);
+    var promoId = mongoose.Types.ObjectId(req.params.id);
+    req.check('title', 'Le titre est vide').notEmpty();
+    req.check('description', 'La description est vide').notEmpty();
+    req.check('startDate', 'La date de debut est vide').notEmpty();
+    req.check('endDate', 'La date de fin est vide').notEmpty();
+    console.log('CHECK FINI');
+
+    User.findOneAndUpdate({
+            _id: mongoId
+        }, {
+            $pull: {
+                promotion: {
+                    _id: req.params.id
+                }
+            }
+        },
+        function (err, model) {
+            console.log('ID ANCIENNE PROMO ' + model._id);
+        },
+    )
+    console.log('APRES SUPPRESSION PROMO');
+    User.findOneAndUpdate({
+            _id: mongoId
+        }, {
+            $push: {
+                promotion: {
+                    _id: req.params.id,
+                    title: req.body.title,
+                    description: req.body.description,
+                    startDate: req.body.startDate,
+                    endDate: req.body.endDate
+                }
+            }
+        },
+        function (err, model) {
+            console.log('ID NOUVELLE PROMO ' + model._id);
+        }
+    )
+    console.log('APRES REINSERTION PROMO');
+
+    res.redirect("/dashboard/liste-promotion/");
+});
+
+//Suppression de promotion
+router.get('/dashboard/supprimer/promotion/:id', function (req, res, next) {
+    var mongoId = mongoose.Types.ObjectId(req.user._id);
+    var promoId = mongoose.Types.ObjectId(req.params.id);
+    User.findOneAndUpdate({
+            _id: mongoId
+        }, {
+            $pull: {
+                promotion: {
+                    _id: req.params.id
+                }
+            }
+        },
+        function (err, model) {
+            console.log('Error: ' + model);
+        }
+    )
+    res.redirect('/dashboard/liste-promotion/');
+});
+
+
+<<<<<<< HEAD
 router.post('/dashboard/contenu-magasin/logo', isLoggedIn, function (req, res) { 
     mongoId = mongoose.Types.ObjectId(req.body.id);
+=======
+router.post('/dashboard/contenu-magasin/logo', isLoggedIn, function (req, res) {
+>>>>>>> a1a68c899e46a364f24c379b310de355a6e345bc
 
     mongoId = mongoose.Types.ObjectId(req.body.id);
     if (!req.files.logo)  {
@@ -573,7 +779,7 @@ router.post('/dashboard/contenu-magasin', isLoggedIn, function (req, res) {
             doc.page.schedule = req.body.schedule;
             doc.leftIndicator = req.body.leftIndicator;
             doc.rightIndicator = req.body.rightIndicator;
-            doc.page.contact.telephone = req.body.telephone;
+            doc.page.contact.telephone = telephoneShape(req.body.telephone);
 
             doc.save();
         })
@@ -629,6 +835,23 @@ function isSuperAdmin(req, res, next) {
     })
 }
 
+function telephoneShape(str) {
+    var i = 0;
+    var j = 0;
+    var formate = "";
+    while (i < str.length) { //tant qu il y a des caracteres
+        if (j < 2) {
+            formate += str[i];
+            j++;
+            i++;
+        } else { //si on a mis 2 chiffres a la suite on met un espace
+            formate += " ";
+            j = 0;
+        }
+    }
+    return formate;
+}
+
 
 function stringToSlug(str) {
     str = str.replace(/^\s+|\s+$/g, '');
@@ -664,6 +887,7 @@ function shuffle(array) {
     return array;
 }
 
+<<<<<<< HEAD
 function upload(localisation, file, session, mongoId){
     let sampleFile = file;
     var imageName = sampleFile.name;
@@ -676,6 +900,20 @@ function upload(localisation, file, session, mongoId){
     }
     else{
         sampleFile.mv(path.join(__dirname, '../public/images/'+localisation+'/'+imageName));
+=======
+function upload(localisation, file, company, session) {
+    let sampleFile = file.logo;
+    var logoExt = sampleFile.name.split('.')[sampleFile.name.split('.').length - 1];
+    var logoName = company + '.' + logoExt;
+    console.log(logoExt)
+    if (logoExt != 'png' && logoExt != 'jpeg' && logoExt != 'jpg') {
+        session.errors = [{
+            msg: "L'image doit être au format png ou jpg"
+        }];
+        session.success = false;
+    } else {
+        sampleFile.mv(path.join(__dirname, '../public/images/' + localisation + '/' + logoName));
+>>>>>>> a1a68c899e46a364f24c379b310de355a6e345bc
         session.success = true;
     }
 }
