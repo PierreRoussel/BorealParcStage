@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+var nodemailer = require('nodemailer');
 var passport = require('passport');
 var flash = require('connect-flash');
 require('../public/passport')(passport);
@@ -9,6 +10,40 @@ var mongoose = require('mongoose');
 var User = require('../public/schema/UserSchema');
 var Customer = require('../public/schema/CustomerSchema');
 
+//////////////////////////
+/// Section newsletter ///
+//////////////////////////
+/*function handleSayHello(req, res) {
+    // Not the movie transporter!
+    var transporter = nodemailer.createTransport({
+        service: 'Gmail',
+        auth: {
+            user: 'borealparc.newsletter@gmail.com', // Your email id
+            pass: 'borealAdmin' // Your password
+        }
+    });
+    var mailOptions = {
+        from: 'borealparc.newsletter@gmail.com>', // sender address
+        to: 'drakeyras62@gmail.com', // list of receivers
+        subject: 'Email Example', // Subject line
+        text: text //, // plaintext body
+        // html: '<b>Hello world ✔</b>' // You can choose to send an HTML body instead
+    };
+    transporter.sendMail(mailOptions, function (error, info) {
+        if (error) {
+            console.log(error);
+            res.json({
+                yo: 'error'
+            });
+        } else {
+            console.log('Message sent: ' + info.response);
+            res.json({
+                yo: info.response
+            });
+        };
+    });
+}
+*/
 //////////////////////////
 /// Section principale ///
 //////////////////////////
@@ -34,20 +69,47 @@ router.get('/', function (req, res, next) {
     })
 });
 //Subscription to the newsletter
-router.post('/footer/newsletter', function (req, res) {
+router.post('/footer/newsletter', function (req, res, next) {
+    function handleSayHello(req, res) {
+        // Not the movie transporter!
+        var transporter = nodemailer.createTransport({
+            service: 'Gmail',
+            auth: {
+                user: 'borealparc.newsletter@gmail.com', // Your email id
+                pass: 'borealAdmin' // Your password
+            }
+        });
+        var mailOptions = {
+            from: 'borealparc.newsletter@gmail.com>', // sender address
+            to: 'drakeyras62@gmail.com', // list of receivers
+            subject: 'Email Example', // Subject line
+            text: 'Hello World', // plaintext body
+            // html: '<b>Hello world ✔</b>' // You can choose to send an HTML body instead
+        };
+        transporter.sendMail(mailOptions, function (error, info) {
+            if (error) {
+                console.log(error);
+                res.json({
+                    yo: 'error'
+                });
+            } else {
+                console.log('Message sent: ' + info.response);
+                res.json({
+                    yo: info.response
+                });
+            };
+        });
+    }
+
     var newCustomer = new Customer({
         mail: req.body.mailCustomer
     });
+
     newCustomer.mail = req.body.mailCustomer;
-    newCustomer.save(function (err) {
-        if (err) {
-            return done(err);
-            console.log('error');
-        }
-    });
-    res.redirect('/');
+    newCustomer.save();
     req.session.success = true;
-})
+    res.redirect('/');
+});
 //////////////////////////
 /// Section entreprise ///
 //////////////////////////
@@ -163,6 +225,9 @@ router.post('/dashboard/update', isSuperAdmin, function (req, res, next) {
     req.check('website', 'Le format du lien du site n\'est pas correct').optional({
         checkFalsy: true
     }).isURL();
+    req.check('catalogue', 'Le format du lien du catalogue n\'est pas correct').optional({
+        checkFalsy: true
+    }).isURL();
     req.check('facebook', 'Le format du lien facebook n\'est pas correct').optional({
         checkFalsy: true
     }).isURL();
@@ -184,7 +249,6 @@ router.post('/dashboard/update', isSuperAdmin, function (req, res, next) {
     req.check('rightIndicator', 'Le positionnement vertical doit être compris entre 0 et 100').optional({
         checkFalsy: true
     }).isIntRange(0, 100);
-
     req.check('telephone', 'Le format du telephone n\'est pas correct').optional({
         checkFalsy: true
     }).isNumero();
@@ -201,13 +265,14 @@ router.post('/dashboard/update', isSuperAdmin, function (req, res, next) {
             doc.page.presentation = req.body.presentation;
             doc.page.address = req.body.address;
             doc.page.contact.website = req.body.website;
+            doc.page.contact.catalogue = req.body.catalogue;
             doc.page.contact.facebook = req.body.facebook;
             doc.page.contact.twitter = req.body.twitter;
             doc.page.contact.instagram = req.body.instagram;
             doc.page.schedule = req.body.schedule;
             doc.leftIndicator = req.body.leftIndicator;
             doc.rightIndicator = req.body.rightIndicator;
-            doc.page.contact.telephone = req.body.telephone;
+            doc.page.contact.telephone = telephoneShape(req.body.telephone);
 
             doc.save();
         })
@@ -605,7 +670,7 @@ router.post('/dashboard/contenu-magasin', isLoggedIn, function (req, res) {
             doc.page.schedule = req.body.schedule;
             doc.leftIndicator = req.body.leftIndicator;
             doc.rightIndicator = req.body.rightIndicator;
-            doc.page.contact.telephone = req.body.telephone;
+            doc.page.contact.telephone = telephoneShape(req.body.telephone);
 
             doc.save();
         })
@@ -659,6 +724,23 @@ function isSuperAdmin(req, res, next) {
             });
         }
     })
+}
+
+function telephoneShape(str) {
+    var i = 0;
+    var j = 0;
+    var formate = "";
+    while (i < str.length) { //tant qu il y a des caracteres
+        if (j < 2) {
+            formate += str[i];
+            j++;
+            i++;
+        } else { //si on a mis 2 chiffres a la suite on met un espace
+            formate += " ";
+            j = 0;
+        }
+    }
+    return formate;
 }
 
 

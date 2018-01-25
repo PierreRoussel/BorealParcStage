@@ -39,7 +39,8 @@
                     <a href="{{ entreprise.page.contact.instagram }}"><img src="../images/Instagram_Logo.png" alt="logo instagram"></img></a> {{/if}}
                     </br>
                     {{#if entreprise.page.contact.website }}
-                    <a class="waves-effect waves-light btn-large" href="{{ entreprise.page.contact.website }}">Site internet</a> {{/if}} {{#if entreprise.page.contact.telephone}}
+                    <a class="waves-effect waves-light btn-large" href="{{ entreprise.page.contact.website }}">Site internet</a> {{/if}} {{#if entreprise.page.contact.catalogue }}
+                    <a class="orange waves-effect waves-light btn-large" href="{{ entreprise.page.contact.catalogue }}"><i class="material-icons">import_contacts</i><p>Catalogue</p></a> {{/if}} {{#if entreprise.page.contact.telephone}}
                     <a class="waves-effect waves-light btn-large">Telephone : {{entreprise.page.contact.telephone}}</a> {{/if}}
                 </div>
             </div>
