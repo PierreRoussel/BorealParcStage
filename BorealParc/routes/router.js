@@ -14,7 +14,8 @@ var Customer = require('../public/schema/CustomerSchema');
 //////////////////////////
 router.get('/', function (req, res, next) {
     User.find({
-        isSuperAdmin: false
+        isSuperAdmin: false,
+        isSleepy: false
     }, function (err, user) {
         if (err)
             return done(err);
@@ -107,6 +108,36 @@ router.get('/dashboard', isSuperAdmin, function (req, res) {
             });
         });
 });
+//En attente 
+router.get('/dashboard/hide/:id', isSuperAdmin, function (req, res){
+    var mongoId = mongoose.Types.ObjectId(req.params.id);
+
+    User.findById(mongoId, function(err, doc){
+        if(err){
+            return done(err);
+        }else{
+            doc.isSleepy = true;
+
+            doc.save();
+        }
+    })
+    res.redirect('/dashboard/');
+})
+//En service
+router.get('/dashboard/reveal/:id', isSuperAdmin, function (req, res){
+    var mongoId = mongoose.Types.ObjectId(req.params.id);
+
+    User.findById(mongoId, function(err, doc){
+        if(err){
+            return done(err);
+        }else{
+            doc.isSleepy = false;
+
+            doc.save();
+        }
+    })
+    res.redirect('/dashboard/');
+})
 //Affichage de l'entreprise à modifier
 router.get('/dashboard/update/:id', isSuperAdmin, function (req, res, next) {
     var mongoId = mongoose.Types.ObjectId(req.params.id);

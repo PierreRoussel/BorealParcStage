@@ -23,7 +23,12 @@
                             <a href="/dashboard/update/{{ this._id  }}" class="orange lighten-1 secondary-content waves-effect waves-light btn bouton-dash"><i class="material-icons left">build</i>Information magasin</a>
                             <!-- Lien vers /dashboard/modification-infos -->
                             <a href="/dashboard/shop-update/{{ this._id  }}" class="orange lighten-1 secondary-content waves-effect waves-light btn bouton-dash"><i class="material-icons left">build</i>Information compte</a>
-                            <a href="/dashboard/hide/{{ this._id }}" onclick="return confirm('Cette entreprise sera en attente de confirmation');" class="orange lighten-1 secondary-content waves-effect waves-light btn bouton-dash"><i class="material-icons left">cached</i>En Attente</a>
+                            {{#if isSleepy}}
+                            <a href="/dashboard/reveal/{{ this._id }}" onclick="return confirm('Cette entreprise sera en attente de confirmation');" class="orange lighten-1 secondary-content waves-effect waves-light btn bouton-dash"><i class="material-icons left">cached</i>Mettre en service</a>
+                            {{/if}}
+                            {{#unless isSleepy}}
+                            <a href="/dashboard/hide/{{ this._id }}" onclick="return confirm('Cette entreprise sera en service de confirmation');" class="orange lighten-1 secondary-content waves-effect waves-light btn bouton-dash"><i class="material-icons left">cached</i>Mettre en attente</a>
+                            {{/unless}}
                         </div>
                     </li>
                     {{/each}}

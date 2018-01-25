@@ -58,7 +58,8 @@ var UserSchema = new Schema({
     rightIndicator: Number,
     resetPasswordToken: String,
     resetPasswordExpires: Date,
-    isSuperAdmin: Boolean
+    isSuperAdmin: Boolean,
+    isSleepy: Boolean
 }, {
     collection: 'entreprise'
 });
