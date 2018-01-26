@@ -217,7 +217,7 @@ router.post('/dashboard/update', isSuperAdmin, function (req, res, next) {
     req.check('rightIndicator', 'Le positionnement vertical doit être compris entre 0 et 100').optional({
         checkFalsy: true
     }).isIntRange(0, 100);
-    req.check('telephone', 'Le format du telephone n\'est pas correct').optional({
+    req.check('telephone', 'Le format du téléphone n\'est pas correct').optional({
         checkFalsy: true
     }).isNumero();
 
@@ -305,18 +305,18 @@ router.post('/dashboard/shop-update', isSuperAdmin, function (req, res, next) {
 
 router.post('/dashboard/update/logo', isSuperAdmin, function (req, res, next) {
     mongoId = mongoose.Types.ObjectId(req.body.id);
-    if (!req.files.logo)  {
+    if (!req.files.logo) {
 
         req.session.errors = [{
             msg: "Vous n'avez pas mis d'image"
         }];
         req.session.success = false;
-    
-      } else {
-        var sampleFile = req.files.logo ;
+
+    } else {
+        var sampleFile = req.files.logo;
         var fileName = req.body.companyNameSlug + '.' + sampleFile.name.split('.')[sampleFile.name.split('.').length - 1]
         sampleFile.name = fileName;
-        upload('logo',sampleFile, req.session, mongoId);
+        upload('logo', sampleFile, req.session, mongoId);
         User.findById(mongoId, function (err, doc, logoName) {
             if (err) {
                 return done(err);
@@ -692,18 +692,20 @@ router.get('/dashboard/supprimer/promotion/:id', function (req, res, next) {
 });
 
 
-router.post('/dashboard/contenu-magasin/logo', isLoggedIn, function (req, res) { 
+router.post('/dashboard/contenu-magasin/logo', isLoggedIn, function (req, res) {
     mongoId = mongoose.Types.ObjectId(req.body.id);
-    if (!req.files.logo)  {
+    if (!req.files.logo) {
 
-        req.session.errors = [{msg:"Vous n'avez pas mis d'image"}];
+        req.session.errors = [{
+            msg: "Vous n'avez pas mis d'image"
+        }];
         req.session.success = false;
-    
-      } else {
-        var sampleFile = req.files.logo ;
+
+    } else {
+        var sampleFile = req.files.logo;
         var fileName = req.body.companyNameSlug + '.' + sampleFile.name.split('.')[sampleFile.name.split('.').length - 1]
         sampleFile.name = fileName;
-        upload('logo',sampleFile, req.session, mongoId);
+        upload('logo', sampleFile, req.session, mongoId);
         User.findById(mongoId, function (err, doc, logoName) {
             if (err) {
                 return done(err);
@@ -712,7 +714,7 @@ router.post('/dashboard/contenu-magasin/logo', isLoggedIn, function (req, res) {
             doc.save();
         });
     }
-    res.redirect('/dashboard/contenu-magasin')    
+    res.redirect('/dashboard/contenu-magasin')
 });
 router.post('/dashboard/contenu-magasin', isLoggedIn, function (req, res) {
     req.check('presentation', 'La présentation est vide').notEmpty();
@@ -740,7 +742,7 @@ router.post('/dashboard/contenu-magasin', isLoggedIn, function (req, res) {
     req.check('rightIndicator', 'Le positionnement vertical doit être compris entre 0 et 100').optional({
         checkFalsy: true
     }).isIntRange(0, 100);
-    req.check('telephone', 'Le format du telephone n\'est pas correct').optional({
+    req.check('telephone', 'Le format du téléphone n\'est pas correct').optional({
         checkFalsy: true
     }).isNumero();
 
@@ -821,16 +823,20 @@ function isSuperAdmin(req, res, next) {
 function telephoneShape(str) {
     var i = 0;
     var j = 0;
+    str = str.replace(/[^0-9]/g, '');
     var formate = "";
     while (i < str.length) { //tant qu il y a des caracteres
         if (j < 2) {
             formate += str[i];
             j++;
             i++;
-        } else if (str[i] != "") { //si on a mis 2 chiffres a la suite on met un espace
-            formate += " ";
+        } else { //si on a mis 2 chiffres a la suite on met un espace
+            if (str[i] != ' ') {
+                formate += " ";
+            }
+            j = 0;
         }
-        j = 0;
+
     }
     return formate;
 }
@@ -870,18 +876,19 @@ function shuffle(array) {
     return array;
 }
 
-function upload(localisation, file, session, mongoId){
+function upload(localisation, file, session, mongoId) {
     let sampleFile = file;
     var imageName = sampleFile.name;
     var ext = sampleFile.name.split('.')[sampleFile.name.split('.').length - 1];
 
     console.log(sampleFile.name)
-    if (ext != 'png' && ext != 'jpeg' && ext != 'jpg' && ext != 'PNG' && ext != 'JPEG' && ext != 'JPG'){
-        session.errors = [{msg:"L'image doit être au format png ou jpg"}];
+    if (ext != 'png' && ext != 'jpeg' && ext != 'jpg' && ext != 'PNG' && ext != 'JPEG' && ext != 'JPG') {
+        session.errors = [{
+            msg: "L'image doit être au format png ou jpg"
+        }];
         session.success = false;
-    }
-    else{
-        sampleFile.mv(path.join(__dirname, '../public/images/'+localisation+'/'+imageName));
+    } else {
+        sampleFile.mv(path.join(__dirname, '../public/images/' + localisation + '/' + imageName));
         session.success = true;
     }
 }
