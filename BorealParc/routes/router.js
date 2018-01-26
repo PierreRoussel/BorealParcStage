@@ -305,16 +305,25 @@ router.post('/dashboard/shop-update', isSuperAdmin, function (req, res, next) {
 
 router.post('/dashboard/update/logo', isSuperAdmin, function (req, res, next) {
     mongoId = mongoose.Types.ObjectId(req.body.id);
-    //upload.single('logo');
-    if (!req.files.logo) {
+    if (!req.files.logo)  {
 
         req.session.errors = [{
             msg: "Vous n'avez pas mis d'image"
         }];
         req.session.success = false;
-
-    } else {
-        upload('logo', req.files, req.body.companyNameSlug, req.session)
+    
+      } else {
+        var sampleFile = req.files.logo ;
+        var fileName = req.body.companyNameSlug + '.' + sampleFile.name.split('.')[sampleFile.name.split('.').length - 1]
+        sampleFile.name = fileName;
+        upload('logo',sampleFile, req.session, mongoId);
+        User.findById(mongoId, function (err, doc, logoName) {
+            if (err) {
+                return done(err);
+            }
+            doc.logo = fileName;
+            doc.save();
+        });
     }
     res.redirect("/dashboard/update/" + mongoId);
 });
@@ -683,20 +692,27 @@ router.get('/dashboard/supprimer/promotion/:id', function (req, res, next) {
 });
 
 
-router.post('/dashboard/contenu-magasin/logo', isLoggedIn, function (req, res) {
-
+router.post('/dashboard/contenu-magasin/logo', isLoggedIn, function (req, res) { 
     mongoId = mongoose.Types.ObjectId(req.body.id);
-    uploadLogo(req, res, function (err) {
-        mongoId = mongoose.Types.ObjectId(req.body.id);
-        User.findById(mongoId, function (err, doc) {
+    if (!req.files.logo)  {
+
+        req.session.errors = [{msg:"Vous n'avez pas mis d'image"}];
+        req.session.success = false;
+    
+      } else {
+        var sampleFile = req.files.logo ;
+        var fileName = req.body.companyNameSlug + '.' + sampleFile.name.split('.')[sampleFile.name.split('.').length - 1]
+        sampleFile.name = fileName;
+        upload('logo',sampleFile, req.session, mongoId);
+        User.findById(mongoId, function (err, doc, logoName) {
             if (err) {
                 return done(err);
             }
-            doc.logo = req.file.filename;
+            doc.logo = fileName;
             doc.save();
-            res.redirect("/dashboard/contenu-magasin");
         });
-    });
+    }
+    res.redirect('/dashboard/contenu-magasin')    
 });
 router.post('/dashboard/contenu-magasin', isLoggedIn, function (req, res) {
     req.check('presentation', 'La présentation est vide').notEmpty();
@@ -854,18 +870,18 @@ function shuffle(array) {
     return array;
 }
 
-function upload(localisation, file, company, session) {
-    let sampleFile = file.logo;
-    var logoExt = sampleFile.name.split('.')[sampleFile.name.split('.').length - 1];
-    var logoName = company + '.' + logoExt;
-    console.log(logoExt)
-    if (logoExt != 'png' && logoExt != 'jpeg' && logoExt != 'jpg') {
-        session.errors = [{
-            msg: "L'image doit être au format png ou jpg"
-        }];
+function upload(localisation, file, session, mongoId){
+    let sampleFile = file;
+    var imageName = sampleFile.name;
+    var ext = sampleFile.name.split('.')[sampleFile.name.split('.').length - 1];
+
+    console.log(sampleFile.name)
+    if (ext != 'png' && ext != 'jpeg' && ext != 'jpg' && ext != 'PNG' && ext != 'JPEG' && ext != 'JPG'){
+        session.errors = [{msg:"L'image doit être au format png ou jpg"}];
         session.success = false;
-    } else {
-        sampleFile.mv(path.join(__dirname, '../public/images/' + localisation + '/' + logoName));
+    }
+    else{
+        sampleFile.mv(path.join(__dirname, '../public/images/'+localisation+'/'+imageName));
         session.success = true;
     }
 }
