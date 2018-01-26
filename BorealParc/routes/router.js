@@ -811,10 +811,10 @@ function telephoneShape(str) {
             formate += str[i];
             j++;
             i++;
-        } else { //si on a mis 2 chiffres a la suite on met un espace
+        } else if (str[i] != "") { //si on a mis 2 chiffres a la suite on met un espace
             formate += " ";
-            j = 0;
         }
+        j = 0;
     }
     return formate;
 }
