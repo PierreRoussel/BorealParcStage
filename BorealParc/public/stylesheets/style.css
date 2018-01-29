@@ -1,3 +1,11 @@
+.info-working {
+    border-left: 3px solid #e51c23;
+    background-color: #fdeaeb;
+    margin-left: 0.6rem!important;
+    margin-bottom: 1rem!important;
+    text-align: justify
+}
+
 nav ul a,
 nav .brand-logo {
     color: #444
