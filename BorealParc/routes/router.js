@@ -3,6 +3,7 @@ var router = express.Router();
 var nodemailer = require('nodemailer');
 var passport = require('passport');
 var flash = require('connect-flash');
+var nl2br = require('nl2br');
 require('../public/passport')(passport);
 var path = require('path');
 var fs = require('fs');
@@ -836,7 +837,6 @@ function telephoneShape(str) {
             }
             j = 0;
         }
-
     }
     return formate;
 }
