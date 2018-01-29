@@ -3,7 +3,6 @@ var router = express.Router();
 var nodemailer = require('nodemailer');
 var passport = require('passport');
 var flash = require('connect-flash');
-var nl2br = require('nl2br');
 require('../public/passport')(passport);
 var path = require('path');
 var fs = require('fs');
@@ -35,49 +34,6 @@ router.get('/', function (req, res, next) {
         }
     })
 });
-
-/*//Subscription to the newsletter
-router.post('/footer/newsletter', function (req, res, next) {
-    function handleSayHello(req, res) {
-        // Not the movie transporter!
-        var transporter = nodemailer.createTransport({
-            service: 'Gmail',
-            auth: {
-                user: 'borealparc.newsletter@gmail.com', // Your email id
-                pass: 'borealAdmin' // Your password
-            }
-        });
-        var mailOptions = {
-            from: 'borealparc.newsletter@gmail.com>', // sender address
-            to: 'drakeyras62@gmail.com', // list of receivers
-            subject: 'Email Example', // Subject line
-            text: 'Hello World', // plaintext body
-            // html: '<b>Hello world ✔</b>' // You can choose to send an HTML body instead
-        };
-        transporter.sendMail(mailOptions, function (error, info) {
-            if (error) {
-                console.log(error);
-                res.json({
-                    yo: 'error'
-                });
-            } else {
-                console.log('Message sent: ' + info.response);
-                res.json({
-                    yo: info.response
-                });
-            };
-        });
-    }
-
-    var newCustomer = new Customer({
-        mail: req.body.mailCustomer
-    });
-
-    newCustomer.mail = req.body.mailCustomer;
-    newCustomer.save();
-    req.session.success = true;
-    res.redirect('/');
-});*/
 
 //////////////////////////
 /// Section entreprise ///
@@ -544,6 +500,41 @@ router.post('/dashboard/admin-shop-update', isLoggedIn, function (req, res) {
     res.redirect("/dashboard/admin-shop-update");
 });
 
+//Section modification du mot de passe magasin
+router.get('/dashboard/modification-mot-de-passe-magasin', isLoggedIn, function (req, res) {
+    res.render('admin/dashboard.shopadmin-password.hbs', {
+        title: 'Modification mot de passe - Dashboard Magasin',
+        isLog: req.user,
+        success: req.session.success,
+        errors: req.session.errors
+    });
+    req.session.success = false;
+    req.session.errors = null;
+});
+router.post('/dashboard/modification-mot-de-passe-magasin', isLoggedIn, function (req, res) {
+    //TODO verifier que l'ancien mot de passe rentré par l'utilisateur est bien le bon
+    req.check('oldPassword', 'L\' ancien mot de passe est invalide').isValidPassword(req.user.user.password);
+    req.check('newPassword', 'Le champ nouveau mot de passe est vide').notEmpty();
+    req.check('newPassword', 'Le mot de passe doit posséder au minimum 6 caractères').len(6, 20);
+    req.check('newPassword', 'Les mots de passe de sont pas identiques').isEqual(req.body.newPasswordVerification);
+    req.check('newPasswordVerification', 'La verification du mot de passe est vide').notEmpty();
+    var errors = req.validationErrors();
+    if (errors) {
+        req.session.errors = errors;
+        req.session.success = false;
+    } else {
+        User.findById(req.session.passport.user, function (err, user) {
+            if (err) return done(err);
+            user.user.password = user.generateHash(req.body.newPassword);
+            user.save(function (err, updatedTank) {
+                if (err) return done(err);
+                req.session.success = true;
+            });
+        });
+    }
+    res.redirect('/dashboard/modification-mot-de-passe-magasin');
+});
+
 //Création promotion Magasin
 router.get('/dashboard/creation-promotion', isLoggedIn, function (req, res) {
     res.render('admin/dashboard.creation-promotion.hbs', {
@@ -627,7 +618,6 @@ router.get('/dashboard/modification-promotion/:id', isLoggedIn, function (req, r
     })
 });
 router.post('/dashboard/modification-promotion/:id', isLoggedIn, function (req, res) {
-    console.log("TESTESTESTESTESTESTESTESTESTESTESTESTESTESTESTESTEST");
     var mongoId = mongoose.Types.ObjectId(req.user._id);
     var promoId = mongoose.Types.ObjectId(req.params.id);
     req.check('title', 'Le titre est vide').notEmpty();
