@@ -24,7 +24,7 @@
                     <li class="collection-item dashboard-admin">
                         <div class="row">
                             <div class="col s6 m12">
-                                {{ this.companyName }}<span>| géré par {{ this.mail }}</span></div>
+                                {{ this.companyName }}<span id="mail-dashboard-supadmin">| géré par {{ this.mail }}</span></div>
                             <div class="col s6 m12">
                                 <a href="/dashboard/delete/{{ this._id }}" onclick="return confirm('Etes-vous certain de vouloir supprimer cet élément?');" class="orange lighten-1 secondary-content waves-effect waves-light btn bouton-dash"><i class="material-icons left">delete</i>Supprimer</a>
                                 <!-- Lien vers /dashboard/contenu-magasin -->

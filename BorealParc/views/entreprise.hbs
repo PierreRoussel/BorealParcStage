@@ -21,7 +21,7 @@
         <div class="col s12">
             <div class="card">
                 <div class="card-content">
-                    <span class="center card-title">Presentation</span>
+                    <span class="center card-title entreprisePage">Presentation</span>
                     <p>{{{ breaklines entreprise.page.presentation }}}</p>
                 </div>
             </div>
@@ -33,14 +33,16 @@
         <div class="col s12 m6">
             <div class="center card">
                 <div class="card-content">
-                    <span class="card-title">Contact</span> {{#if entreprise.page.contact.facebook }}
-                    <a target="_blank" class="waves-effect waves-light btn-large" href="{{ entreprise.page.contact.website }}">Site internet</a> {{/if}} {{#if entreprise.page.contact.catalogue }}
-                    <a target="_blank" class="black-text waves-effect waves-light btn-large" id="btn-catalogue-entreprise" href="{{ entreprise.page.contact.catalogue }}">
+                    <span class="card-title entreprisePage">Contact</span> {{#if entreprise.page.contact.website }}
+                    <a target="_blank" class="btn-large btn-entreprise-contact" id="btn-website-entreprise" href="{{ entreprise.page.contact.website }}">
+                        <div class="inner">Site internet</div>
+                    </a> {{/if}} {{#if entreprise.page.contact.catalogue }}
+                    <a target="_blank" class="black-text btn-large btn-entreprise-contact" id="btn-catalogue-entreprise" href="{{ entreprise.page.contact.catalogue }}">
                         <div class="inner">Catalogue</div>
-                    </a> {{/if}}<br><br>
-                    <a target="_blank" href="{{ entreprise.page.contact.facebook }}"><img src="../images/FB_Logo__blue.png" alt="logo facebook"></a> {{/if}} {{#if entreprise.page.contact.twitter }}
-                    <a target="_blank" href="{{ entreprise.page.contact.twitter }}"><img src="../images/Twitter_Logo_WhiteOnBlue.png" alt="logo twitter"></a> {{/if}} {{#if entreprise.page.contact.instagram }}
-                    <a target="_blank" href="{{ entreprise.page.contact.instagram }}"><img src="../images/Instagram_Logo.png" alt="logo instagram"></a> {{/if}} {{#if entreprise.page.contact.website }}
+                    </a> {{/if}}<br><br>{{#if entreprise.page.contact.facebook }}
+                    <a class="btn-entreprise-contact" target="_blank" href="{{ entreprise.page.contact.facebook }}"><img src="../images/FB_Logo__blue.png" alt="logo facebook"></a> {{/if}} {{#if entreprise.page.contact.twitter }}
+                    <a class="btn-entreprise-contact" target="_blank" href="{{ entreprise.page.contact.twitter }}"><img src="../images/Twitter_Logo_WhiteOnBlue.png" alt="logo twitter"></a> {{/if}} {{#if entreprise.page.contact.instagram }}
+                    <a class="btn-entreprise-contact" target="_blank" href="{{ entreprise.page.contact.instagram }}"><img src="../images/Instagram_Logo.png" alt="logo instagram"></a> {{/if}}
                 </div>
             </div>
         </div>
@@ -48,7 +50,7 @@
         <div class="col s12 m6">
             <div class="center card">
                 <div class="card-content">
-                    <span class="card-title">Horaires</span>
+                    <span class="card-title entreprisePage">Horaires</span>
                     <p>{{ entreprise.page.schedule }}</p>
                 </div>
             </div>
@@ -57,7 +59,7 @@
         <div class="col s12 m6">
             <div class="center card">
                 <div class="card-content">
-                    <span class="card-title">Téléphone</span> {{ entreprise.page.contact.telephone }}
+                    <span class="card-title entreprisePage">Téléphone</span> {{ entreprise.page.contact.telephone }}
                 </div>
             </div>
         </div>
@@ -67,7 +69,7 @@
 {{#if entreprise.rightIndicator }} {{#if entreprise.leftIndicator }}
 <div class="container">
     <div class="row">
-        <div class="col s12 center">
+        <div class="col s12 m12 center">
             <h4>Carte Interactive</h4>
             <div class="cd-interest-wrapper">
                 <img src="/images/map/borealmap.jpg" alt="Centre boréal parc">

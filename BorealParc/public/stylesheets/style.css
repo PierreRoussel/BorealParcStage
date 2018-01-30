@@ -14,8 +14,32 @@
     text-align: justify
 }
 
+.btn-entreprise-contact:hover {
+    transition: 0.1s;
+    border-bottom: solid 0.2rem black;
+}
+
+#btn-website-entreprise {
+    position: relative;
+    background: #006666
+}
+
+#btn-website-entreprise:after {
+    content: "@";
+    font-style: normal;
+    font-weight: 300;
+    text-decoration: inherit;
+    position: absolute;
+    font-size: 42px;
+    color: white;
+    left: 5%;
+    top: -7%;
+    z-index: 1;
+}
+
 #btn-catalogue-entreprise {
     position: relative;
+    width: 11rem;
     background: white
 }
 
@@ -27,7 +51,7 @@
     text-decoration: inherit;
     position: absolute;
     font-size: 45px;
-    color: #5c6bc0;
+    color: #006666;
     left: 5%;
     top: 4%;
     z-index: 1;
@@ -36,8 +60,7 @@
 .inner {
     position: relative;
     z-index: 2;
-    left: 10%;
-    text-shadow: 2px 2px 1px white, 0 0 1px black;
+    left: 18%;
 }
 
 nav ul a,
@@ -80,6 +103,9 @@ p {
     }
     #logo-container {
         margin-left: 2rem;
+    }
+    #mail-dashboard-supadmin {
+        display: none
     }
 }
 
@@ -138,7 +164,12 @@ footer.page-footer {
 }
 
 .card-title {
-    min-height: 70px
+    min-height: 70px;
+}
+
+.card-title.entreprisePage {
+    border-bottom: 2px #066 solid;
+    min-height: 2.6rem;
 }
 
 .card-title.mainPage {
