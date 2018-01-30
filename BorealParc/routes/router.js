@@ -426,6 +426,8 @@ router.post('/dashboard/modification-mot-de-passe-superadmin', isSuperAdmin, fun
 /////////////////////////////////
 /// Section Dashboard MAGASIN ///
 /////////////////////////////////
+
+//////// GET ////////
 router.get('/dashboard/contenu-magasin', isLoggedIn, function (req, res) {
     var mongoId = mongoose.Types.ObjectId(req.user._id);
     User.findById(mongoId, function (err, doc) {
@@ -444,8 +446,93 @@ router.get('/dashboard/contenu-magasin', isLoggedIn, function (req, res) {
         }
     })
 });
+//////// POST A ////////
+router.post('/dashboard/contenu-magasin/logo', isLoggedIn, function (req, res) {
+    mongoId = mongoose.Types.ObjectId(req.body.id);
+    if (!req.files.logo) {
 
-//EN TANT QUE SIMPLE ADMIN : MODIFICATION DES INFOS COMPTES
+        req.session.errors = [{
+            msg: "Vous n'avez pas mis d'image"
+        }];
+        req.session.success = false;
+
+    } else {
+        var sampleFile = req.files.logo;
+        var fileName = req.body.companyNameSlug + '.' + sampleFile.name.split('.')[sampleFile.name.split('.').length - 1]
+        sampleFile.name = fileName;
+        upload('logo', sampleFile, req.session, mongoId);
+        User.findById(mongoId, function (err, doc, logoName) {
+            if (err) {
+                return done(err);
+            }
+            doc.logo = fileName;
+            doc.save();
+        });
+    }
+    res.redirect('/dashboard/contenu-magasin')
+});
+//////// POST B ////////
+router.post('/dashboard/contenu-magasin', isLoggedIn, function (req, res) {
+    req.check('presentation', 'La présentation est vide').notEmpty();
+    req.check('website', 'Le format du lien du site n\'est pas correct').optional({
+        checkFalsy: true
+    }).isURL();
+    req.check('facebook', 'Le format du lien facebook n\'est pas correct').optional({
+        checkFalsy: true
+    }).isURL();
+    req.check('catalogue', 'Le format du lien du catalogue n\'est pas correct').optional({
+        checkFalsy: true
+    }).isURL();
+    req.check('twitter', 'Le format du lien twitter n\'est pas correct').optional({
+        checkFalsy: true
+    }).isURL();
+    req.check('instagram', 'Le format du lien instagram n\'est pas correct').optional({
+        checkFalsy: true
+    }).isURL();
+    req.check('leftIndicator', 'Le positionnement horizontal doit être un chiffre').optional({
+        checkFalsy: true
+    }).isInt();
+    req.check('rightIndicator', 'Le positionnement vertical doit être un chiffre').optional({
+        checkFalsy: true
+    }).isInt();
+    req.check('leftIndicator', 'Le positionnement horizontal doit être compris entre 0 et 100').optional({
+        checkFalsy: true
+    }).isIntRange(0, 100);
+    req.check('rightIndicator', 'Le positionnement vertical doit être compris entre 0 et 100').optional({
+        checkFalsy: true
+    }).isIntRange(0, 100);
+    req.check('telephone', 'Le format du téléphone n\'est pas correct').optional({
+        checkFalsy: true
+    }).isNumero();
+    var errors = req.validationErrors();
+    if (errors) {
+        req.session.errors = errors;
+        req.session.success = false;
+    } else {
+        User.findById(req.body.id, function (err, doc) {
+            if (err) {
+                return done(err);
+            }
+            doc.page.presentation = req.body.presentation;
+            doc.page.address = req.body.address;
+            doc.page.contact.website = req.body.website;
+            doc.page.contact.catalogue = req.body.catalogue;
+            doc.page.contact.facebook = req.body.facebook;
+            doc.page.contact.twitter = req.body.twitter;
+            doc.page.contact.instagram = req.body.instagram;
+            doc.page.schedule = req.body.schedule;
+            doc.leftIndicator = req.body.leftIndicator;
+            doc.rightIndicator = req.body.rightIndicator;
+            doc.page.contact.telephone = telephoneShape(req.body.telephone);
+            doc.save();
+        })
+        req.session.success = true;
+    }
+    res.redirect("/dashboard/contenu-magasin");
+});
+
+////// * Le magasin peut ici modifier les informations de son compte * //////
+//////// GET ////////
 router.get('/dashboard/admin-shop-update', isLoggedIn, function (req, res) {
     var mongoId = mongoose.Types.ObjectId(req.user._id);
     User.findById(mongoId, function (err, doc) {
@@ -464,8 +551,7 @@ router.get('/dashboard/admin-shop-update', isLoggedIn, function (req, res) {
         }
     })
 });
-
-//Le magasin peut ici modifier les informations de son compte
+//////// POST ////////
 router.post('/dashboard/admin-shop-update', isLoggedIn, function (req, res) {
     req.check('mail', 'Le format de l\'email n\'est pas correct').notEmpty().isEmail();
     req.check('newPassword', 'Le champ nouveau mot de passe est vide').optional({
@@ -500,6 +586,7 @@ router.post('/dashboard/admin-shop-update', isLoggedIn, function (req, res) {
     res.redirect("/dashboard/admin-shop-update");
 });
 
+/* ANCIENNE SECTION 
 //Section modification du mot de passe magasin
 router.get('/dashboard/modification-mot-de-passe-magasin', isLoggedIn, function (req, res) {
     res.render('admin/dashboard.shopadmin-password.hbs', {
@@ -534,6 +621,7 @@ router.post('/dashboard/modification-mot-de-passe-magasin', isLoggedIn, function
     }
     res.redirect('/dashboard/modification-mot-de-passe-magasin');
 });
+*/
 
 //Création promotion Magasin
 router.get('/dashboard/creation-promotion', isLoggedIn, function (req, res) {
@@ -683,91 +771,7 @@ router.get('/dashboard/supprimer/promotion/:id', function (req, res, next) {
 });
 
 
-router.post('/dashboard/contenu-magasin/logo', isLoggedIn, function (req, res) {
-    mongoId = mongoose.Types.ObjectId(req.body.id);
-    if (!req.files.logo) {
-
-        req.session.errors = [{
-            msg: "Vous n'avez pas mis d'image"
-        }];
-        req.session.success = false;
-
-    } else {
-        var sampleFile = req.files.logo;
-        var fileName = req.body.companyNameSlug + '.' + sampleFile.name.split('.')[sampleFile.name.split('.').length - 1]
-        sampleFile.name = fileName;
-        upload('logo', sampleFile, req.session, mongoId);
-        User.findById(mongoId, function (err, doc, logoName) {
-            if (err) {
-                return done(err);
-            }
-            doc.logo = fileName;
-            doc.save();
-        });
-    }
-    res.redirect('/dashboard/contenu-magasin')
-});
-router.post('/dashboard/contenu-magasin', isLoggedIn, function (req, res) {
-    req.check('presentation', 'La présentation est vide').notEmpty();
-    req.check('website', 'Le format du lien du site n\'est pas correct').optional({
-        checkFalsy: true
-    }).isURL();
-    req.check('facebook', 'Le format du lien facebook n\'est pas correct').optional({
-        checkFalsy: true
-    }).isURL();
-    req.check('catalogue', 'Le format du lien du catalogue n\'est pas correct').optional({
-        checkFalsy: true
-    }).isURL();
-    req.check('twitter', 'Le format du lien twitter n\'est pas correct').optional({
-        checkFalsy: true
-    }).isURL();
-    req.check('instagram', 'Le format du lien instagram n\'est pas correct').optional({
-        checkFalsy: true
-    }).isURL();
-    req.check('leftIndicator', 'Le positionnement horizontal doit être un chiffre').optional({
-        checkFalsy: true
-    }).isInt();
-    req.check('rightIndicator', 'Le positionnement vertical doit être un chiffre').optional({
-        checkFalsy: true
-    }).isInt();
-    req.check('leftIndicator', 'Le positionnement horizontal doit être compris entre 0 et 100').optional({
-        checkFalsy: true
-    }).isIntRange(0, 100);
-    req.check('rightIndicator', 'Le positionnement vertical doit être compris entre 0 et 100').optional({
-        checkFalsy: true
-    }).isIntRange(0, 100);
-    req.check('telephone', 'Le format du téléphone n\'est pas correct').optional({
-        checkFalsy: true
-    }).isNumero();
-
-    var errors = req.validationErrors();
-    if (errors) {
-        req.session.errors = errors;
-        req.session.success = false;
-    } else {
-        User.findById(req.body.id, function (err, doc) {
-            if (err) {
-                return done(err);
-            }
-            doc.page.presentation = req.body.presentation;
-            doc.page.address = req.body.address;
-            doc.page.contact.website = req.body.website;
-            doc.page.contact.catalogue = req.body.catalogue;
-            doc.page.contact.facebook = req.body.facebook;
-            doc.page.contact.twitter = req.body.twitter;
-            doc.page.contact.instagram = req.body.instagram;
-            doc.page.schedule = req.body.schedule;
-            doc.leftIndicator = req.body.leftIndicator;
-            doc.rightIndicator = req.body.rightIndicator;
-            doc.page.contact.telephone = telephoneShape(req.body.telephone);
-
-            doc.save();
-        })
-        req.session.success = true;
-    }
-    res.redirect("/dashboard/contenu-magasin");
-});
-
+///// SI RESULTAT INTROUVABLE //////
 router.get('/*', function (req, res, next) {
     User.find({
         isSuperAdmin: false
