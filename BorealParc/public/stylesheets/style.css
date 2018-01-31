@@ -14,6 +14,11 @@
     text-align: justify
 }
 
+.entreprise-dash-left {
+    font-weight: 500;
+    font-size: 16px;
+}
+
 .btn-entreprise-contact:hover {
     transition: 0.1s;
     border-bottom: solid 0.2rem black;
@@ -207,6 +212,11 @@ footer.page-footer {
     cursor: pointer;
 }
 
+.bouton-dash {
+    margin-bottom: 0.2rem;
+    margin-top: 0.2rem;
+}
+
 @media only screen and (max-width: 600px) {
     .fix {
         width: 50%
@@ -313,11 +323,10 @@ footer.page-footer {
     margin: 1px;
 }
 
-.collection-item.dashboard-admin {
-    padding-bottom: 25px;
-    padding-right: 0px;
-}
-
-.section-haute-dash {
+.section-haute-dash,
+.titre-dash-supadmin {
     text-align: center;
+}
+#sender {
+    padding-left: 0.5rem;
 }

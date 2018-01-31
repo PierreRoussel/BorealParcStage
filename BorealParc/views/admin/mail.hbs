@@ -1,0 +1,43 @@
+<div class="container">
+    <div class="col s12">
+        <a href="/dashboard" class="grey lighten-1 waves-effect waves-light btn"><i class="material-icons left">arrow_back</i>Retour</a>
+    </div>
+    <div class="card-panel teal darken-2">
+        <h5 class="white-text center titre-dash-supadmin">Envoyer une newsletter à vos abonnés</h5>
+        <div class="row">
+            {{# if success }}
+            <div class="center admin-form-ok">
+                <h5><i class="material-icons">verified_user</i> La page magasin a bien été modifiée</h5>
+            </div>
+            {{ else }} {{# if errors }}
+            <div class="center admin-form-wrong">
+                <h5><i class="material-icons">close</i> Erreur: la page magasin n'a pas été modifiée</h5>
+                <ul>
+                    {{# each errors }}
+                    <li>{{ this.msg }}</li>
+                    {{/each}}
+                </ul>
+            </div>
+            {{/if}} {{/if}}
+        </div>
+    </div>
+    <br>
+    <form class="row" method="post" action="/mail">
+        <div class="col s12">
+            <div class="input-field col m12 l8">
+                <input id="sender" type="email" name="sender" class="validate black-text grey lighten-4" value="borealparc.newsletter@gmail.com" disabled>
+                <label for="sender">Source:</label>
+            </div>
+            <div class="input-field col m12 l8">
+                <input type="email" name="destination" id="destination" class="validate grey lighten-4" placeholder="adresse@mail.com" />
+                <label for="destination">Destinataire:</label></div>
+            <div class="input-field col m12 l8">
+                <input type="email" name="destination" id="destination" class="validate grey lighten-4" placeholder="objet du mail" />
+                <label for="destination">Objet:</label></div>
+            <input type="text" name="subject" id="subject" class="input-field" placeholder="L'objet du mail" />
+            <textarea rows="11" name="message" id="message" class="input-field" placeholder="Le contenu de votre mail"></textarea>
+            <button type="submit" class="btn btn-large">Envoyer</button>
+        </div>
+    </form>
+</div>
+{{> page/footer}} {{> script/full}}
