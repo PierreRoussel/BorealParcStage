@@ -625,15 +625,45 @@ router.get('/dashboard/modification-promotion/:id', isLoggedIn, function (req, r
         })
     })
 });
+
+/*
+
+//Upload image promotion
+router.post('/dashboard/modification-promotion/picture', isLoggedIn, function (req, res){
+    var mongoId = mongoose.Types.ObjectId(req.user._id);
+    var promoId = mongoose.Types.ObjectId(req.params.id);
+    if (!req.files.picture) {
+        req.session.errors = [{msg:"Vous n'avez pas mis d'image"}];
+        req.session.success = false;
+    }else{
+        var sampleFile = req.files.picture;
+        var fileName = req.body.companyNameSlug + '.' +promoId+'.' +sampleFile.name.split('.')[sampleFile.name.split('.').length - 1]
+        sampleFile.name = fileName;
+        upload('promotion',sampleFile, req.session, mongoId);
+        console.log(fileName);
+        User.findOneAndUpdate(promoId, function (err, doc, pictureName){
+            if (err){
+                return done(err);
+            }
+
+            doc.promotion.picture = fileName;
+            doc.save();
+        });
+
+    }
+    res.redirect("/dashboard/liste-promotion/");
+}); 
+
+*/
+
+//Modification promotion
 router.post('/dashboard/modification-promotion/:id', isLoggedIn, function (req, res) {
-    console.log("TESTESTESTESTESTESTESTESTESTESTESTESTESTESTESTESTEST");
     var mongoId = mongoose.Types.ObjectId(req.user._id);
     var promoId = mongoose.Types.ObjectId(req.params.id);
     req.check('title', 'Le titre est vide').notEmpty();
     req.check('description', 'La description est vide').notEmpty();
     req.check('startDate', 'La date de debut est vide').notEmpty();
     req.check('endDate', 'La date de fin est vide').notEmpty();
-    console.log('CHECK FINI');
 
     User.findOneAndUpdate({
             _id: mongoId
@@ -645,10 +675,9 @@ router.post('/dashboard/modification-promotion/:id', isLoggedIn, function (req, 
             }
         },
         function (err, model) {
-            console.log('ID ANCIENNE PROMO ' + model._id);
-        },
+            console.log(model._id);
+        }
     )
-    console.log('APRES SUPPRESSION PROMO');
     User.findOneAndUpdate({
             _id: mongoId
         }, {
@@ -663,13 +692,16 @@ router.post('/dashboard/modification-promotion/:id', isLoggedIn, function (req, 
             }
         },
         function (err, model) {
-            console.log('ID NOUVELLE PROMO ' + model._id);
+            console.log(model._id);
         }
     )
-    console.log('APRES REINSERTION PROMO');
 
     res.redirect("/dashboard/liste-promotion/");
 });
+
+
+
+
 
 //Suppression de promotion
 router.get('/dashboard/supprimer/promotion/:id', function (req, res, next) {
