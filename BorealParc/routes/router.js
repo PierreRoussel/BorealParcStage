@@ -22,16 +22,19 @@ router.get('/', function (req, res, next) {
             return done(err);
         else if (!user)
             res.render('index', {
-                title: 'Accueil - Boréal Parc'
+                title: 'Accueil - Boréal Parc',
+                success: req.session.success
             });
         else {
             shuffle(user);
             res.render('index', {
                 title: 'Accueil - Boréal Parc',
                 entreprise: user,
-                isLog: req.user
+                isLog: req.user,
+                success: req.session.success
             });
         }
+        req.session.success = false;
     })
 });
 
@@ -587,6 +590,24 @@ router.post('/dashboard/admin-shop-update', isLoggedIn, function (req, res) {
 //////////////////////////////
 /////  FONCTION MAILING  /////
 //////////////////////////////
+
+//Subscription to the newsletter
+router.post('/footer/newsletter', function (req, res) {
+    req.check('mailCustomer', 'Le format de l\'email n\'est pas correct').notEmpty().isEmail();
+    var newCustomer = new Customer({
+        mail: req.body.mailCustomer
+    });
+    newCustomer.mail = req.body.mailCustomer;
+    newCustomer.save(function (err) {
+        if (err) {
+            return console.log('error');
+        }
+    });
+    req.session.success = true;
+    res.redirect('/#btn-newsletter');
+})
+
+//Page d'envoie de newsletter
 router.get('/dashboard/mail', isSuperAdmin, function (req, res, next) {
     var mongoId = mongoose.Types.ObjectId(req.params.id);
     User.findById(mongoId, function (err, doc) {
