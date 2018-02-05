@@ -608,7 +608,7 @@ router.get('/dashboard/liste-promotion', isLoggedIn, function (req, res) {
 router.get('/dashboard/modification-promotion/:id', isLoggedIn, function (req, res) {
     var mongoId = mongoose.Types.ObjectId(req.user._id);
     var promoId = mongoose.Types.ObjectId(req.params.id);
-    console.log('ID    ', req.params.id);
+    //console.log('ID    ', req.params.id);
     User.findOne({
         'promotion._id': promoId
     }, function (err, model) {
@@ -616,7 +616,7 @@ router.get('/dashboard/modification-promotion/:id', isLoggedIn, function (req, r
             return Promo.id == promoId;
         }
         var promo = model.promotion.find(BonnePromo);
-        console.log(promo.endDate);
+        //console.log(promo.endDate);
         res.render('admin/dashboard.modification-promotion.hbs', {
             title: 'Modification Promotion',
             message: req.flash('signupMessage'),
@@ -626,76 +626,60 @@ router.get('/dashboard/modification-promotion/:id', isLoggedIn, function (req, r
     })
 });
 
-/*
 
 //Upload image promotion
-router.post('/dashboard/modification-promotion/picture', isLoggedIn, function (req, res){
+router.post('/dashboard/picture-modification/:id', isLoggedIn, function (req, res){
     var mongoId = mongoose.Types.ObjectId(req.user._id);
     var promoId = mongoose.Types.ObjectId(req.params.id);
+    
     if (!req.files.picture) {
         req.session.errors = [{msg:"Vous n'avez pas mis d'image"}];
         req.session.success = false;
     }else{
         var sampleFile = req.files.picture;
-        var fileName = req.body.companyNameSlug + '.' +promoId+'.' +sampleFile.name.split('.')[sampleFile.name.split('.').length - 1]
+        var fileName = promoId + '.' +sampleFile.name.split('.')[sampleFile.name.split('.').length - 1]
         sampleFile.name = fileName;
         upload('promotion',sampleFile, req.session, mongoId);
-        console.log(fileName);
-        User.findOneAndUpdate(promoId, function (err, doc, pictureName){
-            if (err){
-                return done(err);
+        //console.log(fileName);
+        User.findOne(mongoId, function(err, model){ //Récupération tableau des promotions de l'entreprise
+        for (var i = 0; i<model.promotion.length; i++){
+            //console.log('Dans le for : ',model.promotion[i]._id);
+            if(model.promotion[i]._id == req.params.id){                
+                //console.log('Dans le if : ',model.promotion[i]);
+                model.promotion[i].picture = fileName;
+                model.save();
             }
-
-            doc.promotion.picture = fileName;
-            doc.save();
+        }
         });
-
     }
-    res.redirect("/dashboard/liste-promotion/");
+    res.redirect("/dashboard/modification-promotion/"+promoId);
 }); 
 
-*/
+
 
 //Modification promotion
 router.post('/dashboard/modification-promotion/:id', isLoggedIn, function (req, res) {
+    console.log('Oui Oui Oui');
     var mongoId = mongoose.Types.ObjectId(req.user._id);
     var promoId = mongoose.Types.ObjectId(req.params.id);
     req.check('title', 'Le titre est vide').notEmpty();
     req.check('description', 'La description est vide').notEmpty();
     req.check('startDate', 'La date de debut est vide').notEmpty();
     req.check('endDate', 'La date de fin est vide').notEmpty();
-
-    User.findOneAndUpdate({
-            _id: mongoId
-        }, {
-            $pull: {
-                promotion: {
-                    _id: req.params.id
-                }
+    //console.log('Bonjour avant le findOne');
+    User.findOne(mongoId, function(err, model){ //Récupération tableau des promotions de l'entreprise
+        for (var i = 0; i<model.promotion.length; i++){
+            //console.log('Dans le for : ',model.promotion[i]._id);
+            if(model.promotion[i]._id == req.params.id){                
+                //console.log('Dans le if : ',model.promotion[i]);
+                model.promotion[i].title = req.body.title;
+                model.promotion[i].description = req.body.description;
+                model.promotion[i].startDate = req.body.startDate;
+                model.promotion[i].endDate = req.body.endDate;
+                model.save();
             }
-        },
-        function (err, model) {
-            console.log(model._id);
         }
-    )
-    User.findOneAndUpdate({
-            _id: mongoId
-        }, {
-            $push: {
-                promotion: {
-                    _id: req.params.id,
-                    title: req.body.title,
-                    description: req.body.description,
-                    startDate: req.body.startDate,
-                    endDate: req.body.endDate
-                }
-            }
-        },
-        function (err, model) {
-            console.log(model._id);
-        }
-    )
-
+    });
     res.redirect("/dashboard/liste-promotion/");
 });
 
