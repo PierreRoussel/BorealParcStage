@@ -26,19 +26,21 @@
 
 #btn-website-entreprise {
     position: relative;
+    margin-right: 0.5rem;
     background: #006666
 }
 
 #btn-website-entreprise:after {
-    content: "@";
+    font-family: "Material-Design-Icons";
+    content: "\e63e";
     font-style: normal;
-    font-weight: 300;
+    font-weight: 100;
     text-decoration: inherit;
     position: absolute;
     font-size: 42px;
     color: white;
-    left: 5%;
-    top: -7%;
+    left: 3%;
+    top: 0;
     z-index: 1;
 }
 
@@ -50,7 +52,7 @@
 
 #btn-catalogue-entreprise:after {
     font-family: "Material-Design-Icons";
-    content: "\e65f";
+    content: "\e877";
     font-style: normal;
     font-weight: lighter;
     text-decoration: inherit;
@@ -58,7 +60,7 @@
     font-size: 45px;
     color: #006666;
     left: 5%;
-    top: 4%;
+    top: 0;
     z-index: 1;
 }
 
@@ -327,6 +329,7 @@ footer.page-footer {
 .titre-dash-supadmin {
     text-align: center;
 }
+
 #sender {
     padding-left: 0.5rem;
 }
