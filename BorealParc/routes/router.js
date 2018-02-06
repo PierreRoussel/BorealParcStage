@@ -554,8 +554,10 @@ router.get('/dashboard/creation-promotion', isLoggedIn, function (req, res) {
     req.session.success = false;
     req.session.errors = null;
 });
+
 router.post('/dashboard/creation-promotion', isLoggedIn, function (req, res) {
     var mongoId = mongoose.Types.ObjectId(req.user._id);
+    console.log(req.files);
     req.check('title', 'Le titre est vide').notEmpty();
     req.check('description', 'La description est vide').notEmpty();
     req.check('startDate', 'La date de debut est vide').notEmpty();
@@ -578,14 +580,39 @@ router.post('/dashboard/creation-promotion', isLoggedIn, function (req, res) {
                 }
             },
             function (err, model) {
-                console.log(err);
+                //Enregistrement image après création de la promotion
+                User.findOne( 
+                    { _id : mongoId},
+                    function(err, model){
+                        var idNouvellePromo = model.promotion[model.promotion.length -1].id;                        
+                        if (!req.files.picture) {
+                            req.session.errors = [{msg:"Vous n'avez pas mis d'image"}];
+                            req.session.success = false;
+                        }else{
+                            var sampleFile = req.files.picture;
+                            var fileName = idNouvellePromo + '.' +sampleFile.name.split('.')[sampleFile.name.split('.').length - 1]
+                            sampleFile.name = fileName;
+                            upload('promotion',sampleFile, req.session, mongoId);
+                            User.findOne(mongoId, function(err, model){ //Récupération tableau des promotions de l'entreprise
+                            for (var i = 0; i<model.promotion.length; i++){
+                                if(model.promotion[i]._id == idNouvellePromo){                
+                                    model.promotion[i].picture = fileName;
+                                    model.save();
+                                }
+                            }
+                            });
+                        }
+                    }
+                    
+                )
+                
             }
+            
         )
         req.session.success = true;
     }
     res.redirect("/dashboard/creation-promotion");
 });
-
 
 //Affichages des promotions des entreprises
 router.get('/dashboard/liste-promotion', isLoggedIn, function (req, res) {
@@ -608,7 +635,6 @@ router.get('/dashboard/liste-promotion', isLoggedIn, function (req, res) {
 router.get('/dashboard/modification-promotion/:id', isLoggedIn, function (req, res) {
     var mongoId = mongoose.Types.ObjectId(req.user._id);
     var promoId = mongoose.Types.ObjectId(req.params.id);
-    //console.log('ID    ', req.params.id);
     User.findOne({
         'promotion._id': promoId
     }, function (err, model) {
@@ -616,7 +642,6 @@ router.get('/dashboard/modification-promotion/:id', isLoggedIn, function (req, r
             return Promo.id == promoId;
         }
         var promo = model.promotion.find(BonnePromo);
-        //console.log(promo.endDate);
         res.render('admin/dashboard.modification-promotion.hbs', {
             title: 'Modification Promotion',
             message: req.flash('signupMessage'),
@@ -627,11 +652,11 @@ router.get('/dashboard/modification-promotion/:id', isLoggedIn, function (req, r
 });
 
 
-//Upload image promotion
+//Upload modification image promotion
 router.post('/dashboard/picture-modification/:id', isLoggedIn, function (req, res){
     var mongoId = mongoose.Types.ObjectId(req.user._id);
     var promoId = mongoose.Types.ObjectId(req.params.id);
-    
+    console.log("zerhgfb");
     if (!req.files.picture) {
         req.session.errors = [{msg:"Vous n'avez pas mis d'image"}];
         req.session.success = false;
@@ -640,12 +665,9 @@ router.post('/dashboard/picture-modification/:id', isLoggedIn, function (req, re
         var fileName = promoId + '.' +sampleFile.name.split('.')[sampleFile.name.split('.').length - 1]
         sampleFile.name = fileName;
         upload('promotion',sampleFile, req.session, mongoId);
-        //console.log(fileName);
         User.findOne(mongoId, function(err, model){ //Récupération tableau des promotions de l'entreprise
         for (var i = 0; i<model.promotion.length; i++){
-            //console.log('Dans le for : ',model.promotion[i]._id);
             if(model.promotion[i]._id == req.params.id){                
-                //console.log('Dans le if : ',model.promotion[i]);
                 model.promotion[i].picture = fileName;
                 model.save();
             }

@@ -3,7 +3,7 @@ var bcrypt = require('bcrypt-nodejs');
 var Schema = mongoose.Schema;
 
 var promotion = new Schema({
-    title: { type : String },
+    title: { type : String, unique : true },
     description: { type : String },
     startDate: { type : Date },
     endDate: { type : Date },
