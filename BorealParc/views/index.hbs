@@ -24,9 +24,8 @@
         <!--   Icon Section   -->
         <div class="row">
             <div class="col s12">
-                <h5 class="center">Les Commerces et services d’Arras Sud.</h5>
-                <p class="light">
-                    Vous trouverez à Boréal Parc autour de l’hypermarché Market sur … Hectares de nombreux commerces. Des restaurants (Poivre Rouge, l’étoile d’Or Asiatique, Mc Donald’s et Subway), de l’automobile (vente, entretien, réparation, lavage et contrôle technique), de la vente et réparation d’ordinateurs, de l’équipement de la maison (chauffage, portes et fenêtre, cuisine équipée, meubles, décoration et électroménager), de l’habillement (sport et outlet), du bricolage, du jardinage, des commerces traditionnels (cordonnerie, opticien et coiffeur) et un centre équestre.</p>
+                <h5 class="center">Les Commerces et services d’Arras Sud</h5>
+                <p id="texte-presentation-index"></p>
             </div>
         </div>
     </div>
@@ -42,7 +41,7 @@
                     <li class="cd-single-point" style="top:{{ this.rightIndicator }}%; left:{{ this.leftIndicator }}%">
                         <a href="./entreprise/{{ this.companyNameSlug }}" style='color:#26a69a'><i class="material-icons pointeur-carte" style="font-size:44px;">place</i></a>
                         <div class="cd-more-info cd-top">
-                            <img src="/images/logo/{{ this.logo }}" style="max-height:80px;max-width:100px;padding:8px">
+                            <img src="/images/logo/{{ this.logo }}" style="max-height:100px;max-width:100px;padding:8px">
                             <h2>{{ this.companyName }}</h2>
                         </div>
                     </li>
@@ -60,7 +59,7 @@
                     <div class="fix col">
                         <div class="card hoverable card-acc" onclick="javascript:location.href='./entreprise/{{ this.companyNameSlug }}'">
                             <div class="card-image">
-                                <img src="/images/logo/{{ this.logo }}" style="max-width:100px;">
+                                <img src="/images/logo/{{ this.logo }}" style="max-width:100px;max-height:100px">
                             </div>
                             <div class="card-content">
                                 <span class="card-title mainPage">{{ this.companyName }}</span>

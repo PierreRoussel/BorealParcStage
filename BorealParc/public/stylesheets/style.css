@@ -6,12 +6,40 @@
     font-style: normal;
 }
 
+/* PAGE ENTREPRISE PHOTOS */
+
+.lignePhoto {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    max-height: 35rem;
+    overflow: auto
+}
+
+.column-photo {
+    flex: 33%;
+}
+
+.column-photo img {
+    width: 100%;
+    padding: 0.2rem;
+    vertical-align: middle;
+}
+
+/*------------------------*/
+
 .info-working {
     border-left: 3px solid #e51c23;
     background-color: #fdeaeb;
     margin-left: 0.6rem!important;
     margin-bottom: 1rem!important;
     text-align: justify
+}
+
+.num-tel-entreprise {
+    font-size: 1.3rem;
+    letter-spacing: 0.1rem;
+    text-shadow: 0 1px 1px #0066;
 }
 
 .entreprise-dash-left {
@@ -162,8 +190,22 @@ footer.page-footer {
     padding: 0 1rem;
 }
 
+#texte-presentation-index {
+    text-indent: 3rem;
+    text-align: justify;
+    letter-spacing: 0.05rem;
+    min-height: 8rem;
+}
+
 .logo-page-entreprise img {
     height: 300px
+}
+
+.texte-entreprise-presentation {
+    text-indent: 2rem;
+    text-align: justify;
+    font-size: 1.2rem;
+    text-align-last: center;
 }
 
 .card-acc {
@@ -236,7 +278,6 @@ footer.page-footer {
         display: none;
     }
     #btn-catalogue-entreprise {
-        margin-top: 1rem;
         min-width: 12rem
     }
     #brands-btn {

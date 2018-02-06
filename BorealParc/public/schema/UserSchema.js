@@ -3,10 +3,18 @@ var bcrypt = require('bcrypt-nodejs');
 var Schema = mongoose.Schema;
 
 var promotion = new Schema({
-    title: { type : String },
-    description: { type : String },
-    startDate: { type : Date },
-    endDate: { type : Date }
+    title: {
+        type: String
+    },
+    description: {
+        type: String
+    },
+    startDate: {
+        type: Date
+    },
+    endDate: {
+        type: Date
+    }
 })
 
 var UserSchema = new Schema({
@@ -39,8 +47,23 @@ var UserSchema = new Schema({
     logo: {
         type: String
     },
+    photo: {
+        image1: {
+            type: String
+        },
+        image2: {
+            type: String
+        },
+        image3: {
+            type: String
+        },
+        image4: {
+            type: String
+        }
+    },
     page: {
         presentation: String,
+        pjaunes: String,
         contact: {
             telephone: String,
             website: String,
@@ -56,8 +79,7 @@ var UserSchema = new Schema({
             type: String
         }
     },
-    promotion : [promotion],
-    
+    promotion: [promotion],
     leftIndicator: Number,
     rightIndicator: Number,
     resetPasswordToken: String,

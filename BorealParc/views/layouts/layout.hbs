@@ -24,7 +24,10 @@
                     <li><a href="/logout" id='logout'>Se déconnecter</a> {{/if}}
             </ul>
             <ul id="nav-mobile" class="side-nav">
-                <li><a href="#brands">Les différentes enseignes</a></li>
+                <li><a href="/">Page accueil</a></li>
+                {{#if isLog}}
+                <li><a href="/dashboard" id='dashboard'>Dashboard</a>
+                    <li><a href="/logout" id='logout'>Se déconnecter</a> {{/if}}
             </ul>
             <a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
         </div>

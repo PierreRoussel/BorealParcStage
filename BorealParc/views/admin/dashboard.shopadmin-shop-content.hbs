@@ -5,11 +5,11 @@
         </div>
         {{# if success }}
         <div class="center admin-form-ok">
-            <h5><i class="material-icons">verified_user</i> La page magasin a bien été modifiée</h5>
+            <h5 style="margin-top:0.5rem"><i class="material-icons">verified_user</i> La page magasin a bien été modifiée</h5>
         </div>
         {{ else }} {{# if errors }}
         <div class="center admin-form-wrong">
-            <h5><i class="material-icons">close</i> Erreur: la page magasin n'a pas été modifiée</h5>
+            <h5 style="margin-top:0.5rem"><i class="material-icons">close</i> Erreur: la page magasin n'a pas été modifiée</h5>
             <ul>
                 {{# each errors }}
                 <li>{{ this.msg }}</li>
@@ -17,6 +17,7 @@
             </ul>
         </div>
         {{/if}} {{/if}}
+        <h5 style="margin-top:0.9rem">Ajouter un logo à votre entreprise:</h5>
         <form action="/dashboard/contenu-magasin/logo" method="post" enctype="multipart/form-data" class="col s12">
             {{# if item.logo }}
             <div class="row center">
@@ -45,6 +46,7 @@
                 </div>
             </div>
         </form>
+        <h5 style="margin-top:0.5rem">Modifier les informations de votre entreprise:</h5>
         <form action="/dashboard/contenu-magasin" method="post" class="col s12">
             <div class="row">
                 <input id="id" type="hidden" name="id" value="{{ item._id }}">
@@ -63,6 +65,10 @@
                 <div class="input-field col m12 l6">
                     <input id="catalogue" type="text" name="catalogue" class="validate" value="{{ item.page.contact.catalogue }}">
                     <label for="catalogue">Lien vers votre catalogue:</label>
+                </div>
+                <div class="input-field col m12 l6">
+                    <input id="pjaunes" type="text" name="pjaunes" class="validate" value="{{ item.page.pjaunes }}">
+                    <label for="pjaunes">Lien Pages Jaunes:</label>
                 </div>
                 <div class="input-field col m12 l6">
                     <input id="facebook" type="text" name="facebook" class="validate" value="{{ item.page.contact.facebook }}">
@@ -84,6 +90,7 @@
                     <textarea id="schedule" name="schedule" class="materialize-textarea">{{ item.page.schedule }}</textarea>
                     <label for="schedule">Horaires:</label>
                 </div>
+                <h5 style="margin-top:0.5rem">Positionnez-vous sur la carte:</h5>
                 <div class="col s12 center">
                     <p>Choisissez le positionnement de l'indicateur</p>
                     <div class="cd-interest-wrapper">
@@ -114,7 +121,68 @@
             </div>
             <div class="row">
                 <div class="input-field col s6">
-                    <button class="indigo lighten btn waves-effect waves-light" type="submit" name="action">Enregistrer les modifications
+                    <button class="indigo lighten btn-large waves-effect waves-light" type="submit" name="action">Enregistrer les modifications
+                    <i class="material-icons right">send</i>
+                    </button>
+                </div>
+            </div>
+        </form>
+
+        <!-- CETTE PARTIE PERMET D'AJOUTER JUSQUE 4 PHOTOS LA PAGE DE PRESENTATION DE L'ENTREPRISE -->
+        <h5 style="margin-top:0.5rem;">Ajouter des images à votre page de présentation:</h5>
+        <form action="/dashboard/contenu-magasin/photo" method="post" enctype="multipart/form-data" class="col s12">
+            <div class="row center">
+                <div class="file-field input-field col s12">
+                    <div class="lignePhoto">
+                        <div class="column-photo"><img class="materialboxed" src="/images/photo/{{ item.photo.image1}}" alt="Photo entreprise 1"></div>
+                        <div class="column-photo"><img class="materialboxed" src="/images/photo/{{ item.photo.image2 }}" alt="Photo entreprise 2"></div>
+                        <div class="column-photo"><img class="materialboxed" src="/images/photo/{{ item.photo.image3 }}" alt="Photo entreprise 3"></div>
+                        <div class="column-photo"><img class="materialboxed" src="/images/photo/{{ item.photo.image4 }}" alt="Photo entreprise 4"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <input id="id" type="hidden" name="id" value="{{ item._id }}">
+                <input id="id" type="hidden" name="companyNameSlug" value="{{ item.companyNameSlug }}">
+                <div class="file-field input-field col s6">
+                    <div class="indigo lighten btn">
+                        <span>Première image</span>
+                        <input name="photo1" type="file">
+                    </div>
+                    <div class="file-path-wrapper">
+                        <input class="file-path validate" type="text">
+                    </div>
+                </div>
+                <div class="file-field input-field col s6">
+                    <div class="indigo lighten btn">
+                        <span>Deuxième image</span>
+                        <input name="photo2" type="file">
+                    </div>
+                    <div class="file-path-wrapper">
+                        <input class="file-path validate" type="text">
+                    </div>
+                </div>
+                <div class="file-field input-field col s6">
+                    <div class="indigo lighten btn">
+                        <span>Troisième image</span>
+                        <input name="photo3" type="file">
+                    </div>
+                    <div class="file-path-wrapper">
+                        <input class="file-path validate" type="text">
+                    </div>
+                </div>
+                <div class="file-field input-field col s6">
+                    <div class="indigo lighten btn">
+                        <span>Quatrième image</span>
+                        <input name="photo4" type="file">
+                    </div>
+                    <div class="file-path-wrapper">
+                        <input class="file-path validate" type="text">
+                    </div>
+                </div>
+                <div class="input-field col s6">
+                    <button class="indigo lighten btn waves-effect waves-light" type="submit" name="action">Enregistrer les images
                     <i class="material-icons right">send</i>
                     </button>
                 </div>

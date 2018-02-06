@@ -22,4 +22,25 @@
         }
     });
 
+    /* MATERIALBOXED POUR PAGE ENTREPRISE */
+    $(document).ready(function() {
+        $('.materialboxed').materialbox();
+    });
+    /* POUR QUE LE TEXTE INDEX DEFILE COMME ECRIS A LA MAIN */
+    var i = 0;
+    var txt = 'Vous trouverez à Boréal Parc autour de l’hypermarché Market sur … Hectares de nombreux commerces. Des restaurants (Poivre Rouge, l’étoile d’Or Asiatique, Mc Donald’s et Subway), de l’automobile (vente, entretien, réparation, lavage et contrôle technique), de la vente et réparation d’ordinateurs, de l’équipement de la maison (chauffage, portes et fenêtre, cuisine équipée, meubles, décoration et électroménager), de l’habillement (sport et outlet), du bricolage, du jardinage, des commerces traditionnels (cordonnerie, opticien et coiffeur) et un centre équestre.';
+
+    function typeWriter() {
+        if (i < txt.length) {
+            document.getElementById("texte-presentation-index").innerHTML += txt.charAt(i);
+            i++;
+            if (document.body.clientWidth > 600) {
+                setTimeout(typeWriter, 10);
+            } else {
+                setTimeout(typeWriter, 0);
+            }
+        }
+    }
+    window.onload = typeWriter;
+
 </script>

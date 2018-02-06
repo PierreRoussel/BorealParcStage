@@ -154,6 +154,9 @@ router.post('/dashboard/update', isSuperAdmin, function (req, res, next) {
     req.check('catalogue', 'Le format du lien du catalogue n\'est pas correct').optional({
         checkFalsy: true
     }).isURL();
+    req.check('pjaunes', 'Le format du lien des Pages-Jaunes n\'est pas correct').optional({
+        checkFalsy: true
+    }).isURL();
     req.check('facebook', 'Le format du lien facebook n\'est pas correct').optional({
         checkFalsy: true
     }).isURL();
@@ -195,6 +198,7 @@ router.post('/dashboard/update', isSuperAdmin, function (req, res, next) {
             doc.page.contact.facebook = req.body.facebook;
             doc.page.contact.twitter = req.body.twitter;
             doc.page.contact.instagram = req.body.instagram;
+            doc.page.pjaunes = req.body.pjaunes;
             doc.page.schedule = req.body.schedule;
             doc.leftIndicator = req.body.leftIndicator;
             doc.rightIndicator = req.body.rightIndicator;
@@ -447,7 +451,7 @@ router.get('/dashboard/contenu-magasin', isLoggedIn, function (req, res) {
         }
     })
 });
-//////// POST A ////////
+//////// POST A ////////ENREGISTREMENT DU LOGO D'ENTREPRISE
 router.post('/dashboard/contenu-magasin/logo', isLoggedIn, function (req, res) {
     mongoId = mongoose.Types.ObjectId(req.body.id);
     if (!req.files.logo) {
@@ -462,7 +466,7 @@ router.post('/dashboard/contenu-magasin/logo', isLoggedIn, function (req, res) {
         var fileName = req.body.companyNameSlug + '.' + sampleFile.name.split('.')[sampleFile.name.split('.').length - 1]
         sampleFile.name = fileName;
         upload('logo', sampleFile, req.session, mongoId);
-        User.findById(mongoId, function (err, doc, logoName) {
+        User.findById(mongoId, function (err, doc, fileName) {
             if (err) {
                 return done(err);
             }
@@ -472,13 +476,16 @@ router.post('/dashboard/contenu-magasin/logo', isLoggedIn, function (req, res) {
     }
     res.redirect('/dashboard/contenu-magasin')
 });
-//////// POST B ////////
+//////// POST B ////////ENREGISTREMENT DES DONNES GENERALES
 router.post('/dashboard/contenu-magasin', isLoggedIn, function (req, res) {
     req.check('presentation', 'La présentation est vide').notEmpty();
     req.check('website', 'Le format du lien du site n\'est pas correct').optional({
         checkFalsy: true
     }).isURL();
     req.check('facebook', 'Le format du lien facebook n\'est pas correct').optional({
+        checkFalsy: true
+    }).isURL();
+    req.check('pjaunes', 'Le format du lien des Pages-Jaunes n\'est pas correct').optional({
         checkFalsy: true
     }).isURL();
     req.check('catalogue', 'Le format du lien du catalogue n\'est pas correct').optional({
@@ -521,6 +528,7 @@ router.post('/dashboard/contenu-magasin', isLoggedIn, function (req, res) {
             doc.page.contact.facebook = req.body.facebook;
             doc.page.contact.twitter = req.body.twitter;
             doc.page.contact.instagram = req.body.instagram;
+            doc.page.pjaunes = req.body.pjaunes;
             doc.page.schedule = req.body.schedule;
             doc.leftIndicator = req.body.leftIndicator;
             doc.rightIndicator = req.body.rightIndicator;
@@ -530,6 +538,38 @@ router.post('/dashboard/contenu-magasin', isLoggedIn, function (req, res) {
         req.session.success = true;
     }
     res.redirect("/dashboard/contenu-magasin");
+});
+//////// POST C ////////ENREGISTREMENT DES IMAGES POUR LES ENTREPRISES
+router.post('/dashboard/contenu-magasin/photo', isLoggedIn, function (req, res) {
+    mongoId = mongoose.Types.ObjectId(req.body.id);
+    if (!req.files.photo1) {
+        req.session.errors = [{
+            msg: "Le champ image 1 doit être rempli"
+        }];
+        req.session.success = false;
+    } else {
+        var i = 1;
+        while (i <= 4) {
+            var requete = concat([req.files.photo, i]);
+            var sampleFile = requete;
+            console.log(requete);
+            if (sampleFile !== null) {
+                var fileName = req.body.companyNameSlug + i + '.' + sampleFile.name.split('.')[sampleFile.name.split('.').length - 1]
+                sampleFile.name = fileName;
+                upload('photo', sampleFile, req.session, mongoId);
+                User.findById(mongoId, function (err, doc, photoName) {
+                    if (err) {
+                        return done(err);
+                    }
+                    var docs = doc.photo.image + i;
+                    docs = fileName;
+                    doc.update();
+                });
+            }
+            i++;
+        }
+    }
+    res.redirect('/dashboard/contenu-magasin')
 });
 
 ////// * Le magasin peut ici modifier les informations de son compte * //////
