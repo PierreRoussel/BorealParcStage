@@ -675,7 +675,7 @@ router.post('/dashboard/picture-modification/:id', isLoggedIn, function (req, re
         });
     }
     res.redirect("/dashboard/modification-promotion/"+promoId);
-}); 
+});
 
 
 
@@ -688,12 +688,9 @@ router.post('/dashboard/modification-promotion/:id', isLoggedIn, function (req, 
     req.check('description', 'La description est vide').notEmpty();
     req.check('startDate', 'La date de debut est vide').notEmpty();
     req.check('endDate', 'La date de fin est vide').notEmpty();
-    //console.log('Bonjour avant le findOne');
     User.findOne(mongoId, function(err, model){ //Récupération tableau des promotions de l'entreprise
         for (var i = 0; i<model.promotion.length; i++){
-            //console.log('Dans le for : ',model.promotion[i]._id);
-            if(model.promotion[i]._id == req.params.id){                
-                //console.log('Dans le if : ',model.promotion[i]);
+            if(model.promotion[i]._id == req.params.id){
                 model.promotion[i].title = req.body.title;
                 model.promotion[i].description = req.body.description;
                 model.promotion[i].startDate = req.body.startDate;
@@ -713,21 +710,37 @@ router.post('/dashboard/modification-promotion/:id', isLoggedIn, function (req, 
 router.get('/dashboard/supprimer/promotion/:id', function (req, res, next) {
     var mongoId = mongoose.Types.ObjectId(req.user._id);
     var promoId = mongoose.Types.ObjectId(req.params.id);
-    User.findOneAndUpdate({
-            _id: mongoId
-        }, {
-            $pull: {
-                promotion: {
-                    _id: req.params.id
-                }
+    User.findOne(mongoId, function (err, model){
+        for (var i = 0; i<model.promotion.length; i++){
+            if(model.promotion[i]._id == req.params.id){
+                fs.unlink("./public/images/promotion/"+model.promotion[i].picture, (err) => {
+                    if (err) {
+                        console.log("Image pas supprimée "+ err)
+                    }else{
+                        console.log('Image supprimée')
+                    }
+                })
             }
-        },
-        function (err, model) {
-            console.log('Error: ' + model);
         }
+    });
+    User.findOneAndUpdate({
+        _id: mongoId
+    }, {
+        $pull: {
+            promotion: {
+                _id: req.params.id
+            }
+        }
+    },
+    function (err, model) {
+        console.log('Error: ' + model);
+    }
     )
     res.redirect('/dashboard/liste-promotion/');
 });
+
+
+
 
 
 router.post('/dashboard/contenu-magasin/logo', isLoggedIn, function (req, res) { 
