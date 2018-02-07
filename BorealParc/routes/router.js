@@ -359,6 +359,7 @@ router.post('/dashboard/creation-compte-magasin', isSuperAdmin, function (req, r
         newUser.companyName = req.body.companyName;
         newUser.companyNameSlug = stringToSlug(req.body.companyName);
         newUser.logo = "";
+        newUser.isSleepy = true; 
         newUser.isSuperAdmin = false;
         newUser.save(function (err) {
             if (err) {
