@@ -22,15 +22,18 @@
                     </li>
                     {{# each items }}
                     <li class="collection-item dashboard-admin">
-                        <div>
-                            {{ this.companyName }}<span>| géré par {{ this.mail }}</span>
-                            <a href="/dashboard/delete/{{ this._id }}" onclick="return confirm('Etes-vous certain de vouloir supprimer cet élément?');" class="orange lighten-1 secondary-content waves-effect waves-light btn bouton-dash"><i class="material-icons left">delete</i>Supprimer</a>
-                            <!-- Lien vers /dashboard/contenu-magasin -->
-                            <a href="/dashboard/update/{{ this._id  }}" class="orange lighten-1 secondary-content waves-effect waves-light btn bouton-dash"><i class="material-icons left">build</i>Information magasin</a>
-                            <!-- Lien vers /dashboard/modification-infos -->
-                            <a href="/dashboard/shop-update/{{ this._id  }}" class="orange lighten-1 secondary-content waves-effect waves-light btn bouton-dash"><i class="material-icons left">build</i>Information compte</a> {{#if isSleepy}}
-                            <a href="/dashboard/reveal/{{ this._id }}" onclick="return confirm('Cette entreprise sera visible');" class="orange lighten-1 secondary-content waves-effect waves-light btn bouton-dash"><i class="material-icons left">cached</i>Mettre en service</a> {{/if}} {{#unless isSleepy}}
-                            <a href="/dashboard/hide/{{ this._id }}" onclick="return confirm('Cette entreprise sera en attente de confirmation');" class="orange lighten-1 secondary-content waves-effect waves-light btn bouton-dash"><i class="material-icons left">cached</i>Mettre en attente</a> {{/unless}}
+                        <div class="row">
+                            <div class="col s6 m12">
+                                {{ this.companyName }}<span>| géré par {{ this.mail }}</span></div>
+                            <div class="col s6 m12">
+                                <a href="/dashboard/delete/{{ this._id }}" onclick="return confirm('Etes-vous certain de vouloir supprimer cet élément?');" class="orange lighten-1 secondary-content waves-effect waves-light btn bouton-dash"><i class="material-icons left">delete</i>Supprimer</a>
+                                <!-- Lien vers /dashboard/contenu-magasin -->
+                                <a href="/dashboard/update/{{ this._id  }}" class="orange lighten-1 secondary-content waves-effect waves-light btn bouton-dash"><i class="material-icons left">build</i><g class="hide-on-small-only">Information</g> magasin</a>
+                                <!-- Lien vers /dashboard/modification-infos -->
+                                <a href="/dashboard/shop-update/{{ this._id  }}" class="orange lighten-1 secondary-content waves-effect waves-light btn bouton-dash"><i class="material-icons left">build</i><g class="hide-on-small-only">Information</g> compte</a> {{#if isSleepy}}
+                                <a href="/dashboard/reveal/{{ this._id }}" onclick="return confirm('Cette entreprise sera visible');" class="green lighten-1 secondary-content waves-effect waves-light btn bouton-dash"><i class="material-icons left">cached</i><g class="hide-on-small-only">Mettre en</g> service</a> {{/if}} {{#unless isSleepy}}
+                                <a href="/dashboard/hide/{{ this._id }}" onclick="return confirm('Cette entreprise sera en attente de confirmation');" class="orange lighten-1 secondary-content waves-effect waves-light btn bouton-dash"><i class="material-icons left">cached</i><g class="hide-on-small-only">Mettre en</g> attente</a> {{/unless}}
+                            </div>
                         </div>
                     </li>
                     {{/each}}

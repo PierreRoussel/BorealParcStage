@@ -1,3 +1,11 @@
+.info-working {
+    border-left: 3px solid #e51c23;
+    background-color: #fdeaeb;
+    margin-left: 0.6rem!important;
+    margin-bottom: 1rem!important;
+    text-align: justify
+}
+
 nav ul a,
 nav .brand-logo {
     color: #444
@@ -99,6 +107,12 @@ footer.page-footer {
     min-height: 70px
 }
 
+.card-title.truncate {
+    text-decoration: overline;
+    text-transform: uppercase;
+    font-size: 18px;
+}
+
 .card-image {
     width: 100px!important;
     margin: auto!important;
@@ -136,11 +150,9 @@ footer.page-footer {
         display: none;
     }
     .bouton-dash {
-        padding: 0 0.2rem;
+        padding: 0 0.3rem;
         font-size: 0.6rem;
-    }
-    .collection-item.dashboard-admin > div {
-        padding-bottom: 3rem;
+        min-width: 9rem;
     }
     #titre-layout-boreal {
         display: none;
