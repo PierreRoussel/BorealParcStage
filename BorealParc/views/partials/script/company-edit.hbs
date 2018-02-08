@@ -4,12 +4,17 @@
 <script src="/javascript/init.js"></script>
 <!--  Points of interest script -->
 <script type="text/javascript">
-    $('#leftIndicator').on('change', function () {
+    $('#leftIndicator').on('change', function() {
         var newVal = $('#leftIndicator').val();
-        $('.cd-single-point').css('left', newVal+"%");
+        $('.cd-single-point').css('left', newVal + "%");
     });
-    $('#rightIndicator').on('change', function () {
+    $('#rightIndicator').on('change', function() {
         var newVal = $('#rightIndicator').val();
-        $('.cd-single-point').css('top', newVal+"%");
+        $('.cd-single-point').css('top', newVal + "%");
     });
+
+    $(document).ready(function() {
+        $('.carousel.carousel-entreprise').carousel();
+    });
+
 </script>

@@ -160,6 +160,19 @@ footer.page-footer {
     bottom: -15px
 }
 
+.carousel-entreprise-item {
+    height: 20rem;
+    width: auto;
+}
+
+.card.carousel-content {
+    max-height: 32rem;
+}
+
+.carreau-item {
+    width: 30rem!important;
+}
+
 .carousel-slider {
     width: 300px;
     height: 166px

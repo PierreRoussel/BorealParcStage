@@ -268,7 +268,6 @@ router.post('/dashboard/shop-update', isSuperAdmin, function (req, res, next) {
 router.post('/dashboard/update/logo', isSuperAdmin, function (req, res, next) {
     mongoId = mongoose.Types.ObjectId(req.body.id);
     if (!req.files.logo) {
-
         req.session.errors = [{
             msg: "Vous n'avez pas mis d'image"
         }];
@@ -467,7 +466,7 @@ router.post('/dashboard/contenu-magasin/logo', isLoggedIn, function (req, res) {
         var fileName = req.body.companyNameSlug + '.' + sampleFile.name.split('.')[sampleFile.name.split('.').length - 1]
         sampleFile.name = fileName;
         upload('logo', sampleFile, req.session, mongoId);
-        User.findById(mongoId, function (err, doc, fileName) {
+        User.findById(mongoId, function (err, doc, logoName) {
             if (err) {
                 return done(err);
             }
@@ -543,34 +542,72 @@ router.post('/dashboard/contenu-magasin', isLoggedIn, function (req, res) {
 //////// POST C ////////ENREGISTREMENT DES IMAGES POUR LES ENTREPRISES
 router.post('/dashboard/contenu-magasin/photo', isLoggedIn, function (req, res) {
     mongoId = mongoose.Types.ObjectId(req.body.id);
-    if (!req.files.photo1) {
-        req.session.errors = [{
-            msg: "Le champ image 1 doit être rempli"
-        }];
+    //SAUVEGARDER L'IMAGE 1
+    var sampleFile1 = req.files.photo1;
+    if (sampleFile1 != undefined) {
+        var fileName1 = req.body.companyNameSlug + '1.' + sampleFile1.name.split('.')[sampleFile1.name.split('.').length - 1]
+        sampleFile1.name = fileName1;
+        upload('photo', sampleFile1, req.session, mongoId);
+    }
+    //SAUVEGARDER L'IMAGE 2
+    var sampleFile2 = req.files.photo2;
+    if (sampleFile2 != undefined) {
+        var fileName2 = req.body.companyNameSlug + '2.' + sampleFile2.name.split('.')[sampleFile2.name.split('.').length - 1]
+        sampleFile2.name = fileName2;
+        upload('photo', sampleFile2, req.session, mongoId);
+    }
+    //SAUVEGARDER L'IMAGE 3
+    var sampleFile3 = req.files.photo3;
+    if (sampleFile3 != undefined) {
+        var fileName3 = req.body.companyNameSlug + '3.' + sampleFile3.name.split('.')[sampleFile3.name.split('.').length - 1]
+        sampleFile3.name = fileName3;
+        upload('photo', sampleFile3, req.session, mongoId);
+    }
+    //SAUVEGARDER L'IMAGE 4
+    var sampleFile4 = req.files.photo4;
+    if (sampleFile4 != undefined) {
+        var fileName4 = req.body.companyNameSlug + '4.' + sampleFile4.name.split('.')[sampleFile4.name.split('.').length - 1]
+        sampleFile4.name = fileName4;
+        upload('photo', sampleFile4, req.session, mongoId);
+    }
+
+    var errors = req.validationErrors();
+    if (errors) {
+        req.session.errors = errors;
         req.session.success = false;
     } else {
-        var i = 1;
-        while (i <= 4) {
-            var requete = concat([req.files.photo, i]);
-            var sampleFile = requete;
-            console.log(requete);
-            if (sampleFile !== null) {
-                var fileName = req.body.companyNameSlug + i + '.' + sampleFile.name.split('.')[sampleFile.name.split('.').length - 1]
-                sampleFile.name = fileName;
-                upload('photo', sampleFile, req.session, mongoId);
-                User.findById(mongoId, function (err, doc, photoName) {
-                    if (err) {
-                        return done(err);
-                    }
-                    var docs = doc.photo.image + i;
-                    docs = fileName;
-                    doc.update();
-                });
+        User.findById(req.body.id, function (err, doc) {
+            if (err) {
+                return done(err);
             }
-            i++;
-        }
+            var fileNames = [fileName1, fileName2, fileName3, fileName4];
+            for (i = 1; i < 5; i++) {
+                if (fileNames[i - 1] != undefined) {
+                    switch (i) {
+                        case 1:
+                            doc.photo.image1 = fileName1;
+                            console.log("BIJOUR1");
+                            break;
+                        case 2:
+                            doc.photo.image2 = fileName2;
+                            console.log("BIJOUR2");
+                            break;
+                        case 3:
+                            doc.photo.image3 = fileName3;
+                            console.log("BIJOUR3");
+                            break;
+                        case 4:
+                            doc.photo.image4 = fileName4;
+                            console.log("BIJOUR4");
+                            break;
+                    }
+                }
+            }
+            doc.save();
+        });
+        req.session.success = true;
     }
-    res.redirect('/dashboard/contenu-magasin')
+    res.redirect('/dashboard/contenu-magasin#ancrePhoto')
 });
 
 ////// * Le magasin peut ici modifier les informations de son compte * //////

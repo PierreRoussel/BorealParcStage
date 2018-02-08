@@ -25,15 +25,15 @@
         </div>
         {{/if}}
     </div>
-    <div class="row">{{#if entreprise.photo}}
+    <div class="row">{{#if entreprise.photo.image1}}
         <div class="col s12 m12">
-            <div class="center card">
+            <div class="center card carousel-content">
                 <div class="card-content">
-                    <div class="lignePhoto">
-                        <div class="column-photo"><img class="materialboxed" src="/images/photo/{{ entreprise.photo.image1}}" alt="Photo entreprise"></div>
-                        <div class="column-photo"><img class="materialboxed" src="/images/photo/{{ entreprise.photo.image2 }}" alt="Photo entreprise"></div>
-                        <div class="column-photo"><img class="materialboxed" src="/images/photo/{{ entreprise.companyNameSlug }}1.jpg" alt="Photo entreprise"></div>
-                        <div class="column-photo"><img class="materialboxed" src="/images/photo/{{ entreprise.companyNameSlug }}1.jpg" alt="Photo entreprise"></div>
+                    <div class="carousel carousel-entreprise">
+                        <a class="carousel-item carreau-item" href="#one"><img class="carousel-entreprise-item"src="/images/photo/{{ entreprise.photo.image1}}"></a>
+                        <a class="carousel-item carreau-item" href="#two"><img class="carousel-entreprise-item" src="/images/photo/{{ entreprise.photo.image2 }}"></a>
+                        <a class="carousel-item carreau-item" href="#three"><img class="carousel-entreprise-item" src="/images/photo/{{ entreprise.photo.image3 }}"></a>
+                        <a class="carousel-item carreau-item" href="#four"><img class="carousel-entreprise-item" src="/images/photo/{{ entreprise.photo.image4 }}"></a>
                     </div>
                 </div>
             </div>
@@ -120,4 +120,4 @@
     </div>
 </div>
 
-{{/if}} {{> page/footer}} {{> script/full}}
+{{/if}} {{> page/footer}}{{> script/full}}

@@ -22,9 +22,9 @@
         }
     });
 
-    /* MATERIALBOXED POUR PAGE ENTREPRISE */
+    /* CAROUSEL POUR LES PHOTOS DE LA PAGE ENTREPRISE */
     $(document).ready(function() {
-        $('.materialboxed').materialbox();
+        $('.carousel.carousel-entreprise').carousel();
     });
     /* POUR QUE LE TEXTE INDEX DEFILE COMME ECRIS A LA MAIN */
     var i = 0;
@@ -35,7 +35,7 @@
             document.getElementById("texte-presentation-index").innerHTML += txt.charAt(i);
             i++;
             if (document.body.clientWidth > 600) {
-                setTimeout(typeWriter, 10);
+                setTimeout(typeWriter, 20);
             } else {
                 setTimeout(typeWriter, 0);
             }

@@ -133,11 +133,15 @@
         <form action="/dashboard/contenu-magasin/photo" method="post" enctype="multipart/form-data" class="col s12">
             <div class="row center">
                 <div class="file-field input-field col s12">
-                    <div class="lignePhoto">
-                        <div class="column-photo"><img class="materialboxed" src="/images/photo/{{ item.photo.image1}}" alt="Photo entreprise 1"></div>
-                        <div class="column-photo"><img class="materialboxed" src="/images/photo/{{ item.photo.image2 }}" alt="Photo entreprise 2"></div>
-                        <div class="column-photo"><img class="materialboxed" src="/images/photo/{{ item.photo.image3 }}" alt="Photo entreprise 3"></div>
-                        <div class="column-photo"><img class="materialboxed" src="/images/photo/{{ item.photo.image4 }}" alt="Photo entreprise 4"></div>
+                    <div class="center card carousel-content">
+                        <div class="card-content">
+                            <div class="carousel carousel-entreprise">
+                                <a class="carousel-item carreau-item" href="#one"><img class="carousel-entreprise-item"src="/images/photo/{{ item.photo.image1}}"></a>
+                                <a class="carousel-item carreau-item" href="#two"><img class="carousel-entreprise-item" src="/images/photo/{{ item.photo.image2 }}"></a>
+                                <a class="carousel-item carreau-item" href="#three"><img class="carousel-entreprise-item" src="/images/photo/{{ item.photo.image3 }}"></a>
+                                <a class="carousel-item carreau-item" href="#four"><img class="carousel-entreprise-item" src="/images/photo/{{ item.photo.image4 }}"></a>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
