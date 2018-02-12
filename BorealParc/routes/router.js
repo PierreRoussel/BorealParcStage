@@ -666,6 +666,37 @@ router.post('/dashboard/admin-shop-update', isLoggedIn, function (req, res) {
 });
 
 //////////////////////////////
+/////  FONCTION ADHERENT /////
+//////////////////////////////
+//Rend l'entreprise non-adhérente
+router.get('/dashboard/non-adherent/:id', isSuperAdmin, function (req, res) {
+    var mongoId = mongoose.Types.ObjectId(req.params.id);
+
+    User.findById(mongoId, function (err, doc) {
+        if (err) {
+            return done(err);
+        } else {
+            doc.isAdherent = false;
+            doc.save();
+        }
+    })
+    res.redirect('/dashboard/');
+})
+//Rend l'entreprise adhérente
+router.get('/dashboard/adherent/:id', isSuperAdmin, function (req, res) {
+    var mongoId = mongoose.Types.ObjectId(req.params.id);
+    User.findById(mongoId, function (err, doc) {
+        if (err) {
+            return done(err);
+        } else {
+            doc.isAdherent = true;
+            doc.save();
+        }
+    })
+    res.redirect('/dashboard/');
+})
+
+//////////////////////////////
 /////  FONCTION MAILING  /////
 //////////////////////////////
 

@@ -9,7 +9,7 @@
                             <a href="/dashboard/creation-compte-magasin" class="teal waves-effect waves-light btn btn-large bouton-dash"><i class="material-icons left">brush</i>Créer nouveau compte magasin</a>
                             <a href="/dashboard/modification-elements-site" class="teal waves-effect waves-light btn btn-large bouton-dash"><i class="material-icons left">colorize</i>Modifier des éléments du site</a>
                             <a href="/dashboard/modification-mot-de-passe-superadmin" class="teal waves-effect waves-light btn btn-large bouton-dash"><i class="material-icons left">build</i>Changer mot de passe compte super-administrateur</a>
-                            <a href="/dashboard/mail" class="teal waves-effect waves-light btn btn-large bouton-dash"><i class="material-icons left">send</i>Envoie de newsletter</a>
+                            <a style='display:none' href="/dashboard/mail" class="teal waves-effect waves-light btn btn-large bouton-dash"><i class="material-icons left">send</i>Envoie de newsletter</a>
                         </div>
                     </div>
                 </div>
@@ -29,11 +29,19 @@
                             <div class="col s6 m12">
                                 <a href="/dashboard/delete/{{ this._id }}" onclick="return confirm('Etes-vous certain de vouloir supprimer cet élément?');" class="teal darken-1 secondary-content waves-effect waves-light btn bouton-dash"><i class="material-icons left">delete</i>Supprimer</a>
                                 <!-- Lien vers /dashboard/contenu-magasin -->
-                                <a href="/dashboard/update/{{ this._id  }}" class="teal darken-1 secondary-content waves-effect waves-light btn bouton-dash"><i class="material-icons left">build</i><g class="hide-on-small-only">Information</g> magasin</a>
+                                <a href="/dashboard/update/{{ this._id  }}" class="teal darken-1 secondary-content waves-effect waves-light btn bouton-dash"><i class="material-icons left">build</i><g class="hide-on-med-and-down">Information</g> magasin</a>
                                 <!-- Lien vers /dashboard/modification-infos -->
-                                <a href="/dashboard/shop-update/{{ this._id  }}" class="teal darken-1 secondary-content waves-effect waves-light btn bouton-dash"><i class="material-icons left">build</i><g class="hide-on-small-only">Information</g> compte</a> {{#if isSleepy}}
-                                <a href="/dashboard/reveal/{{ this._id }}" onclick="return confirm('Cette entreprise sera visible');" class="teal-text green accent-1 secondary-content waves-effect waves-light btn bouton-dash"><i class="material-icons left">cached</i><g class="hide-on-small-only">Mettre en</g> service</a> {{/if}} {{#unless isSleepy}}
-                                <a href="/dashboard/hide/{{ this._id }}" onclick="return confirm('Cette entreprise sera en attente de confirmation');" class="teal darken-1 secondary-content waves-effect waves-light btn bouton-dash"><i class="material-icons left">cached</i><g class="hide-on-small-only">Mettre en</g> attente</a> {{/unless}}
+                                <a href="/dashboard/shop-update/{{ this._id  }}" class="teal darken-1 secondary-content waves-effect waves-light btn bouton-dash"><i class="material-icons left">build</i><g class="hide-on-med-and-down">Information</g> compte</a>
+                                <!-- Lien vers /dashboard/isAdherent -->
+                                {{#unless isAdherent}}
+                                <a href="/dashboard/adherent/{{ this._id }}" class="teal-text green accent-1 secondary-content waves-effect waves-light btn bouton-dash"><i class="material-icons left">cached</i><g class="hide-on-med-and-down">Mettre en</g> adhérent</a>{{/unless}}
+                                <!-- Lien vers /dashboard/nonadherent -->
+                                {{#if isAdherent}}
+                                <a href="/dashboard/non-adherent/{{ this._id }}" class="teal darken-1 secondary-content waves-effect waves-light btn bouton-dash"><i class="material-icons left">cached</i><g class="hide-on-med-and-down">Mettre en </g>non-adhérent</a>{{/if}}{{#if isSleepy}}
+                                <!-- Lien vers /dashboard/reveal -->
+                                <a href="/dashboard/reveal/{{ this._id }}" onclick="return confirm('Cette entreprise sera visible');" class="teal-text green accent-1 secondary-content waves-effect waves-light btn bouton-dash"><i class="material-icons left">cached</i><g class="hide-on-med-and-down">Mettre en</g> service</a> {{/if}} {{#unless isSleepy}}
+                                <!-- Lien vers /dashboard/hide -->
+                                <a href="/dashboard/hide/{{ this._id }}" onclick="return confirm('Cette entreprise sera en attente de confirmation');" class="teal darken-1 secondary-content waves-effect waves-light btn bouton-dash"><i class="material-icons left">cached</i><g class="hide-on-med-and-down">Mettre en</g> attente</a> {{/unless}}
                             </div>
                         </div>
                     </li>

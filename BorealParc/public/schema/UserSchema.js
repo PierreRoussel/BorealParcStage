@@ -84,6 +84,10 @@ var UserSchema = new Schema({
     rightIndicator: Number,
     resetPasswordToken: String,
     resetPasswordExpires: Date,
+    isAdherent: {
+        type: Boolean,
+        default: true
+    },
     isSuperAdmin: Boolean,
     isSleepy: Boolean
 }, {

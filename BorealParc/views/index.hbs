@@ -39,7 +39,7 @@
                 <ul>
                     {{#each entreprise}} {{#if this.rightIndicator }} {{#if this.leftIndicator }}
                     <li class="cd-single-point" style="top:{{ this.rightIndicator }}%; left:{{ this.leftIndicator }}%">
-                        <a href="./entreprise/{{ this.companyNameSlug }}" style='color:#26a69a'><i class="material-icons pointeur-carte" style="font-size:44px;">place</i></a>
+                        <a href="./entreprise/{{ this.companyNameSlug }}" style='color:#26a69a'><i class="material-icons pointeur-carte pointeur-promotion" style="font-size:44px;">place</i></a>
                         <div class="cd-more-info cd-top">
                             <img src="/images/logo/{{ this.logo }}" style="max-height:100px;max-width:100px;padding:8px">
                             <h2>{{ this.companyName }}</h2>
@@ -55,7 +55,7 @@
             <div class="col s12 center">
                 <h4>Les différentes enseignes</h4>
                 <div class="row">
-                    {{#each entreprise}}
+                    {{#each entreprise}} {{#if isAdherent}}
                     <div class="fix col">
                         <div class="card hoverable card-acc" onclick="javascript:location.href='./entreprise/{{ this.companyNameSlug }}'">
                             <div class="card-image">
@@ -67,7 +67,7 @@
                             </div>
                         </div>
                     </div>
-                    {{/each}}
+                    {{/if}} {{/each}}
                 </div>
             </div>
         </div>

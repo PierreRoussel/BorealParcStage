@@ -130,8 +130,7 @@
 
         <!-- CETTE PARTIE PERMET D'AJOUTER JUSQUE 4 PHOTOS LA PAGE DE PRESENTATION DE L'ENTREPRISE -->
         <h5 style="margin-top:0.5rem;">Ajouter des images à votre page de présentation:</h5>
-        <form action="/dashboard/contenu-magasin/photo" method="post" enctype="multipart/form-data" class="col s12" id="ancrePhoto">
-            {{#if item.photo.image1}}
+        <form action="/dashboard/contenu-magasin/photo" method="post" enctype="multipart/form-data" class="col s12">
             <div class="row center">
                 <div class="file-field input-field col s12">
                     <div class="center card carousel-content">
@@ -146,7 +145,7 @@
                     </div>
                 </div>
             </div>
-            {{/if}}
+
             <div class="row">
                 <input id="id" type="hidden" name="id" value="{{ item._id }}">
                 <input id="id" type="hidden" name="companyNameSlug" value="{{ item.companyNameSlug }}">

@@ -11,7 +11,7 @@
     </div>
     <div class="parallax"><img src="/images/boreal_back.png" alt="Centre boréal parc"></div>
 </div>
-<a href="/" class="hoverable waves-effect waves-light btn-large btn-floating hide-on-small-only" style="margin:4rem;margin-left:7rem;background:#91457e;position:absolute"><i class="material-icons left">arrow_back</i>Retour à la page d'accueil</a>
+<a href="/" class="hoverable waves-effect waves-light btn-large btn-floating hide-on-small-only" style="margin:4rem;margin-left:7rem;background:#91457e;position:absolute"><i class="material-icons left">arrow_back</i>Retour à la page d'accueil</a> {{#if entreprise.isAdherent}}
 <div class="container">
     <div class="row">
         {{#if entreprise.page.presentation}}
@@ -119,5 +119,32 @@
         </div>
     </div>
 </div>
-
-{{/if}} {{> page/footer}}{{> script/full}}
+{{/if}} {{/if}}{{#unless entreprise.isAdherent}}
+<div class="container">
+    <div class="row">
+        <div class="col s12">
+            <h4 class="center">Cette entreprise n'adhère pas encore à l'association Boréal-Parc</h4>
+        </div>
+    </div>
+</div>
+{{#if entreprise.rightIndicator }} {{#if entreprise.leftIndicator }}
+<div class="container">
+    <div class="row">
+        <div class="col s12 m12 center">
+            <h4>Carte Interactive</h4>
+            <div class="cd-interest-wrapper">
+                <img src="/images/map/borealmap.jpg" alt="Centre boréal parc">
+                <ul>
+                    <li class="cd-single-point" style="top:{{ entreprise.rightIndicator }}%; left:{{ entreprise.leftIndicator }}%">
+                        <a href="#" style='color:#26a69a'><i class="material-icons pointeur-carte" style="font-size:44px;">place</i></a>
+                        <div class="cd-more-info cd-top">
+                            <img src="/images/logo/{{ entreprise.logo }}" style="max-height:120px;max-width:140px;padding:8px">
+                            <h2>{{ entreprise.companyName }}</h2>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{{/if}} {{/if}} {{/unless}} {{> page/footer}}{{> script/full}}
