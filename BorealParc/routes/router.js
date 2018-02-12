@@ -35,6 +35,27 @@ router.get('/', function (req, res, next) {
     })
 });
 
+
+router.get('/promotion', function(req, res, next){
+    User.find({
+        isSuperAdmin: false
+    }, function (err, user) {
+        if (err)   
+            return done(err);
+        else if (!user)
+            res.render('promotion', {
+                title : 'Promotion - Boréal Parc'
+            });
+        else {
+            res.render( 'promotion', {
+                title: 'Promotion - Boréal Parc',
+                entreprise: user,
+                isLog: req.user
+            });
+        }
+    })
+});
+
 /*//Subscription to the newsletter
 router.post('/footer/newsletter', function (req, res, next) {
     function handleSayHello(req, res) {
@@ -584,10 +605,24 @@ router.post('/dashboard/creation-promotion', isLoggedIn, function (req, res) {
                 User.findOne( 
                     { _id : mongoId},
                     function(err, model){
-                        var idNouvellePromo = model.promotion[model.promotion.length -1].id;                        
+                        var idNouvellePromo = model.promotion[model.promotion.length -1].id;
+                        var logoToPicture;                       
                         if (!req.files.picture) {
-                            req.session.errors = [{msg:"Vous n'avez pas mis d'image"}];
-                            req.session.success = false;
+                            var sampleFile = "/images/logo/"+model.logo;
+                            var fileName = idNouvellePromo + '.' +sampleFile.name.split('.')[sampleFile.name.split('.').length - 1]
+                            sampleFile.name = fileName;
+                            upload('promotion',sampleFile, req.session, mongoId);
+                            User.findOne(mongoId, function(err, model){ //Récupération tableau des promotions de l'entreprise
+                            for (var i = 0; i<model.promotion.length; i++){
+                                if(model.promotion[i]._id == idNouvellePromo){                
+                                    model.promotion[i].picture = fileName;
+                                    model.save();
+                                }
+                            }
+                            });
+
+                            // req.session.errors = [{msg:"Vous n'avez pas mis d'image"}];
+                            // req.session.success = false;
                         }else{
                             var sampleFile = req.files.picture;
                             var fileName = idNouvellePromo + '.' +sampleFile.name.split('.')[sampleFile.name.split('.').length - 1]

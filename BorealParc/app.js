@@ -38,6 +38,16 @@ var hbs = exphbs.create({
             var mmnt = moment(date);
             return 'Le ' + mmnt.format('dddd') + ' ' + mmnt.format('LL') + ' à ' + mmnt.format('LT');
         },
+        datePromoFormat: function(date,format){
+            moment.locale('fr');
+            var mmnt = moment(date);
+            return 'Le ' + mmnt.format('dddd') + ' ' + mmnt.format('LL');
+        },
+        dateInputFormat: function(date, format){
+            moment.locale('fr');
+            var mmnt = moment(date);
+            return mmnt.format('Y') + '-' + mmnt.format('MM') + '-' + mmnt.format('DD');
+        },
         getStringifiedJson: function (value) {
             return JSON.stringify(value);
         },
