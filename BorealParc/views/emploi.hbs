@@ -1,14 +1,14 @@
 <div class="container scrollspy">
         <div class="row">
             <div class="col s12 center">
-                <h4>Les différentes promotions</h4>
+                <h4>Les différentes offres emplois</h4>
                 <div class="col s12">
                     <a href="/" class="grey lighten-1 waves-effect waves-light btn"><i class="material-icons left">arrow_back</i>Retour</a>
                 </div>
                 <div class="row">
                     {{#each entreprise}}
                         <!-- <span>{{ this.companyName }}</span> -->
-                        {{#each this.promotion}}
+                        {{#each this.emploi}}
                             <div class="col s12">
                                         <div class="card">
                                             <div class="card-content">
@@ -18,8 +18,7 @@
                                                     <img src="/images/promotion/{{ this.picture }}">
                                                 </div>
                                                 <p>{{{ breaklines this.description }}}</p> </br>
-                                                <p>Date de début : {{datePromoFormat this.startDate}}</p>
-                                                <p>Date de fin : {{datePromoFormat this.endDate}}</p>
+                                                <p>{{this.poste}}</p>
                                             </div>
                                         </div>
                                     </div>                  

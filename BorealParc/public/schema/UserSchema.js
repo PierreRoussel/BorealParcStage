@@ -10,6 +10,13 @@ var promotion = new Schema({
     picture: { type : String }
 })
 
+var emploi = new Schema({
+    title: { type : String},
+    description: {type : String},
+    poste: { type : String},
+    picture: { type : String }
+})
+
 var UserSchema = new Schema({
     user: {
         login: {
@@ -73,6 +80,7 @@ var UserSchema = new Schema({
         }
     },
     promotion: [promotion],
+    emploi: [emploi],
     leftIndicator: Number,
     rightIndicator: Number,
     resetPasswordToken: String,

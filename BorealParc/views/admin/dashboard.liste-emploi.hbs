@@ -7,14 +7,14 @@
             <div class="col s12">
                 <ul class="collection with-header">
                     <li class="collection-header">
-                        <h4>Liste des promotions</h4>
+                        <h4>Liste des offres d'emploi</h4>
                     </li>
                     {{# each items }}
                     <li class="collection-item dashboard-admin">
                         <div>
                             {{ this.title }}
-                           <a href="/dashboard/supprimer/promotion/{{ this._id }}" onclick="return confirm('Etes-vous certain de vouloir supprimer cet élément?');" class="indigo lighten-1 secondary-content waves-effect waves-light btn"><i class="material-icons left">delete</i>Supprimer la promotion</a>
-                            <a href="/dashboard/modification-promotion/{{ this._id }}" class="indigo lighten-1 secondary-content waves-effect waves-light btn"><i class="material-icons left">build</i>Modifier la promotion</a>
+                            <a href="/dashboard/supprimer/emploi/{{ this._id }}" onclick="return confirm('Etes-vous certain de vouloir supprimer cet élément?');" class="indigo lighten-1 secondary-content waves-effect waves-light btn"><i class="material-icons left">delete</i>Supprimer l'offre d'emploi</a>
+                            <a href="/dashboard/modification-emploi/{{ this._id }}" class="indigo lighten-1 secondary-content waves-effect waves-light btn"><i class="material-icons left">build</i>Modifier l'offre d'emploi</a>
                         </div>
                     </li>
                     {{/each}}
