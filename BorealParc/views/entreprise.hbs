@@ -119,6 +119,7 @@
         </div>
     </div>
 </div>
+
 {{/if}} {{/if}}{{#unless entreprise.isAdherent}}
 <div class="container">
     <div class="row">
@@ -147,4 +148,30 @@
         </div>
     </div>
 </div>
-{{/if}} {{/if}} {{/unless}} {{> page/footer}}{{> script/full}}
+{{/if}} {{/if}} {{/unless}}
+
+
+
+{{#each entreprise.promotion}}
+<div class="container">
+    <div class="row">
+        <div class="col s12 center">
+            <h4>Les Promotions du moment</h4>
+            <div class="center card">
+                <div class="card-content">
+                    <span class="card-title entreprisePage">{{this.title}}</span>
+                    <div class="card-image left">
+                        <img src="/images/promotion/{{ this.picture }}">
+                    </div>
+                    <p>{{{ breaklines this.description }}}</p> </br>
+                </div>
+                <div class="card action">
+                    <p>Date de début : {{datePromoFormat this.startDate}} &nbsp &nbsp &nbsp &nbsp   Date de fin : {{datePromoFormat this.endDate}}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{{/each}}
+
+ {{> page/footer}}{{> script/full}}

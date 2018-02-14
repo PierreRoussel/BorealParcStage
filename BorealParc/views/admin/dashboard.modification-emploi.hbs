@@ -1,0 +1,49 @@
+<div class="container">
+    <div class="row">
+        <div class="col s12">
+            <a href="/dashboard" class="grey lighten-1 waves-effect waves-light btn"><i class="material-icons left">arrow_back</i>Retour</a>
+        </div>
+        {{# if success }}
+            <div class="center admin-form-ok">
+                <h5><i class="material-icons">verified_user</i> L'offre d'emploi a bien été modifiée</h5>
+            </div>
+        {{ else }}
+            {{# if errors }}
+            <div class="center admin-form-wrong">
+                <h5><i class="material-icons">close</i> Erreur: l'offre d'emploi n'a pas été modifiée</h5>
+                <ul>
+                    {{# each errors }}
+                        <li>{{ this.msg }}</li>
+                    {{/each}}
+                </ul>
+            </div>
+            {{/if}}
+        {{/if}}
+
+        <form action="/dashboard/modification-emploi/{{this.item.id}}" method="post" class="col s12">
+            <div class="row">
+                <div class="input-field col m12 l6">
+                    <input id="title" type="text" name="title" class="validate" value="{{this.item.title}}">
+                    <label for="title">Titre de l'offre :</label>
+                </div>
+                <div class="input-field col m12 l6">
+                    <label for="description">Description de l'offre :</label> </br>
+                    <textarea id="description" type="text" name="description" class="validate">{{this.item.description}}</textarea>
+                </div>
+                <div class="input-field col m12 l6">
+                    <input id="poste" type="text" name="poste" class="validate" value="{{this.item.poste}}">
+                    <label for="poste">Titre du poste :</label>
+                </div>
+                
+            </div>
+            <div class="row">
+                <div class="input-field col s6">
+                    <button class="indigo lighten btn waves-effect waves-light" type="submit" name="action">Modifier l'offre
+                    <i class="material-icons right">send</i>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{{> script/basic}}
