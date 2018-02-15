@@ -850,6 +850,8 @@ router.post('/mail', function (req, res, next) {
 ////////////////////////////////
 /////  FONCTION PROMOTION  /////
 ////////////////////////////////
+
+//CREATION PROMOTION
 router.get('/dashboard/creation-promotion', isLoggedIn, function (req, res) {
     res.render('admin/dashboard.creation-promotion.hbs', {
         title: 'Création promotion',
@@ -895,7 +897,7 @@ router.post('/dashboard/creation-promotion', isLoggedIn, function (req, res) {
                             User.findOne(mongoId, function(err, model){ //Récupération tableau des promotions de l'entreprise
                             for (var i = 0; i<model.promotion.length; i++){
                                 if(model.promotion[i]._id == idNouvellePromo){                
-                                    model.promotion[i].picture = "../logo/"+model.logo;
+                                    model.promotion[i].picture = "/logo/"+model.logo;
                                     model.save();
                                 }
                             }
@@ -908,7 +910,7 @@ router.post('/dashboard/creation-promotion', isLoggedIn, function (req, res) {
                             User.findOne(mongoId, function(err, model){ //Récupération tableau des promotions de l'entreprise
                             for (var i = 0; i<model.promotion.length; i++){
                                 if(model.promotion[i]._id == idNouvellePromo){                
-                                    model.promotion[i].picture = fileName;
+                                    model.promotion[i].picture = "/promotion/"+fileName;
                                     model.save();
                                 }
                             }
@@ -1022,7 +1024,7 @@ router.get('/dashboard/supprimer/promotion/:id', function (req, res, next) {
     var promoId = mongoose.Types.ObjectId(req.params.id);
     User.findOne(mongoId, function (err, model){
         for (var i = 0; i<model.promotion.length; i++){
-            if((model.promotion[i]._id == req.params.id) && (model.promotion[i].picture == model.promotion[i].picture.substring('../logo/', 0))){
+            if((model.promotion[i]._id == req.params.id) && (model.promotion[i].picture != model.promotion[i].picture.substring('../logo/', 0))){
                 fs.unlink("./public/images/promotion/"+model.promotion[i].picture, (err) => {
                     if (err) {
                         console.log("Image pas supprimée "+ err)
@@ -1097,7 +1099,7 @@ router.post('/dashboard/creation-emploi', isLoggedIn, function (req, res) {
                             User.findOne(mongoId, function(err, model){ //Récupération tableau des promotions de l'entreprise
                                 for (var i = 0; i<model.emploi.length; i++){
                                     if(model.emploi[i]._id == idNouvelleOffre){                
-                                        model.emploi[i].picture = "../logo/"+model.logo;
+                                        model.emploi[i].picture = "/logo/"+model.logo;
                                         model.save();
                                     }
                                 }

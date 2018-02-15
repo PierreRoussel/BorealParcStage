@@ -7,7 +7,6 @@
                 </div>
                 <div class="row">
                     {{#each entreprise}}
-                        <!-- <span>{{ this.companyName }}</span> -->
                         {{#each this.promotion}}
                             <div class="col s12">
                                         <div class="card">
@@ -15,7 +14,7 @@
                                                 <span class="card-title entreprisePage">{{../companyName}}</span>
                                                 <span class="center card-title">{{this.title}}</span>
                                                 <div class="card-image">
-                                                    <img src="/images/promotion/{{ this.picture }}">
+                                                    <img src="/images{{this.picture}}">
                                                 </div>
                                                 <p>{{{ breaklines this.description }}}</p> </br>
                                                 <p>Date de début : {{datePromoFormat this.startDate}}</p>
