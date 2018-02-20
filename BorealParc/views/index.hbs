@@ -29,13 +29,9 @@
             </div>
         </div>
     </div>
-    
-    <div class="row center">
-                <a href="./promotion/" class="btn-large waves-effect waves-light teal lighten-1">Découvrir nos offres commerciales</a>
-    </div>
 
     <div class="row center">
-                <a href="./emploi/" class="btn-large waves-effect waves-light teal lighten-1">Découvrir nos offres d'emplois</a>
+        <a href="./promotion/" class="btn-large waves-effect waves-light teal lighten-1">Découvrir nos offres commerciales</a>
     </div>
 
 </div>
@@ -48,10 +44,12 @@
                 <ul>
                     {{#each entreprise}} {{#if this.rightIndicator }} {{#if this.leftIndicator }}
                     <li class="cd-single-point" style="top:{{ this.rightIndicator }}%; left:{{ this.leftIndicator }}%">
-                        <a href="./entreprise/{{ this.companyNameSlug }}" style='color:#26a69a'><i class="material-icons pointeur-carte pointeur-promotion" style="font-size:44px;">place</i></a>
+                        <a href="./entreprise/{{ this.companyNameSlug }}" style='color:#26a69a'><i class="material-icons pointeur-carte {{#if this.promotion}} pointeur-promotion{{/if}}" style="font-size:44px;">place</i></a>
                         <div class="cd-more-info cd-top">
                             <img src="/images/logo/{{ this.logo }}" style="max-height:100px;max-width:100px;padding:8px">
                             <h2>{{ this.companyName }}</h2>
+                            {{#if this.promotion}}
+                            <p class="pointeur-promotion">Une promotion est en cours dans ce magasin</p> {{/if}}
                         </div>
                     </li>
                     {{/if}} {{/if}} {{/each}}
