@@ -407,7 +407,10 @@ footer.page-footer {
     }
 }
 
-.orange.lighten-1.waves-effect.waves-light.btn {
+/* LES BOUTONS DES DASHBOARD */
+
+.orange.lighten-1.waves-effect.waves-light.btn,
+.truncate.indigo.lighten.waves-effect.waves-light.btn-large {
     margin: 1px;
 }
 
