@@ -514,6 +514,8 @@ router.post('/dashboard/modification-mot-de-passe-superadmin', isSuperAdmin, fun
     res.redirect('/dashboard/modification-mot-de-passe-superadmin');
 });
 
+
+
 /////////////////////////////////
 /// Section Dashboard MAGASIN ///
 /////////////////////////////////
@@ -981,7 +983,7 @@ router.post('/dashboard/picture-modification/:id', isLoggedIn, function (req, re
         User.findOne(mongoId, function(err, model){ //Récupération tableau des promotions de l'entreprise
         for (var i = 0; i<model.promotion.length; i++){
             if(model.promotion[i]._id == req.params.id){                
-                model.promotion[i].picture = fileName;
+                model.promotion[i].picture = "/promotion/"+fileName;
                 model.save();
             }
         }
@@ -1360,18 +1362,19 @@ function stringToSlug(str) {
     return str;
 }
 
+//Affichage aléatoire des entreprises
 function shuffle(array) {
     var currentIndex = array.length,
         temporaryValue, randomIndex;
 
-    // While there remain elements to shuffle
+    // Tant qu'il reste des éléments à mélanger
     while (0 !== currentIndex) {
 
-        // Pick a remaining element
+        // Prendre une entreprise restante
         randomIndex = Math.floor(Math.random() * currentIndex);
         currentIndex -= 1;
 
-        // And swap it with the current element
+        // Et l'échanger avec l'élément courant
         temporaryValue = array[currentIndex];
         array[currentIndex] = array[randomIndex];
         array[randomIndex] = temporaryValue;
