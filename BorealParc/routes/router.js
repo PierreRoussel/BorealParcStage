@@ -13,6 +13,8 @@ var Customer = require('../public/schema/CustomerSchema');
 //////////////////////////
 /// Section principale ///
 //////////////////////////
+
+//Lien vers page d'accueil
 router.get('/', function (req, res, next) {
     User.find({
         isSuperAdmin: false,
@@ -38,7 +40,7 @@ router.get('/', function (req, res, next) {
     })
 });
 
-//LIEN VERS PAGE PROMOTION
+//Lien vers page des promotions
 router.get('/promotion', function(req, res, next){
     User.find({
         isSuperAdmin: false
@@ -60,7 +62,7 @@ router.get('/promotion', function(req, res, next){
 });
 
 
-//LIEN VERS PAGE OFFRE D'EMPLOI
+//Lien vers page des offres d'emplois
 router.get('/emploi', function(req, res, next){
     User.find({
         isSuperAdmin: false
@@ -351,6 +353,7 @@ router.post('/dashboard/shop-update', isSuperAdmin, function (req, res, next) {
     res.redirect("/dashboard/shop-update/" + req.body.id);
 });
 
+//Modification logo de l'entreprise
 router.post('/dashboard/update/logo', isSuperAdmin, function (req, res, next) {
     mongoId = mongoose.Types.ObjectId(req.body.id);
     if (!req.files.logo) {
@@ -853,7 +856,7 @@ router.post('/mail', function (req, res, next) {
 /////  FONCTION PROMOTION  /////
 ////////////////////////////////
 
-//CREATION PROMOTION
+//Lien vers page création promotion
 router.get('/dashboard/creation-promotion', isLoggedIn, function (req, res) {
     res.render('admin/dashboard.creation-promotion.hbs', {
         title: 'Création promotion',
@@ -865,6 +868,7 @@ router.get('/dashboard/creation-promotion', isLoggedIn, function (req, res) {
     req.session.errors = null;
 });
 
+//Crréation de promotion
 router.post('/dashboard/creation-promotion', isLoggedIn, function (req, res) {
     var mongoId = mongoose.Types.ObjectId(req.user._id);
     console.log(req.files);
@@ -930,7 +934,7 @@ router.post('/dashboard/creation-promotion', isLoggedIn, function (req, res) {
     res.redirect("/dashboard/creation-promotion");
 });
 
-//Affichages des promotions des entreprises
+//Affichage liste des promotions des entreprises
 router.get('/dashboard/liste-promotion', isLoggedIn, function (req, res) {
     var mongoId = mongoose.Types.ObjectId(req.user._id);
     User.findOne({
@@ -947,7 +951,7 @@ router.get('/dashboard/liste-promotion', isLoggedIn, function (req, res) {
 
 });
 
-//Affichage infos dans modif promotion
+//Affichage informations dans la page de modification de promotion
 router.get('/dashboard/modification-promotion/:id', isLoggedIn, function (req, res) {
     var mongoId = mongoose.Types.ObjectId(req.user._id);
     var promoId = mongoose.Types.ObjectId(req.params.id);
@@ -971,8 +975,7 @@ router.get('/dashboard/modification-promotion/:id', isLoggedIn, function (req, r
 router.post('/dashboard/picture-modification/:id', isLoggedIn, function (req, res){
     var mongoId = mongoose.Types.ObjectId(req.user._id);
     var promoId = mongoose.Types.ObjectId(req.params.id);
-    console.log("zerhgfb");
-    if (!req.files.picture) {
+    if (!req.files.picture) { // Si aucune image envoyée
         req.session.errors = [{msg:"Vous n'avez pas mis d'image"}];
         req.session.success = false;
     }else{
@@ -980,9 +983,9 @@ router.post('/dashboard/picture-modification/:id', isLoggedIn, function (req, re
         var fileName = promoId + '.' +sampleFile.name.split('.')[sampleFile.name.split('.').length - 1]
         sampleFile.name = fileName;
         upload('promotion',sampleFile, req.session, mongoId);
-        User.findOne(mongoId, function(err, model){ //Récupération tableau des promotions de l'entreprise
-        for (var i = 0; i<model.promotion.length; i++){
-            if(model.promotion[i]._id == req.params.id){                
+        User.findOne(mongoId, function(err, model){
+        for (var i = 0; i<model.promotion.length; i++){ //Parcourir le tableau de promotions de l'entreprise
+            if(model.promotion[i]._id == req.params.id){ // Si l'id est le même que celui récupéré avant               
                 model.promotion[i].picture = "/promotion/"+fileName;
                 model.save();
             }
@@ -1002,9 +1005,9 @@ router.post('/dashboard/modification-promotion/:id', isLoggedIn, function (req, 
     req.check('description', 'La description est vide').notEmpty();
     req.check('startDate', 'La date de debut est vide').notEmpty();
     req.check('endDate', 'La date de fin est vide').notEmpty();
-    User.findOne(mongoId, function(err, model){ //Récupération tableau des promotions de l'entreprise
-        for (var i = 0; i<model.promotion.length; i++){
-            if(model.promotion[i]._id == req.params.id){
+    User.findOne(mongoId, function(err, model){
+        for (var i = 0; i<model.promotion.length; i++){ //Parcourir le tableau de promotions de l'entreprise
+            if(model.promotion[i]._id == req.params.id){ // Si l'id est le même que celui récupéré avant 
                 model.promotion[i].title = req.body.title;
                 model.promotion[i].description = req.body.description;
                 model.promotion[i].startDate = req.body.startDate;
@@ -1024,7 +1027,7 @@ router.post('/dashboard/modification-promotion/:id', isLoggedIn, function (req, 
 router.get('/dashboard/supprimer/promotion/:id', function (req, res, next) {
     var mongoId = mongoose.Types.ObjectId(req.user._id);
     var promoId = mongoose.Types.ObjectId(req.params.id);
-    User.findOne(mongoId, function (err, model){
+    User.findOne(mongoId, function (err, model){ //D'abord suppression de l'image de la promotion
         for (var i = 0; i<model.promotion.length; i++){
             if((model.promotion[i]._id == req.params.id) && (model.promotion[i].picture != model.promotion[i].picture.substring('../logo/', 0))){
                 fs.unlink("./public/images/promotion/"+model.promotion[i].picture, (err) => {
@@ -1037,7 +1040,7 @@ router.get('/dashboard/supprimer/promotion/:id', function (req, res, next) {
             }
         }
     });
-    User.findOneAndUpdate({
+    User.findOneAndUpdate({ //Ensuite suppression de la promotion
         _id: mongoId
     }, {
         $pull: {
@@ -1058,7 +1061,7 @@ router.get('/dashboard/supprimer/promotion/:id', function (req, res, next) {
 /////  FONCTION EMPLOI     /////
 ////////////////////////////////
 
-//Création emploi
+//Page création offre d'emploi
 router.get('/dashboard/creation-emploi', isLoggedIn, function(req, res){
     res.render('admin/dashboard.creation-emploi.hbs', {
         title: 'Création offre emploi',
@@ -1070,7 +1073,7 @@ router.get('/dashboard/creation-emploi', isLoggedIn, function(req, res){
     req.session.errors = null;
 })
 
-
+//Création offre d'emploi
 router.post('/dashboard/creation-emploi', isLoggedIn, function (req, res) {
     var mongoId = mongoose.Types.ObjectId(req.user._id);
     req.check('title', 'Le titre est vide').notEmpty();
@@ -1081,7 +1084,7 @@ router.post('/dashboard/creation-emploi', isLoggedIn, function (req, res) {
         req.session.errors = errors;
         req.session.success = false;
     } else {
-        User.findOneAndUpdate({
+        User.findOneAndUpdate({ //Création de l'offre
                 _id: mongoId
             }, {
                 $push: {
@@ -1093,12 +1096,12 @@ router.post('/dashboard/creation-emploi', isLoggedIn, function (req, res) {
                 }
             },
             function (err, model) {
-                //Enregistrement image après création de la promotion
+                //Ajout du lien vers le logo de l'entreprise après création de l'offre d'emploi
                 User.findOne( 
                     { _id : mongoId},
                     function(err, model){
                         var idNouvelleOffre = model.emploi[model.emploi.length -1].id;                      
-                            User.findOne(mongoId, function(err, model){ //Récupération tableau des promotions de l'entreprise
+                            User.findOne(mongoId, function(err, model){ //Récupération tableau des offres d'emplois de l'entreprise
                                 for (var i = 0; i<model.emploi.length; i++){
                                     if(model.emploi[i]._id == idNouvelleOffre){                
                                         model.emploi[i].picture = "/logo/"+model.logo;
@@ -1165,8 +1168,8 @@ router.post('/dashboard/modification-emploi/:id', isLoggedIn, function (req, res
     req.check('title', 'Le titre est vide').notEmpty();
     req.check('description', 'La description est vide').notEmpty();
     req.check('poste','Le titre du poste est vide').notEmpty();
-    User.findOne(mongoId, function(err, model){ //Récupération tableau des promotions de l'entreprise
-        for (var i = 0; i<model.emploi.length; i++){
+    User.findOne(mongoId, function(err, model){ //Récupération de l'entreprise
+        for (var i = 0; i<model.emploi.length; i++){ //Parcourir le tableau des offres d'emplois de l'entreprise
             if(model.emploi[i]._id == req.params.id){
                 model.emploi[i].title = req.body.title;
                 model.emploi[i].description = req.body.description;
@@ -1383,6 +1386,7 @@ function shuffle(array) {
     return array;
 }
 
+//Upload des images sur le site
 function upload(localisation, file, session, mongoId) {
     let sampleFile = file;
     var imageName = sampleFile.name;
