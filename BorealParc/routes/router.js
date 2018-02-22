@@ -20,9 +20,21 @@ router.get('/', function (req, res, next) {
         isSuperAdmin: false,
         isSleepy: false
     }, function (err, user) {
+        var promo = false;
+        var emploi = false;
+
+        //Tester si une promotion et une offre d'emploi existe
+        for(var i=0; i<user.length; ++i){
+            if(user[i].promotion.length != 0){
+                promo = true;
+            }
+            if (user[i].emploi.length != 0){
+                emploi = true;
+            }
+        };
         if (err)
             return done(err);
-        else if (!user)
+        else if (!user) //Si pas d'entreprises
             res.render('index', {
                 title: 'Accueil - Boréal Parc',
                 success: req.session.success
@@ -33,7 +45,9 @@ router.get('/', function (req, res, next) {
                 title: 'Accueil - Boréal Parc',
                 entreprise: user,
                 isLog: req.user,
-                success: req.session.success
+                success: req.session.success,
+                promo: promo,
+                emploi: emploi
             });
         }
         req.session.success = false;
@@ -475,7 +489,8 @@ router.get('/dashboard/modification-elements-site', isSuperAdmin, function (req,
     req.session.errors = null;
 });
 router.post('/dashboard/modification-elements-site', isSuperAdmin, function (req, res) {
-    upload(req, res, function (err) {
+
+    uploadSimple(req.files.borealmap, req.session, 'borealmap', function (err) {
         if (err) {
             return
         }
@@ -515,6 +530,36 @@ router.post('/dashboard/modification-mot-de-passe-superadmin', isSuperAdmin, fun
         });
     }
     res.redirect('/dashboard/modification-mot-de-passe-superadmin');
+});
+
+
+//Changement bannière
+router.get('/dashboard/background-modification', isSuperAdmin, function(req, res){
+    res.render('admin/dashboard.superadmin-background-modification.hbs', {
+        title : 'Modification bannière - Dashboard SuperAdmin',
+        isLog: req.user,
+        success: req.session.success,
+        errors: req.session.errors
+    });
+    req.session.success = false;
+    req.session.errors = null;
+});
+
+router.post('/dashboard/background-modification', isSuperAdmin, function(req, res){
+    uploadSimple(req.files.borealback, req.session, 'boreal_back', function (err) {
+        if (err) {
+            return
+        }
+    });
+
+
+  /*  upload(req, res, function (err) {
+        if (err) {
+            return
+        }
+    });
+*/
+    res.redirect('/dashboard/background-modification');
 });
 
 
@@ -1404,4 +1449,21 @@ function upload(localisation, file, session, mongoId) {
     }
 }
 
+//Upload de la map et du background sur le site
+function uploadSimple(file, session, name) {
+    console.log(file);
+    let sampleFile = file;
+    var ext = path.extname(sampleFile.name);
+    var imageName = name+ext;
+    
+    if (ext != '.png' && ext != '.jpeg' && ext != '.jpg' && ext != '.PNG' && ext != '.JPEG' && ext != '.JPG') {
+        session.errors = [{
+            msg: "L'image doit être au format png ou jpg"
+        }];
+        session.success = false;
+    } else {
+        sampleFile.mv(path.join(__dirname, '../public/images/map/' + imageName));
+        session.success = true;
+    }
+}
 module.exports = router;
