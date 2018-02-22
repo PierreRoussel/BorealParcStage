@@ -111,11 +111,15 @@ p {
     color: #26a69a
 }
 
+.parallax img {
+    max-height: 900px;
+}
+
 .parallax-container {
     min-height: 380px;
     line-height: 0;
     height: auto;
-    color: rgba(255, 255, 255, .9)
+    color: rgba(255, 255, 255, .9);
 }
 
 .parallax-container .section {
@@ -158,6 +162,10 @@ footer.page-footer {
 
 .more-info-button {
     bottom: -15px
+}
+
+.carousel.carousel-slider {
+    margin-left: 12rem;
 }
 
 .carousel-entreprise-item {
@@ -331,6 +339,9 @@ footer.page-footer {
     }
     .pointeur-carte {
         font-size: 20px!important
+    }
+    .carousel.carousel-slider {
+        margin-left: auto;
     }
 }
 

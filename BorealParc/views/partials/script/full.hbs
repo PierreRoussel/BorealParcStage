@@ -11,17 +11,6 @@
         $('.carousel.carousel-slider').carousel('next');
     }, 4000);
 
-    /* FONCTION DU CHAMP INPUT POUR LA NEWSLETTER -> BTN DISABLED OU NON */
-    var inputNews = document.querySelector('#mailCustomer');
-    var btnNews = document.querySelector('#btn-newsletter');
-    inputNews.addEventListener('keyup', (event) => {
-        if (inputNews.value != '') {
-            btnNews.classList.remove('disabled');
-        } else {
-            btnNews.classList.add('disabled');
-        }
-    });
-
     /* CAROUSEL POUR LES PHOTOS DE LA PAGE ENTREPRISE */
     $(document).ready(function() {
         $('.carousel.carousel-entreprise').carousel();
