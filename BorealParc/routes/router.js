@@ -24,11 +24,11 @@ router.get('/', function (req, res, next) {
         var emploi = false;
 
         //Tester si une promotion et une offre d'emploi existe
-        for(var i=0; i<user.length; ++i){
-            if(user[i].promotion.length != 0){
+        for (var i = 0; i < user.length; ++i) {
+            if (user[i].promotion.length != 0) {
                 promo = true;
             }
-            if (user[i].emploi.length != 0){
+            if (user[i].emploi.length != 0) {
                 emploi = true;
             }
         };
@@ -55,18 +55,18 @@ router.get('/', function (req, res, next) {
 });
 
 //Lien vers page des promotions
-router.get('/promotion', function(req, res, next){
+router.get('/promotion', function (req, res, next) {
     User.find({
         isSuperAdmin: false
     }, function (err, user) {
-        if (err)   
+        if (err)
             return done(err);
         else if (!user)
             res.render('promotion', {
-                title : 'Promotion - Boréal Parc'
+                title: 'Promotion - Boréal Parc'
             });
         else {
-            res.render( 'promotion', {
+            res.render('promotion', {
                 title: 'Promotion - Boréal Parc',
                 entreprise: user,
                 isLog: req.user
@@ -77,18 +77,18 @@ router.get('/promotion', function(req, res, next){
 
 
 //Lien vers page des offres d'emplois
-router.get('/emploi', function(req, res, next){
+router.get('/emploi', function (req, res, next) {
     User.find({
         isSuperAdmin: false
     }, function (err, user) {
-        if (err)   
+        if (err)
             return done(err);
         else if (!user)
             res.render('emploi', {
-                title : 'Offre Emploi - Boréal Parc'
+                title: 'Offre Emploi - Boréal Parc'
             });
         else {
-            res.render( 'emploi', {
+            res.render('emploi', {
                 title: 'Offre Emploi - Boréal Parc',
                 entreprise: user,
                 isLog: req.user
@@ -534,9 +534,9 @@ router.post('/dashboard/modification-mot-de-passe-superadmin', isSuperAdmin, fun
 
 
 //Changement bannière
-router.get('/dashboard/background-modification', isSuperAdmin, function(req, res){
+router.get('/dashboard/background-modification', isSuperAdmin, function (req, res) {
     res.render('admin/dashboard.superadmin-background-modification.hbs', {
-        title : 'Modification bannière - Dashboard SuperAdmin',
+        title: 'Modification bannière - Dashboard SuperAdmin',
         isLog: req.user,
         success: req.session.success,
         errors: req.session.errors
@@ -545,20 +545,12 @@ router.get('/dashboard/background-modification', isSuperAdmin, function(req, res
     req.session.errors = null;
 });
 
-router.post('/dashboard/background-modification', isSuperAdmin, function(req, res){
+router.post('/dashboard/background-modification', isSuperAdmin, function (req, res) {
     uploadSimple(req.files.borealback, req.session, 'boreal_back', function (err) {
         if (err) {
             return
         }
     });
-
-
-  /*  upload(req, res, function (err) {
-        if (err) {
-            return
-        }
-    });
-*/
     res.redirect('/dashboard/background-modification');
 });
 
@@ -940,39 +932,40 @@ router.post('/dashboard/creation-promotion', isLoggedIn, function (req, res) {
             },
             function (err, model) {
                 //Enregistrement image après création de la promotion
-                User.findOne( 
-                    { _id : mongoId},
-                    function(err, model){
-                        var idNouvellePromo = model.promotion[model.promotion.length -1].id;                      
+                User.findOne({
+                        _id: mongoId
+                    },
+                    function (err, model) {
+                        var idNouvellePromo = model.promotion[model.promotion.length - 1].id;
                         if (!req.files.picture) { //Si pas d'image alors prendre celle de l'entreprise
-                            User.findOne(mongoId, function(err, model){ //Récupération tableau des promotions de l'entreprise
-                            for (var i = 0; i<model.promotion.length; i++){
-                                if(model.promotion[i]._id == idNouvellePromo){                
-                                    model.promotion[i].picture = "/logo/"+model.logo;
-                                    model.save();
+                            User.findOne(mongoId, function (err, model) { //Récupération tableau des promotions de l'entreprise
+                                for (var i = 0; i < model.promotion.length; i++) {
+                                    if (model.promotion[i]._id == idNouvellePromo) {
+                                        model.promotion[i].picture = "/logo/" + model.logo;
+                                        model.save();
+                                    }
                                 }
-                            }
                             });
-                        }else{ //sinon upload de la nouvelle image
+                        } else { //sinon upload de la nouvelle image
                             var sampleFile = req.files.picture;
-                            var fileName = idNouvellePromo + '.' +sampleFile.name.split('.')[sampleFile.name.split('.').length - 1]
+                            var fileName = idNouvellePromo + '.' + sampleFile.name.split('.')[sampleFile.name.split('.').length - 1]
                             sampleFile.name = fileName;
-                            upload('promotion',sampleFile, req.session, mongoId);
-                            User.findOne(mongoId, function(err, model){ //Récupération tableau des promotions de l'entreprise
-                            for (var i = 0; i<model.promotion.length; i++){
-                                if(model.promotion[i]._id == idNouvellePromo){                
-                                    model.promotion[i].picture = "/promotion/"+fileName;
-                                    model.save();
+                            upload('promotion', sampleFile, req.session, mongoId);
+                            User.findOne(mongoId, function (err, model) { //Récupération tableau des promotions de l'entreprise
+                                for (var i = 0; i < model.promotion.length; i++) {
+                                    if (model.promotion[i]._id == idNouvellePromo) {
+                                        model.promotion[i].picture = "/promotion/" + fileName;
+                                        model.save();
+                                    }
                                 }
-                            }
                             });
                         }
                     }
-                    
+
                 )
-                
+
             }
-            
+
         )
         req.session.success = true;
     }
@@ -1017,30 +1010,30 @@ router.get('/dashboard/modification-promotion/:id', isLoggedIn, function (req, r
 });
 
 //Upload modification image promotion
-router.post('/dashboard/picture-modification/:id', isLoggedIn, function (req, res){
+router.post('/dashboard/picture-modification/:id', isLoggedIn, function (req, res) {
     var mongoId = mongoose.Types.ObjectId(req.user._id);
     var promoId = mongoose.Types.ObjectId(req.params.id);
     if (!req.files.picture) { // Si aucune image envoyée
-        req.session.errors = [{msg:"Vous n'avez pas mis d'image"}];
+        req.session.errors = [{
+            msg: "Vous n'avez pas mis d'image"
+        }];
         req.session.success = false;
-    }else{
+    } else {
         var sampleFile = req.files.picture;
-        var fileName = promoId + '.' +sampleFile.name.split('.')[sampleFile.name.split('.').length - 1]
+        var fileName = promoId + '.' + sampleFile.name.split('.')[sampleFile.name.split('.').length - 1]
         sampleFile.name = fileName;
-        upload('promotion',sampleFile, req.session, mongoId);
-        User.findOne(mongoId, function(err, model){
-        for (var i = 0; i<model.promotion.length; i++){ //Parcourir le tableau de promotions de l'entreprise
-            if(model.promotion[i]._id == req.params.id){ // Si l'id est le même que celui récupéré avant               
-                model.promotion[i].picture = "/promotion/"+fileName;
-                model.save();
+        upload('promotion', sampleFile, req.session, mongoId);
+        User.findOne(mongoId, function (err, model) {
+            for (var i = 0; i < model.promotion.length; i++) { //Parcourir le tableau de promotions de l'entreprise
+                if (model.promotion[i]._id == req.params.id) { // Si l'id est le même que celui récupéré avant               
+                    model.promotion[i].picture = "/promotion/" + fileName;
+                    model.save();
+                }
             }
-        }
         });
     }
-    res.redirect("/dashboard/modification-promotion/"+promoId);
+    res.redirect("/dashboard/modification-promotion/" + promoId);
 });
-
-
 
 //Modification promotion
 router.post('/dashboard/modification-promotion/:id', isLoggedIn, function (req, res) {
@@ -1050,9 +1043,9 @@ router.post('/dashboard/modification-promotion/:id', isLoggedIn, function (req, 
     req.check('description', 'La description est vide').notEmpty();
     req.check('startDate', 'La date de debut est vide').notEmpty();
     req.check('endDate', 'La date de fin est vide').notEmpty();
-    User.findOne(mongoId, function(err, model){
-        for (var i = 0; i<model.promotion.length; i++){ //Parcourir le tableau de promotions de l'entreprise
-            if(model.promotion[i]._id == req.params.id){ // Si l'id est le même que celui récupéré avant 
+    User.findOne(mongoId, function (err, model) {
+        for (var i = 0; i < model.promotion.length; i++) { //Parcourir le tableau de promotions de l'entreprise
+            if (model.promotion[i]._id == req.params.id) { // Si l'id est le même que celui récupéré avant 
                 model.promotion[i].title = req.body.title;
                 model.promotion[i].description = req.body.description;
                 model.promotion[i].startDate = req.body.startDate;
@@ -1064,21 +1057,17 @@ router.post('/dashboard/modification-promotion/:id', isLoggedIn, function (req, 
     res.redirect("/dashboard/liste-promotion/");
 });
 
-
-
-
-
 //Suppression de promotion
 router.get('/dashboard/supprimer/promotion/:id', function (req, res, next) {
     var mongoId = mongoose.Types.ObjectId(req.user._id);
     var promoId = mongoose.Types.ObjectId(req.params.id);
-    User.findOne(mongoId, function (err, model){ //D'abord suppression de l'image de la promotion
-        for (var i = 0; i<model.promotion.length; i++){
-            if((model.promotion[i]._id == req.params.id) && (model.promotion[i].picture != model.promotion[i].picture.substring('../logo/', 0))){
-                fs.unlink("./public/images/promotion/"+model.promotion[i].picture, (err) => {
+    User.findOne(mongoId, function (err, model) { //D'abord suppression de l'image de la promotion
+        for (var i = 0; i < model.promotion.length; i++) {
+            if ((model.promotion[i]._id == req.params.id) && (model.promotion[i].picture != model.promotion[i].picture.substring('../logo/', 0))) {
+                fs.unlink("./public/images/promotion/" + model.promotion[i].picture, (err) => {
                     if (err) {
-                        console.log("Image pas supprimée "+ err)
-                    }else{
+                        console.log("Image pas supprimée " + err)
+                    } else {
                         console.log('Image supprimée')
                     }
                 })
@@ -1086,17 +1075,17 @@ router.get('/dashboard/supprimer/promotion/:id', function (req, res, next) {
         }
     });
     User.findOneAndUpdate({ //Ensuite suppression de la promotion
-        _id: mongoId
-    }, {
-        $pull: {
-            promotion: {
-                _id: req.params.id
+            _id: mongoId
+        }, {
+            $pull: {
+                promotion: {
+                    _id: req.params.id
+                }
             }
+        },
+        function (err, model) {
+            console.log('Error: ' + model);
         }
-    },
-    function (err, model) {
-        console.log('Error: ' + model);
-    }
     )
     res.redirect('/dashboard/liste-promotion/');
 });
@@ -1107,7 +1096,7 @@ router.get('/dashboard/supprimer/promotion/:id', function (req, res, next) {
 ////////////////////////////////
 
 //Page création offre d'emploi
-router.get('/dashboard/creation-emploi', isLoggedIn, function(req, res){
+router.get('/dashboard/creation-emploi', isLoggedIn, function (req, res) {
     res.render('admin/dashboard.creation-emploi.hbs', {
         title: 'Création offre emploi',
         isLog: req.user,
@@ -1142,30 +1131,30 @@ router.post('/dashboard/creation-emploi', isLoggedIn, function (req, res) {
             },
             function (err, model) {
                 //Ajout du lien vers le logo de l'entreprise après création de l'offre d'emploi
-                User.findOne( 
-                    { _id : mongoId},
-                    function(err, model){
-                        var idNouvelleOffre = model.emploi[model.emploi.length -1].id;                      
-                            User.findOne(mongoId, function(err, model){ //Récupération tableau des offres d'emplois de l'entreprise
-                                for (var i = 0; i<model.emploi.length; i++){
-                                    if(model.emploi[i]._id == idNouvelleOffre){                
-                                        model.emploi[i].picture = "/logo/"+model.logo;
-                                        model.save();
-                                    }
+                User.findOne({
+                        _id: mongoId
+                    },
+                    function (err, model) {
+                        var idNouvelleOffre = model.emploi[model.emploi.length - 1].id;
+                        User.findOne(mongoId, function (err, model) { //Récupération tableau des offres d'emplois de l'entreprise
+                            for (var i = 0; i < model.emploi.length; i++) {
+                                if (model.emploi[i]._id == idNouvelleOffre) {
+                                    model.emploi[i].picture = "/logo/" + model.logo;
+                                    model.save();
                                 }
-                            });
+                            }
+                        });
                     }
-                    
+
                 )
-                
+
             }
-            
+
         )
         req.session.success = true;
     }
     res.redirect("/dashboard/creation-emploi");
 });
-
 
 //Affichages liste des offres d'emploi
 router.get('/dashboard/liste-emploi', isLoggedIn, function (req, res) {
@@ -1183,8 +1172,6 @@ router.get('/dashboard/liste-emploi', isLoggedIn, function (req, res) {
         });
 
 });
-
-
 
 //Affichage infos dans modification emploi
 router.get('/dashboard/modification-emploi/:id', isLoggedIn, function (req, res) {
@@ -1212,10 +1199,10 @@ router.post('/dashboard/modification-emploi/:id', isLoggedIn, function (req, res
     var emploiId = mongoose.Types.ObjectId(req.params.id);
     req.check('title', 'Le titre est vide').notEmpty();
     req.check('description', 'La description est vide').notEmpty();
-    req.check('poste','Le titre du poste est vide').notEmpty();
-    User.findOne(mongoId, function(err, model){ //Récupération de l'entreprise
-        for (var i = 0; i<model.emploi.length; i++){ //Parcourir le tableau des offres d'emplois de l'entreprise
-            if(model.emploi[i]._id == req.params.id){
+    req.check('poste', 'Le titre du poste est vide').notEmpty();
+    User.findOne(mongoId, function (err, model) { //Récupération de l'entreprise
+        for (var i = 0; i < model.emploi.length; i++) { //Parcourir le tableau des offres d'emplois de l'entreprise
+            if (model.emploi[i]._id == req.params.id) {
                 model.emploi[i].title = req.body.title;
                 model.emploi[i].description = req.body.description;
                 model.emploi[i].poste = req.body.poste;
@@ -1226,44 +1213,42 @@ router.post('/dashboard/modification-emploi/:id', isLoggedIn, function (req, res
     res.redirect("/dashboard/liste-emploi/");
 });
 
-
 //Suppression d'offre d'emploi
 router.get('/dashboard/supprimer/emploi/:id', function (req, res, next) {
     var mongoId = mongoose.Types.ObjectId(req.user._id);
     var offreId = mongoose.Types.ObjectId(req.params.id);
     User.findOneAndUpdate({
-        _id: mongoId
-    }, {
-        $pull: {
-            emploi: {
-                _id: req.params.id
+            _id: mongoId
+        }, {
+            $pull: {
+                emploi: {
+                    _id: req.params.id
+                }
             }
+        },
+        function (err, model) {
+            console.log('Error: ' + model);
         }
-    },
-    function (err, model) {
-        console.log('Error: ' + model);
-    }
     )
     res.redirect('/dashboard/liste-emploi/');
 });
 
-
-
-
 ///// SI RESULTAT INTROUVABLE //////
 
-router.post('/dashboard/contenu-magasin/logo', isLoggedIn, function (req, res) { 
+router.post('/dashboard/contenu-magasin/logo', isLoggedIn, function (req, res) {
     mongoId = mongoose.Types.ObjectId(req.body.id);
-    if (!req.files.logo)  {
+    if (!req.files.logo) {
 
-        req.session.errors = [{msg:"Vous n'avez pas mis d'image"}];
+        req.session.errors = [{
+            msg: "Vous n'avez pas mis d'image"
+        }];
         req.session.success = false;
-    
-      } else {
-        var sampleFile = req.files.logo ;
+
+    } else {
+        var sampleFile = req.files.logo;
         var fileName = req.body.companyNameSlug + '.' + sampleFile.name.split('.')[sampleFile.name.split('.').length - 1]
         sampleFile.name = fileName;
-        upload('logo',sampleFile, req.session, mongoId);
+        upload('logo', sampleFile, req.session, mongoId);
         User.findById(mongoId, function (err, doc, logoName) {
             if (err) {
                 return done(err);
@@ -1272,7 +1257,7 @@ router.post('/dashboard/contenu-magasin/logo', isLoggedIn, function (req, res) {
             doc.save();
         });
     }
-    res.redirect('/dashboard/contenu-magasin')    
+    res.redirect('/dashboard/contenu-magasin')
 });
 router.post('/dashboard/contenu-magasin', isLoggedIn, function (req, res) {
     req.check('presentation', 'La présentation est vide').notEmpty();
@@ -1454,8 +1439,8 @@ function uploadSimple(file, session, name) {
     console.log(file);
     let sampleFile = file;
     var ext = path.extname(sampleFile.name);
-    var imageName = name+ext;
-    
+    var imageName = name + ext;
+
     if (ext != '.png' && ext != '.jpeg' && ext != '.jpg' && ext != '.PNG' && ext != '.JPEG' && ext != '.JPG') {
         session.errors = [{
             msg: "L'image doit être au format png ou jpg"

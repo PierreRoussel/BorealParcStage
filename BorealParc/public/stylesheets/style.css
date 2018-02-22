@@ -1,3 +1,7 @@
+/*///////////////////////////
+///////POLICE ECRITURE///////
+///////////////////////////*/
+
 @font-face {
     font-family: "Material-Design-Icons";
     src: url("https://s3-us-west-2.amazonaws.com/s.cdpn.io/64/Material-Design-Icons.eot");
@@ -6,7 +10,11 @@
     font-style: normal;
 }
 
-/* PAGE ENTREPRISE PHOTOS */
+/*///////////////////////////
+///////PAGE ENTREPRISE///////
+///////////////////////////*/
+
+/* PHOTO ENTREPRISE */
 
 .lignePhoto {
     display: flex;
@@ -124,28 +132,6 @@ p {
 
 .parallax-container .section {
     width: 100%
-}
-
-@media only screen and (max-width: 992px) {
-    .parallax-container .section {
-        position: absolute;
-        top: 40%
-    }
-    #index-banner .section {
-        top: 10%
-    }
-}
-
-@media only screen and (max-width: 600px) {
-    #index-banner .section {
-        top: 0
-    }
-    #logo-container {
-        margin-left: 2rem;
-    }
-    #mail-dashboard-supadmin {
-        display: none
-    }
 }
 
 .icon-block {
@@ -314,6 +300,26 @@ footer.page-footer {
     margin-top: 0.2rem;
 }
 
+/* LES BOUTONS DES DASHBOARD */
+
+.orange.lighten-1.waves-effect.waves-light.btn,
+.truncate.indigo.lighten.waves-effect.waves-light.btn-large {
+    margin: 1px;
+}
+
+.section-haute-dash,
+.titre-dash-supadmin {
+    text-align: center;
+}
+
+#sender {
+    padding-left: 0.5rem;
+}
+
+/*/////////////////////////////////////////////////////
+////////////////////RESPONSIVE/////////////////////////
+/////////////////////////////////////////////////////*/
+
 @media only screen and (max-width: 600px) {
     .fix {
         width: 50%
@@ -370,6 +376,28 @@ footer.page-footer {
     }
 }
 
+@media only screen and (max-width: 992px) {
+    .parallax-container .section {
+        position: absolute;
+        top: 40%
+    }
+    #index-banner .section {
+        top: 10%
+    }
+}
+
+@media only screen and (max-width: 600px) {
+    #index-banner .section {
+        top: 0
+    }
+    #logo-container {
+        margin-left: 2rem;
+    }
+    #mail-dashboard-supadmin {
+        display: none
+    }
+}
+
 @media only screen and (min-width: 900px) {
     .fix {
         height: 425px
@@ -416,20 +444,4 @@ footer.page-footer {
     .pointeur-carte {
         font-size: 40px!important
     }
-}
-
-/* LES BOUTONS DES DASHBOARD */
-
-.orange.lighten-1.waves-effect.waves-light.btn,
-.truncate.indigo.lighten.waves-effect.waves-light.btn-large {
-    margin: 1px;
-}
-
-.section-haute-dash,
-.titre-dash-supadmin {
-    text-align: center;
-}
-
-#sender {
-    padding-left: 0.5rem;
 }
